@@ -6,7 +6,7 @@
                 <div class="title">账号登录</div>
                 <img class="QRcode" src="../../assets/image/login/QRcode.png" alt="" srcset="">
             </div>
-            <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto">
+            <el-form ref="loginFormRef" :model="ruleForm" :rules="rules" label-width="auto">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="用户名">
                         <template #prefix>
@@ -15,27 +15,27 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input v-model="ruleForm.password" placeholder="密码">
+                    <el-input v-model="ruleForm.pwd" placeholder="密码">
                         <template #prefix>
                             <i class="icon iconfont icon-jiesuo"></i>
                         </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="imgcode">
-                    <el-input v-model="ruleForm.imgcode" placeholder="验证码">
+                    <el-input v-model="ruleForm.verifyCode" placeholder="验证码">
                         <template #prefix>
                             <i class="icon iconfont icon-anquanzhongxin"></i>
                         </template>
                         <template #suffix>
-                            <img class="imageCode" src="../../assets/image/login/imgCode.png" alt="" srcset="">
+                            <img class="imageCode" :src="captchaImage" alt="" srcset="">
                         </template>
                     </el-input>
                 </el-form-item>
                 <div>
-                    <el-checkbox v-model="checked1" label="记住我" size="large" />
+                    <el-checkbox v-model="checked" label="记住我" size="large" />
                 </div>
 
-                <el-button type="primary" @click="submitForm(ruleFormRef)">
+                <el-button type="primary" :loading="loading" @click="handleLogin">
                     登 录
                 </el-button>
             </el-form>
@@ -54,51 +54,71 @@
 
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus'
-const checked1 = ref(true)
-interface RuleForm {
-    username: string;
-    password: string;
-    imgcode: string;
-}
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { getCaptcha } from '../../api';
+import type { RuleForm } from '../../api/indexType';
+import { useAuthStore } from '../../stores/auth';
+import { log } from 'echarts/types/src/util/log.js';
+import router from '../../router';
+const checked = ref(false)
+const loading = ref(false)
 
-const ruleFormRef = ref<FormInstance>()
+const captchaImage=ref()
+
+const loginFormRef = ref<FormInstance | undefined>(undefined)
 const ruleForm = reactive<RuleForm>({
     username: '',
-    password: '',
-    imgcode: ''
-
+    pwd: '',
+    verifyCode: '',
+    verifyCodeId:''
 })
 
 const rules = reactive<FormRules<RuleForm>>({
     username: [
         { required: true, message: '请输入用户名', trigger: 'blur' },
-        // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
     ],
-    password: [
+    pwd: [
         { required: true, message: '请输入密码', trigger: 'blur' },
-        // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
     ],
-    imgcode: [
+    verifyCode: [
         { required: true, message: '请输入验证码', trigger: 'blur' },
-        // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
     ],
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
+// 图形验证码
+const getCaptchaImage=async()=>{
+    let res=await getCaptcha()
+    console.log('图形验证码',res);
+    captchaImage.value=res.data.imageCode
+    ruleForm.verifyCodeId=res.data.id
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
+getCaptchaImage()
+
+const handleLogin = async () => {
+  if (!loginFormRef.value) return
+  
+  loginFormRef.value.validate(async (valid) => {
+    if (valid) {
+      loading.value = true
+      try {
+        console.log("123456");
+        
+        let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
+        console.log(data,"0000");
+        
+        const res = await useAuthStore().userLogin(data)
+        console.log('登录成功',res);
+        
+        if (res) router.push('/')
+      } catch (error) {
+        ElMessage.error('登录失败，请检查账号密码')
+        getCaptchaImage()
+      } finally {
+        loading.value = false
+      }
+    }
+  })
 }
 
 </script>
