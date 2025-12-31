@@ -1,0 +1,77 @@
+#Main {
+  width: 1190px;
+  height: 480px;
+  display: flex;
+
+  .login_bg {
+    width: 790px;
+    height: 480px;
+  }
+
+  .login_form {
+    width: 400px;
+    height: 480px;
+    padding: 30px;
+    box-sizing: border-box;
+    // background-color: pink;
+    .form_title {
+      height: 96px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      position: relative;
+      .title {
+        height: 96px;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 20px 0px;
+        box-sizing: border-box;
+        // background-color: yellow;
+      }
+      .QRcode {
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+  .el-form {
+    .el-input {
+      height: 48px !important;
+      .imageCode {
+        height: 44px;
+        width: 96px;
+      }
+    }
+
+    .el-button {
+      width: 340px;
+      height: 40px;
+      background-color: #67c23a;
+      border: none;
+      font-size: 14px;
+    }
+  }
+
+  .el-divider {
+    /deep/.el-divider__text {
+      color: #606266 !important;
+      font-size: 12px !important;
+    }
+  }
+
+  .other {
+    display: flex;
+    justify-content: center;
+    /deep/.iconfont {
+      font-size: 16px;
+      color: gray;
+      margin-left: 20px !important;
+    }
+    /deep/.iconfont:first-of-type {
+      margin-left: 0 !important;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+#Main {
+  width: 1190px;
+  height: 480px;
+  display: flex;
+}
+#Main .login_bg {
+  width: 790px;
+  height: 480px;
+}
+#Main .login_form {
+  width: 400px;
+  height: 480px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+#Main .login_form .form_title {
+  height: 96px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  position: relative;
+}
+#Main .login_form .form_title .title {
+  height: 96px;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 20px 0px;
+  box-sizing: border-box;
+}
+#Main .login_form .form_title .QRcode {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  right: 0;
+}
+#Main .el-form .el-input {
+  height: 48px !important;
+}
+#Main .el-form .el-input .imageCode {
+  height: 44px;
+  width: 96px;
+}
+#Main .el-form .el-button {
+  width: 340px;
+  height: 40px;
+  background-color: #67c23a;
+  border: none;
+  font-size: 14px;
+}
+#Main .el-divider /deep/ .el-divider__text {
+  color: #606266 !important;
+  font-size: 12px !important;
+}
+#Main .other {
+  display: flex;
+  justify-content: center;
+}
+#Main .other /deep/ .iconfont {
+  font-size: 16px;
+  color: gray;
+  margin-left: 20px !important;
+}
+#Main .other /deep/ .iconfont:first-of-type {
+  margin-left: 0 !important;
+}
