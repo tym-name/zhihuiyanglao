@@ -21,16 +21,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Home',
     component: () => import('../views/home/Home.vue'),
-    // children:[
-    //   {
-    //     path: '/About',
-    //     name: 'About',
-    //     meta: {
-    //       keepAlive: false
-    //     },
-    //     component: () => import('../views/About.vue')
-    //   }
-    // ]
+    children:[
+      {
+        path: '/company',
+        name: 'Company',
+        meta: {
+          title: "机构列表",
+        },
+        component: () => import('../views/home/company.vue')
+      }
+    ]
   },
 ];
 

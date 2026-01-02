@@ -10,10 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { Moon, Sunny } from '@element-plus/icons-vue'
 
-const value1 = ref(true)
 const value2 = ref(false)
 </script>
 

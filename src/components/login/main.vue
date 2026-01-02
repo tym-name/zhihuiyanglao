@@ -58,7 +58,6 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { getCaptcha } from '../../api';
 import type { RuleForm } from '../../api/indexType';
 import { useAuthStore } from '../../stores/auth';
-import { log } from 'echarts/types/src/util/log.js';
 import router from '../../router';
 const checked = ref(false)
 const loading = ref(false)
