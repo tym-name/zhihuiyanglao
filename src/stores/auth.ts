@@ -12,17 +12,17 @@ export const useAuthStore = defineStore('auth', () => {
   const meuns = ref<MenuItem[]>([])
   
   //登录 
-  const userLogin=async (data:LoginPayload)=>{
+  const userLogin = async (data: LoginPayload) => {
 
-    let publicKey:ApiResponse<string>=await getPublicKey(); //调接口获取公钥
+    let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
 
-    data.pwd=sm2.doEncrypt(data.pwd,publicKey.data); //加密
+    data.pwd = sm2.doEncrypt(data.pwd, publicKey.data); //加密
 
-    const res=await login(data).catch(()=>undefined);
-    
-    if(!res) return;
+    const res = await login(data).catch(() => undefined);
 
-    token.value= res.data.token;
+    if (!res) return;
+
+    token.value = res.data.token;
 
     return res;
   }

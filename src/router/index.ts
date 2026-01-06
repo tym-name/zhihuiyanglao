@@ -4,7 +4,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 
-import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from "../stores/auth";
 
 const modules = import.meta.glob('../views/**/**.vue')
 
@@ -25,8 +25,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/home/Home.vue'),
     children: [
       {
-        path: '/company',
-        name: 'Company',
+        path: "/home",
+        name: "home",
+        meta: {
+          title: "首页",
+        },
+        component: () => import("../views/home/HomeView.vue"),
+      },
+      {
+        path: "/company",
+        name: "Company",
         meta: {
           title: "机构列表",
         },
@@ -39,6 +47,14 @@ const routes: Array<RouteRecordRaw> = [
           title: "新增老人",
         },
         component: () => import('../views/market/ElderlyEdit.vue')
+      },
+      {
+        path: '/accountList',
+        name: 'AccountList',
+        meta: {
+          title: "机构列表",
+        },
+        component: () => import('../views/account/AccountList.vue')
       }
     ]
   },
@@ -52,7 +68,7 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-})
+});
 
 // 新增：标记动态路由是否已添加，避免重复添加
 let hasAddedDynamicRoutes = false;

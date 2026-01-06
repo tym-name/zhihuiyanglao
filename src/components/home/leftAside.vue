@@ -114,28 +114,32 @@ const handleMenuSelect = (index: string) => {
 </script>
 
 <style scoped lang='less'>
-.logo{
+.logo {
     width: 100%;
     min-height: 50px;
     background-color: #2d3748;
     display: flex;
     justify-content: center;
     align-items: center;
-    img{
+
+    img {
         width: 20px;
         height: 20px;
     }
-    .title{
+
+    .title {
         margin-left: 5px;
         color: #fff;
         font-size: 14px;
         font-weight: bold;
     }
 }
-.text{
+
+.text {
     width: 100%;
     color: #fff;
-    div{
+
+    div {
         min-height: 56px;
         text-align: left;
         margin-left: 50px;

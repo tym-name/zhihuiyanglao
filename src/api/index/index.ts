@@ -5,13 +5,13 @@ import type { CaptchaData, LoginPayload, LoginResponse, MenuList } from '../inde
  * 获取图形验证码
  */
 
-export const getCaptcha=()=>http.get<CaptchaData>("/api/auth/getCaptcha");
+export const getCaptcha = () => http.get<CaptchaData>("/api/auth/getCaptcha");
 
 /**
  * 获取公钥
  * 
  */
-export const getPublicKey = ()=> http.get<string>('/api/auth/publicKey')
+export const getPublicKey = () => http.get<string>('/api/auth/publicKey')
 
 /**
  * 登录
