@@ -62,14 +62,14 @@ import router from '../../router';
 const checked = ref(false)
 const loading = ref(false)
 
-const captchaImage=ref()
+const captchaImage = ref()
 
 const loginFormRef = ref<FormInstance | undefined>(undefined)
 const ruleForm = reactive<RuleForm>({
     username: '',
     pwd: '',
     verifyCode: '',
-    verifyCodeId:''
+    verifyCodeId: ''
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -85,39 +85,39 @@ const rules = reactive<FormRules<RuleForm>>({
 })
 
 // 图形验证码
-const getCaptchaImage=async()=>{
-    let res=await getCaptcha()
-    console.log('图形验证码',res);
-    captchaImage.value=res.data.imageCode
-    ruleForm.verifyCodeId=res.data.id
+const getCaptchaImage = async () => {
+    let res = await getCaptcha()
+    console.log('图形验证码', res);
+    captchaImage.value = res.data.imageCode
+    ruleForm.verifyCodeId = res.data.id
 }
 
 getCaptchaImage()
 
 const handleLogin = async () => {
-  if (!loginFormRef.value) return
-  
-  loginFormRef.value.validate(async (valid) => {
-    if (valid) {
-      loading.value = true
-      try {
-        console.log("123456");
-        
-        let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
-        console.log(data,"0000");
-        
-        const res = await useAuthStore().userLogin(data)
-        console.log('登录成功',res);
-        
-        if (res) router.push('/')
-      } catch (error) {
-        ElMessage.error('登录失败，请检查账号密码')
-        getCaptchaImage()
-      } finally {
-        loading.value = false
-      }
-    }
-  })
+    if (!loginFormRef.value) return
+
+    loginFormRef.value.validate(async (valid) => {
+        if (valid) {
+            loading.value = true
+            try {
+                console.log("123456");
+
+                let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
+                console.log(data, "0000");
+
+                const res = await useAuthStore().userLogin(data)
+                console.log('登录成功', res);
+
+                if (res) router.push('/')
+            } catch (error) {
+                ElMessage.error('登录失败，请检查账号密码')
+                getCaptchaImage()
+            } finally {
+                loading.value = false
+            }
+        }
+    })
 }
 
 </script>

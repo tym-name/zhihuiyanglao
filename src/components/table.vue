@@ -13,34 +13,15 @@
       </div>
 
       <!-- 表格主体 -->
-      <el-table
-        ref="tableRef"
-        @selection-change="handleSelectionChange"
-        :data="tableData"
-        :style="{ width: tableWidth }"
-        v-loading="isLoading"
-        stripe
-      >
+      <el-table ref="tableRef" @selection-change="handleSelectionChange" :data="tableData"
+        :style="{ width: tableWidth }" v-loading="isLoading" stripe>
         <!-- 选择列（通过配置控制显示） -->
-        <el-table-column
-          v-if="showSelectionColumn"
-          type="selection"
-          width="55"
-          fixed="left"
-        />
+        <el-table-column v-if="showSelectionColumn" type="selection" width="55" fixed="left" />
 
         <!-- 动态列渲染 -->
-        <el-table-column
-          v-for="column in columns"
-          :key="column.prop || column.label"
-          :type="column.type"
-          :fixed="column.fixed"
-          :prop="column.prop"
-          :label="column.label"
-          :width="column.width"
-          :min-width="column.minWidth"
-          :align="column.align || 'center'"
-        >
+        <el-table-column v-for="column in columns" :key="column.prop || column.label" :type="column.type"
+          :fixed="column.fixed" :prop="column.prop" :label="column.label" :width="column.width"
+          :min-width="column.minWidth" :align="column.align || 'center'">
           <!-- 自定义插槽列 -->
           <template v-if="column.slot" #default="scope">
             <slot :name="column.slot" :row="scope.row" :index="scope.index"></slot>
@@ -53,38 +34,21 @@
 
           <!-- 图片列 -->
           <template v-else-if="column.image" #default="scope">
-            <el-image
-              v-if="scope.row[column.image!]"
-              preview-teleported
-              class="table-image"
-              :src="getImageUrl(scope.row[column.image!])"
-              :zoom-rate="1.2"
-              :max-scale="7"
-              :min-scale="0.2"
-              :preview-src-list="[getImageUrl(scope.row[column.image!])]"
-              show-progress
-              fit="cover"
-            />
+            <el-image v-if="scope.row[column.image!]" preview-teleported class="table-image"
+              :src="getImageUrl(scope.row[column.image!])" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
+              :preview-src-list="[getImageUrl(scope.row[column.image!])]" show-progress fit="cover" />
             <span v-else>暂无图片</span>
           </template>
 
-        
+
         </el-table-column>
       </el-table>
 
       <!-- 分页控件 -->
       <div class="pagination-wrapper">
-        <el-pagination
-          v-model:current-page="pagination.currentPage"
-          v-model:page-size="pagination.pageSize"
-          :page-sizes="pageSizes"
-          :total="total"
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :disabled="total === 0"
-        />
+        <el-pagination v-model:current-page="pagination.currentPage" v-model:page-size="pagination.pageSize"
+          :page-sizes="pageSizes" :total="total" background layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange" :disabled="total === 0" />
       </div>
     </el-card>
   </div>
@@ -232,10 +196,10 @@ const getData = async (resetPage = false) => {
   try {
     // 合并参数：初始参数 + 分页参数
     const res = await props.fetchData({ ...requestParams.value });
-    
+
     tableData.value = res.data.list || [];
     total.value = res.data.counts || 0;
-    
+
     emits('load-success', tableData.value);
   } catch (error) {
     console.error('表格数据加载失败:', error);

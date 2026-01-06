@@ -36,9 +36,17 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: "机构列表",
         },
-        component: () => import("../views/home/company.vue"),
+        component: () => import('../views/home/company.vue')
       },
-    ],
+      {
+        path: '/accountList',
+        name: 'AccountList',
+        meta: {
+          title: "机构列表",
+        },
+        component: () => import('../views/account/AccountList.vue')
+      }
+    ]
   },
 ];
 

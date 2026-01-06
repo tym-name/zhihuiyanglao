@@ -4,10 +4,10 @@ export interface CaptchaData {
 }
 
 export interface RuleForm {
-    username: string;
-    pwd: string;
-    verifyCode: string;
-    verifyCodeId: string;
+  username: string;
+  pwd: string;
+  verifyCode: string;
+  verifyCodeId: string;
 }
 
 export interface LoginPayload {
