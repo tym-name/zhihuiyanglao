@@ -2,9 +2,10 @@
 </script>
 
 <template>
-  <router-view></router-view>
+  <router-view>
+  </router-view>
 </template>
 
 <style scoped>
-@import url('./assets/icon/iconfont.css');
+@import url('./assets/iconfont/iconfont.css');
 </style>

@@ -55,11 +55,11 @@
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { getCaptcha } from '../../api';
-import type { RuleForm } from '../../api/indexType';
+import { getCaptcha } from '../../api/index';
+import type { RuleForm } from '../../api/index/indexType';
 import { useAuthStore } from '../../stores/auth';
 import router from '../../router';
-const checked = ref(false)
+const checked = ref(true)
 const loading = ref(false)
 
 const captchaImage=ref()

@@ -1,5 +1,5 @@
-import http from '../utile/request';
-import type { HomeType, InstitutionListResponse } from './companyType';
+import http from '../../utile/request';
+import type { HomeType, InstitutionListResponse } from '../company/companyType';
 
 /**
  * 机构列表

@@ -2,8 +2,8 @@
   <div>
     <Table ref="tableRef" @handleSelectionChange="handleSelectionChange"  :columns="columns" :init-params="params" :fetch-data="companyList">
     <template #buttons>
-      <el-button type="success">添加</el-button>
-      <el-button type="danger" @click="delAll">批量删除</el-button>
+      <el-button type="success"><i class="iconfont icon-jia"></i>添加</el-button>
+      <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
     </template>
 
 
@@ -32,9 +32,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { companyDeleteAll, companyList, deleteAccount } from "../../api/company";
+import { companyDeleteAll, companyList, deleteAccount } from "../../api/company/company";
 import Table, { type TableColumn } from "../../components/table.vue";
-import type { HomeType, InstitutionItem } from "../../api/companyType";
+import type { HomeType, InstitutionItem } from "../../api/company/companyType";
 import { ElMessage, ElMessageBox } from "element-plus";
 const params = ref<HomeType>({
   name: "",
@@ -42,6 +42,7 @@ const params = ref<HomeType>({
 })
 
 const tableRef = ref<any>(null)
+const isBatchDelDisabled = ref(true)
 
 const search=()=>{
   tableRef.value?.refresh();
@@ -104,6 +105,7 @@ const  selectionData= ref<InstitutionItem[]>([])
 const handleSelectionChange=(rows:InstitutionItem[])=>{
   console.log("rows",rows);
   selectionData.value = rows;
+  isBatchDelDisabled.value = rows.length === 0;
 }
 
 const delAll=async ()=>{

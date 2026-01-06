@@ -4,7 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-import "./assets/icon/iconfont.css";
+import "./assets/iconfont/iconfont.css";
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { zhCn } from 'element-plus/es/locales.mjs'
