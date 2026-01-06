@@ -1,31 +1,32 @@
 <template>
   <div>
-    <Table ref="tableRef" @handleSelectionChange="handleSelectionChange"  :columns="columns" :init-params="params" :fetch-data="companyList">
-    <template #buttons>
-      <el-button type="success">添加</el-button>
-      <el-button type="danger" @click="delAll">批量删除</el-button>
-    </template>
+    <Table ref="tableRef" @handleSelectionChange="handleSelectionChange" :columns="columns" :init-params="params"
+      :fetch-data="companyList">
+      <template #buttons>
+        <el-button type="success">添加</el-button>
+        <el-button type="danger" @click="delAll">批量删除</el-button>
+      </template>
 
 
       <template #search>
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="机构名称:">
-            <el-input  placeholder="请输入机构名称" v-model="params.name" clearable />
+            <el-input placeholder="请输入机构名称" v-model="params.name" clearable />
           </el-form-item>
-                    <el-form-item label="管理员姓名:">
-            <el-input  placeholder="请输入管理员姓名" v-model="params.adminName" clearable />
+          <el-form-item label="管理员姓名:">
+            <el-input placeholder="请输入管理员姓名" v-model="params.adminName" clearable />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="search">查询</el-button>
-            <el-button >重置</el-button>
+            <el-button>重置</el-button>
           </el-form-item>
         </el-form>
       </template>
-        <template #operate="{row}">
+      <template #operate="{ row }">
         <el-button link type="primary">重置密码</el-button>
         <el-button link type="primary">修改</el-button>
         <el-button link type="danger" @click="deleteCompany(row.id)">删除</el-button>
-      </template>   
+      </template>
     </Table>
   </div>
 </template>
@@ -43,11 +44,11 @@ const params = ref<HomeType>({
 
 const tableRef = ref<any>(null)
 
-const search=()=>{
+const search = () => {
   tableRef.value?.refresh();
 }
 
-const deleteCompany=(id:number)=>{
+const deleteCompany = (id: number) => {
   ElMessageBox.confirm(
     '是否删除该条记录？',
     {
@@ -72,8 +73,6 @@ const deleteCompany=(id:number)=>{
 }
 
 // const  selectionData= ref<InstitutionItem[]>([])
-
-
 // const delAll=()=>{
 //   ElMessageBox.confirm(
 //     '是否删除该条记录？',
@@ -100,20 +99,16 @@ const deleteCompany=(id:number)=>{
 // }
 
 //要删除选中的数据
-const  selectionData= ref<InstitutionItem[]>([])
-const handleSelectionChange=(rows:InstitutionItem[])=>{
-  console.log("rows",rows);
+const selectionData = ref<InstitutionItem[]>([])
+const handleSelectionChange = (rows: InstitutionItem[]) => {
+  console.log("rows", rows);
   selectionData.value = rows;
 }
 
-const delAll=async ()=>{
-  
-  let ids:number[] = selectionData.value.map((item) => item.id);
-
+const delAll = async () => {
+  let ids: number[] = selectionData.value.map((item) => item.id);
   await companyDeleteAll(ids)
-
   tableRef.value?.getData();
-
 }
 
 const columns: TableColumn[] = [
@@ -157,7 +152,7 @@ const columns: TableColumn[] = [
 </script>
 
 <style scoped lang="less">
-    .demo-form-inline{
-        height: 35px;
-    }
+.demo-form-inline {
+  height: 35px;
+}
 </style>

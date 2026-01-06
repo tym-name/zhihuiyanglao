@@ -6,7 +6,7 @@ import {
 
 import { useAuthStore } from '../stores/auth'
 
-const whiteUrl=["/login"]
+const whiteUrl = ["/login"]
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,11 +17,11 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () => import("../views/login/Login.vue"),
   },
-    {
+  {
     path: '/',
     name: 'Home',
     component: () => import('../views/home/Home.vue'),
-    children:[
+    children: [
       {
         path: '/company',
         name: 'Company',
@@ -29,6 +29,14 @@ const routes: Array<RouteRecordRaw> = [
           title: "机构列表",
         },
         component: () => import('../views/home/company.vue')
+      },
+      {
+        path: '/accountList',
+        name: 'AccountList',
+        meta: {
+          title: "机构列表",
+        },
+        component: () => import('../views/account/AccountList.vue')
       }
     ]
   },
@@ -39,25 +47,25 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from) => { 
-    console.log("to前往的页面",to);
-    console.log("from从哪个页面过来",from);
-    console.log("next放行");
+router.beforeEach((to, from) => {
+  console.log("to前往的页面", to);
+  console.log("from从哪个页面过来", from);
+  console.log("next放行");
 
-    if(whiteUrl.includes(to.path)){
-        return true;
-    }
+  if (whiteUrl.includes(to.path)) {
+    return true;
+  }
 
-      const authStore = useAuthStore()
+  const authStore = useAuthStore()
 
-      const token = authStore.token;
-    if(!token){
-        return '/login'
-    }
+  const token = authStore.token;
+  if (!token) {
+    return '/login'
+  }
 })
 
-router.afterEach((to:any) => { 
-    document.title = to.meta.title || '乐康智慧养老';
+router.afterEach((to: any) => {
+  document.title = to.meta.title || '乐康智慧养老';
 })
 
 export default router
