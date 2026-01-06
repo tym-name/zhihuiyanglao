@@ -16,3 +16,8 @@ export const deleteAccount = (id: number) => http.delete(`/api/company/delete/${
  * 批量删除机构列表
  */
 export const companyDeleteAll = (ids: number[]) => http.post('/api/company/deleteAll',ids)
+
+/**
+ * 添加机构
+ */
+export const addCompany=(params:HomeType)=>http.get<InstitutionListResponse>("/api/company/list",params);
