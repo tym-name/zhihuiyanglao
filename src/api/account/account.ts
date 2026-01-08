@@ -1,4 +1,4 @@
-import http from '../utile/request';
+import http from '../../utile/request';
 import type { AccountType, AccountData,role } from './accountType';
 
 /**

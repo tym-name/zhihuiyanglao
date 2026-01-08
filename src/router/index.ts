@@ -51,37 +51,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/accountList',
         name: 'AccountList',
-        meta: {
-          title: "机构列表",
-        },
         component: () => import('../views/account/AccountList.vue')
       },
-      {
-        path: '/role',
-        name: 'role',
+               {
+        path: '/company-add',
+        name: 'CompanyAdd',
         meta: {
-          title: "角色列表",
+          title: "新增机构",
         },
-        component: () => import('../views/system/Role.vue'),
-        children: [
-          {
-            path: '/role/add',
-            name: 'RoleAdd',
-            meta: {
-              title: "新增角色",
-            },
-            component: () => import('../components/role/roleAdd.vue')
-          },
-        ]
-      },
-      {
-        path: '/supllier-edit',
-        name: 'supllierEdit',
-        meta: {
-          title: "添加供应商",
-        },
-        component: () => import('../views/diet/SupplierEdit.vue')
-      },
+        component: () => import('../views/account/AccountList.vue')
+      }
     ]
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -121,14 +100,13 @@ router.beforeEach(async (to, from) => {
     try {
       //  获取权限列表
       const res = await authStore.getMenu()
+      console.log('权限列表', res);
 
       // 动态添加路由
       res.forEach((item) => {
         item.children.forEach((child) => {
           if (child.pathName) {
             const component = modules[`../views/${item.url}/${child.pathName}.vue`]
-            console.log(`../views/${item.url}/${child.pathName}.vue`);
-
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,

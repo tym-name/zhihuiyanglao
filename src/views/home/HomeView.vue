@@ -27,7 +27,6 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
 import Summary from '../../components/homeView/summary.vue';
 import Institution from '../../components/homeView/institution.vue';
 </script>
