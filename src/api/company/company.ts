@@ -20,7 +20,7 @@ export const companyDeleteAll = (ids: number[]) => http.post('/api/company/delet
 /**
  * 重置密码
  */
-export const resetPassword = (data: ResetPasswordParams)=> http.post<string>('/api/account/reset-password', data)
+export const resetPassword = (data: ResetPasswordParams)=> http.put<string>('/api/account/resetPwd', data)
 
 /**
  * 添加机构/修改机构

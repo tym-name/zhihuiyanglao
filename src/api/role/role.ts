@@ -1,5 +1,5 @@
-import http from '../utile/request';
-import type { PageData, roleData } from './roleList';
+import http from '../../utile/request';
+import type { MenuPermission, MenuPermissionList, PageData, roleData } from './roleType';
 
 /**
  * 角色列表
@@ -20,6 +20,13 @@ export const roleDeleteAll = (ids: number[]) => http.post('/api/role/deleteAll',
  * 添加角色
  */
 
-export const roleAdd = (data: any) => http.post<PageData>('/api/role/add', data)
+export const roleAdd = (data: MenuPermission) => http.post<PageData>('/api/role/add', data)
+
+/**
+ * 权限列表
+ */
+export const menuList = () => http.get<MenuPermissionList>('/api/menu/list')
+
+
 
 

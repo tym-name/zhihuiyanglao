@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Table ref="tableRef" @handleSelectionChange="handleSelectionChange" :columns="columns" :init-params="params"
+    <Table ref="tableRef" @selection-change="handleSelectionChange" :columns="columns" :init-params="params"
       :fetch-data="roleList">
       <template #buttons>
-        <el-button type="success" @click="router.push('/roleAdd')">添加</el-button>
-        <el-button type="danger" @click="delAll">批量删除</el-button>
+        <el-button type="success" @click="router.push('/role-add')">添加</el-button>
+        <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled">批量删除</el-button>
       </template>
 
       <template #operate="{ row }">
@@ -19,17 +19,18 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { roleDelete, roleDeleteAll, roleList } from "../../api/role.ts";
+import { roleDelete, roleDeleteAll, roleList } from "../../api/role/role.ts";
 import Table, { type TableColumn } from "../../components/table.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import type { ItemList, roleData } from "../../api/roleList.ts";
+import type { ItemList, roleData } from "../../api/role/roleType.ts";
 import router from "../../router/index.ts";
 const params = ref<roleData>({
   page: 1,
-  pageSize: 15
+  pageSize: 10
 })
 
 const tableRef = ref<any>(null)
+const isBatchDelDisabled = ref(true)
 
 const roleDel = (id: number) => {
   ElMessageBox.confirm(
@@ -56,21 +57,43 @@ const roleDel = (id: number) => {
     )
 }
 
+
 //要删除选中的数据
 const selectionData = ref<ItemList[]>([])
 const handleSelectionChange = (rows: ItemList[]) => {
   console.log("rows", rows);
   selectionData.value = rows;
+  isBatchDelDisabled.value = rows.length === 0;
 }
 
-const delAll = async () => {
-
-  let ids: number[] = selectionData.value.map((item) => item.id);
-
-  await roleDeleteAll(ids)
-
-  tableRef.value?.getData();
-
+// 批量删除
+const delAll = () => {
+  if (selectionData.value.length === 0) return;
+  
+  ElMessageBox.confirm(
+    `是否删除选中的 ${selectionData.value.length} 条记录？`,
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: "warning"
+    }
+  )
+    .then(async () => {
+      const ids = selectionData.value.map((item) => item.id);
+      await roleDeleteAll(ids); // 执行批量删除接口
+      ElMessage({
+        type: 'success',
+        message: '批量删除成功',
+      });
+      tableRef.value?.getData();
+      isBatchDelDisabled.value = true; // 重置禁用状态
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '已取消删除',
+      })
+    })
 }
 
 const columns: TableColumn[] = [
@@ -107,6 +130,7 @@ const columns: TableColumn[] = [
     fixed: "right",
   }
 ];
+
 </script>
 
 <style scoped lang="less">

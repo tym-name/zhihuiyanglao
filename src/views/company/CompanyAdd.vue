@@ -15,8 +15,12 @@ import type { CompanyInfo } from '../../api/company/companyType';
 import { companyAdd } from '../../api/company/company';
 import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import router from '../../router';
+// import router from '../../router';
 import Product from '../../components/company/Product.vue'
+import { getPublicKey } from '../../api/index';
+import type { ApiResponse } from '../../utile/request';
+import { sm2 } from 'sm-crypto';
+import router from '../../router';
 
 const ruleForm = reactive<CompanyInfo>({
     name: "",
@@ -47,24 +51,20 @@ const id = ref<number>(route.query.id as unknown as number);
 
 // 保存按钮点击事件（区分新增/编辑）
 const handleSave = async () => {
-    const result = await Product.value.submitForm();
-    if (!result.success) return;
-
-    try {
-        if (id.value) {
-            // 编辑：调用编辑接口
-            await companyAdd(result.data);
-            ElMessage.success('机构编辑成功！');
-        } else {
-            // 新增：调用新增接口
-            await companyAdd(result.data);
-            ElMessage.success('机构新增成功！');
-        }
+    if (!ruleForm.id) {
+        let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
+        ruleForm.adminPwd = sm2.doEncrypt(ruleForm.adminPwd, publicKey.data); //加密
+        await companyAdd(ruleForm);
+        ElMessage.success('机构新增成功！');
         router.push('/company');
-    } catch (error) {
-        ElMessage.error(id.value ? '机构编辑失败！' : '机构新增失败！');
+    } else {
+        let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
+        ruleForm.adminPwd = sm2.doEncrypt(ruleForm.adminPwd, publicKey.data); //加密
+        await companyAdd(ruleForm);
+        ElMessage.success('机构修改成功！');
+        router.push('/company');
     }
-};
+}
 </script>
 
 <style scoped lang='less'>
