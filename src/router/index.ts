@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/company/Company.vue')
       },
-         {
+      {
         path: '/elderly-edit',
         name: 'ElderlyEdit',
         meta: {
@@ -55,7 +55,33 @@ const routes: Array<RouteRecordRaw> = [
           title: "机构列表",
         },
         component: () => import('../views/account/AccountList.vue')
-      }
+      },
+      {
+        path: '/role',
+        name: 'role',
+        meta: {
+          title: "角色列表",
+        },
+        component: () => import('../views/system/Role.vue'),
+        children: [
+          {
+            path: '/role/add',
+            name: 'RoleAdd',
+            meta: {
+              title: "新增角色",
+            },
+            component: () => import('../components/role/roleAdd.vue')
+          },
+        ]
+      },
+      {
+        path: '/supllier-edit',
+        name: 'supllierEdit',
+        meta: {
+          title: "添加供应商",
+        },
+        component: () => import('../views/diet/SupplierEdit.vue')
+      },
     ]
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -73,7 +99,7 @@ const router = createRouter({
 // 新增：标记动态路由是否已添加，避免重复添加
 let hasAddedDynamicRoutes = false;
 
-router.beforeEach(async (to, from) => { 
+router.beforeEach(async (to, from) => {
   console.log("to前往的页面", to);
   console.log("from从哪个页面过来", from);
 
@@ -101,6 +127,8 @@ router.beforeEach(async (to, from) => {
         item.children.forEach((child) => {
           if (child.pathName) {
             const component = modules[`../views/${item.url}/${child.pathName}.vue`]
+            console.log(`../views/${item.url}/${child.pathName}.vue`);
+
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,
@@ -129,7 +157,7 @@ router.beforeEach(async (to, from) => {
       hasAddedDynamicRoutes = true;
       console.log('路由列表', router.getRoutes());
 
-      let path =to.redirectedFrom?.fullPath || to.fullPath;
+      let path = to.redirectedFrom?.fullPath || to.fullPath;
 
       return path;
 
@@ -145,7 +173,7 @@ router.beforeEach(async (to, from) => {
   return true;
 })
 
-router.afterEach((to: any) => { 
+router.afterEach((to: any) => {
   document.title = to.meta.title || '乐康智慧养老';
 })
 
