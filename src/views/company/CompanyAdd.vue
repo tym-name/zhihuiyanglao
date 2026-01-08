@@ -18,9 +18,9 @@ import { ElMessage } from 'element-plus';
 // import router from '../../router';
 import Product from '../../components/company/Product.vue'
 import { getPublicKey } from '../../api/index';
-import type { ApiResponse } from '../../utile/request';
 import { sm2 } from 'sm-crypto';
 import router from '../../router';
+import type { ApiResponse } from '../../utils/request';
 
 const ruleForm = reactive<CompanyInfo>({
     name: "",

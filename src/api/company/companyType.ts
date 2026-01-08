@@ -48,8 +48,6 @@ export interface ResetPasswordParams {
   confirmPassword?: string;
 }
 
-
-
 /** 机构/公司信息类型 */
 export interface CompanyInfo {
   id?: number | null;// 机构ID

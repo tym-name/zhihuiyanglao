@@ -7,17 +7,9 @@
   <div class="text">
     <div class="titles"><i class="iconfont icon-shouye"></i>首页</div>
     <!-- 给 el-menu 绑定 select 事件，用于监听菜单点击 -->
-    <el-menu 
-      default-active="2" 
-      class="el-menu-vertical-demo"
-      @select="handleMenuSelect"
-    >
+    <el-menu default-active="2" class="el-menu-vertical-demo" @select="handleMenuSelect">
       <!-- 1. 直接展示的子菜单（父级被扁平化，无 el-sub-menu 包裹） -->
-      <el-menu-item 
-        :index="`/${flatMenu.parentUrl}/${flatMenu.url}`" 
-        v-for="flatMenu in flatMenus" 
-        :key="flatMenu.id"
-      >
+      <el-menu-item :index="`/${flatMenu.parentUrl}/${flatMenu.url}`" v-for="flatMenu in flatMenus" :key="flatMenu.id">
         <el-icon>
           <span class="iconfont" :class="flatMenu.icon || flatMenu.parentIcon"></span>
         </el-icon>
@@ -32,11 +24,7 @@
           </el-icon>
           <span>{{ item.name }}</span>
         </template>
-        <el-menu-item 
-          :index="`/${item.url}/${subItem.url}`" 
-          v-for="subItem in item.children" 
-          :key="subItem.id"
-        >
+        <el-menu-item :index="`/${item.url}/${subItem.url}`" v-for="subItem in item.children" :key="subItem.id">
           <span class="iconfont" :class="subItem.icon"></span>
           {{ subItem.name }}
         </el-menu-item>
@@ -115,54 +103,60 @@ const handleMenuSelect = (index: string) => {
 
 <style scoped lang='less'>
 .logo {
-    width: 100%;
-    min-height: 50px;
-    background-color: #2d3748;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  min-height: 50px;
+  background-color: #2d3748;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    img {
-        width: 20px;
-        height: 20px;
-    }
+  img {
+    width: 20px;
+    height: 20px;
+  }
 
-    .title {
-        margin-left: 5px;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-    }
+  .title {
+    margin-left: 5px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+  }
 }
 
 .text {
-    width: 100%;
-    color: #fff;
+  width: 100%;
+  color: #fff;
 
-    div {
-        min-height: 56px;
-        text-align: left;
-        margin-left: 50px;
-        line-height: 56px;
-    }
+  div {
+    min-height: 56px;
+    text-align: left;
+    margin-left: 50px;
+    line-height: 56px;
+  }
 }
+
 /* 保持原有 el-menu 样式不变 */
 .el-menu-vertical-demo {
   border-right: none;
 }
-/deep/.el-menu{
-    background-color: #304156;
-    span{
+
+/deep/.el-menu {
+  background-color: #304156;
+
+  span {
     color: #fff;
+  }
 }
+
+.titles {
+  font-size: 14px;
 }
-.titles{
-    font-size: 14px;
+
+.el-menu-item {
+  color: #fff;
 }
-.el-menu-item{
-    color: #fff;
-}
-/deep/.el-sub-menu__title{
-    color: #fff;
+
+/deep/.el-sub-menu__title {
+  color: #fff;
 }
 </style>

@@ -57,7 +57,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/company-add",
         name: "CompanyAdd",
         meta: {
-          title: "新增机构",
+          title: "机构列表",
         },
         component: () => import("../views/company/CompanyAdd.vue"),
       },
@@ -159,7 +159,6 @@ router.beforeEach(async (to, from) => {
       console.log("路由列表", router.getRoutes());
 
       let path = to.redirectedFrom?.fullPath || to.fullPath;
-
       return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);
@@ -168,7 +167,6 @@ router.beforeEach(async (to, from) => {
       return "/login";
     }
   }
-
   // 动态路由已添加，直接放行
   return true;
 });

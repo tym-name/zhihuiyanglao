@@ -38,8 +38,8 @@ import { ElMessage, type FormRules } from 'element-plus';
 import { resetPassword } from '../../api/company/company';
 import type { ResetPasswordParams } from '../../api/company/companyType';
 import { sm2 } from 'sm-crypto';
-import type { ApiResponse } from '../../utile/request';
 import { getPublicKey } from '../../api/index';
+import type { ApiResponse } from '../../utils/request';
 
 // Props：新增name属性接收机构名称
 const props = defineProps<{
