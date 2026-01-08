@@ -51,6 +51,7 @@ import type { accountAddData, AccountResult, roleData } from '../../api/account/
 const dialogTitle = computed(() => {
     return form.id && form.id !== 1 ? '修改账号' : '添加账号';
 });
+
 // 表单
 const ruleFormRef = ref<FormInstance>()
 const showDialog = ref(false)

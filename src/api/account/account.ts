@@ -5,7 +5,6 @@ import type { AccountType, AccountData, role, accountAddData, uploadAddData, upl
  * 账号列表
  */
 export const accountList = (params: AccountType) => http.get<AccountData>("/api/account/list", params);
-
 /**
  * 删除账号
  */

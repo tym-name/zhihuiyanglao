@@ -51,8 +51,13 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/accountList',
         name: 'AccountList',
+        component: () => import('../views/account/AccountList.vue')
+      },
+      {
+        path: '/company-add',
+        name: 'CompanyAdd',
         meta: {
-          title: "账号列表",
+          title: "机构列表",
         },
         component: () => import('../views/account/AccountList.vue')
       }
@@ -95,7 +100,7 @@ router.beforeEach(async (to, from) => {
     try {
       //  获取权限列表
       const res = await authStore.getMenu()
-
+      console.log('权限列表', res);
       // 动态添加路由
       res.forEach((item) => {
         item.children.forEach((child) => {
@@ -124,15 +129,11 @@ router.beforeEach(async (to, from) => {
           }
         })
       })
-
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log('路由列表', router.getRoutes());
-
       let path = to.redirectedFrom?.fullPath || to.fullPath;
-
       return path;
-
     } catch (error) {
       console.error('获取权限列表或添加动态路由失败：', error);
       // 异常时清除token并跳转登录
@@ -140,7 +141,6 @@ router.beforeEach(async (to, from) => {
       return '/login';
     }
   }
-
   // 动态路由已添加，直接放行
   return true;
 })

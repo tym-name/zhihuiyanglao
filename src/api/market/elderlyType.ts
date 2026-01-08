@@ -62,7 +62,7 @@ interface HealthInfo {
 /**
  * 自理能力评估子类型
  */
-interface SelfCare {
+export interface SelfCare {
   id: number;
   elderlyId: number;
   name: string; // 评估项名称（进食/修饰/穿衣等）
@@ -72,7 +72,7 @@ interface SelfCare {
 /**
  * 体检报告子类型
  */
-interface Checkup {
+export interface Checkup {
   id: number;
   elderlyId: number;
   name: string; // 体检项目名称（肝功能+HbsAg/血脂全套等）
@@ -82,7 +82,7 @@ interface Checkup {
 /**
  * 家属信息子类型
  */
-interface FamilyMember {
+export interface FamilyMember {
   id: number;
   elderlyId: number;
   name: string; // 家属姓名
@@ -159,7 +159,7 @@ export interface ElderlyCheckup {
 /**
  * 家属信息子类型（仅保留有效字段）
  */
-interface ElderlyFamily {
+export interface ElderlyFamily {
   id: number; // 家属ID
   name: string; // 家属姓名
   mobile: string; // 家属手机号
