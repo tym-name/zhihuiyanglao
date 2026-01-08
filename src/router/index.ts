@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/company/Company.vue')
       },
-         {
+      {
         path: '/elderly-edit',
         name: 'ElderlyEdit',
         meta: {
@@ -52,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/accountList',
         name: 'AccountList',
         meta: {
-          title: "机构列表",
+          title: "账号列表",
         },
         component: () => import('../views/account/AccountList.vue')
       }
@@ -73,7 +73,7 @@ const router = createRouter({
 // 新增：标记动态路由是否已添加，避免重复添加
 let hasAddedDynamicRoutes = false;
 
-router.beforeEach(async (to, from) => { 
+router.beforeEach(async (to, from) => {
   console.log("to前往的页面", to);
   console.log("from从哪个页面过来", from);
 
@@ -129,7 +129,7 @@ router.beforeEach(async (to, from) => {
       hasAddedDynamicRoutes = true;
       console.log('路由列表', router.getRoutes());
 
-      let path =to.redirectedFrom?.fullPath || to.fullPath;
+      let path = to.redirectedFrom?.fullPath || to.fullPath;
 
       return path;
 
@@ -145,7 +145,7 @@ router.beforeEach(async (to, from) => {
   return true;
 })
 
-router.afterEach((to: any) => { 
+router.afterEach((to: any) => {
   document.title = to.meta.title || '乐康智慧养老';
 })
 

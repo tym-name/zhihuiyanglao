@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { sm2 } from 'sm-crypto'
 import { ref } from 'vue'
 import type { LoginPayload, MenuItem } from '../api/index/indexType'
-import type { ApiResponse } from '../utile/request'
-import { flatToTree } from '../utile/treeUtil'
+import type { ApiResponse } from '../utils/request'
+import { flatToTree } from '../utils/treeUtil'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string>('')
