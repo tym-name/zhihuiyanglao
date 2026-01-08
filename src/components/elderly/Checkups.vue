@@ -6,7 +6,7 @@
         </div>
         <el-table border :data="list" style="width: 100%">
             <el-table-column prop="name" label="体检项目" />
-            <el-table-column label="资料" />
+            <el-table-column prop="picture" label="资料" />
             <el-table-column prop="address" label="操作">
                 <template #default="">
                     <button class="button">上传图片</button>
@@ -18,13 +18,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { ElderlyCheckup, IllnessItem } from '../../api/market/elderlyType';
+import type { Checkup, IllnessItem } from '../../api/market/elderlyType';
 import { CheckupitemsList } from '../../api/market/elderly';
 
 // 1. 定义双向绑定值，默认空字符串
-const values = defineModel<ElderlyCheckup[]>({ default: [] })
-
-
+const values = defineModel<Checkup[]>({ default: [] })
 
 const list = ref<IllnessItem[]>([])
 const getSelfCares = async () => {

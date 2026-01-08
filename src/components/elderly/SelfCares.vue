@@ -22,11 +22,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { ElderlySelfCare, IllnessItem } from '../../api/market/elderlyType';
+import type { IllnessItem, SelfCare } from '../../api/market/elderlyType';
 import { SelfcareList } from '../../api/market/elderly';
 
 // 1. 定义双向绑定值，默认空字符串
-const values = defineModel<ElderlySelfCare[]>({ default: [] })
+const values = defineModel<SelfCare[]>({ default: [] })
 
 
 
@@ -41,7 +41,7 @@ getSelfCares();
 
 const changeHandle = () => {
     console.log("list", list);
-    values.value = list.value.filter(item => item.val).map(item => ({ name: item.name, val: item.val })) as ElderlySelfCare[];
+    values.value = list.value.filter(item => item.val).map(item => ({ name: item.name, val: item.val })) as SelfCare[];
 }
 </script>
 

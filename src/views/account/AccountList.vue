@@ -19,9 +19,9 @@
 
 <script setup lang='ts'>
 import { ref } from "vue";
-import { accountList, deleteAccountList, accountDeleteAll } from "../../api/account";
+import { accountList, deleteAccountList, accountDeleteAll } from "../../api/account/account";
 import Table, { type TableColumn } from "../../components/table.vue";
-import type { AccountResult } from "../../api/accountType";
+import type { AccountResult } from "../../api/account/accountType";
 import { ElMessage, ElMessageBox } from "element-plus";
 import AccountDialog from "../../components/account/AccountDialog.vue"
 

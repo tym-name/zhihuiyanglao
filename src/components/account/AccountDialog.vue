@@ -45,8 +45,8 @@ import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import type { FormRules, FormInstance } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { roleList } from '../../api/account';
-import type { roleData } from '../../api/accountType'
+import { roleList } from '../../api/account/account';
+import type { roleData } from '../../api/account/accountType'
 
 // 表单
 const ruleFormRef = ref<FormInstance>()
