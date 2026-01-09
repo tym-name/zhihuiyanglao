@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { AccountType, AccountData, role, accountAddData, uploadAddData, uploadAddResult, resetPwdType } from './accountType';
+import type { AccountType, AccountData, role, accountAddData, AccountResult } from './accountType';
 
 /**
  * 账号列表
@@ -24,14 +24,14 @@ export const roleList = () => http.get<role>("/api/role/list");
 /**
  * 添加账号
  */
-export const accountAdd = ((params: accountAddData) => http.post('/api/account/add', params));
+export const accountAdd = (data: accountAddData) => http.post('/api/account/add', data);
 
 /**
- * 添加账号头像
+ * 获取单条账号信息
  */
-export const uploadAdd = (() => http.post<uploadAddResult>('/api/upload/add',));
+export const accountGet = (id:number) => http.get<AccountResult>(`/api/account/get/${id}`);
 
 /**
- * 重置密码
+ * 修改账号
  */
-export const accountResetPwd = (params: resetPwdType) => http.put("/api/account/resetPwd", params);
+export const accountUpdate = (data:accountAddData) => http.put('/api/account/update',data);

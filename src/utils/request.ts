@@ -139,7 +139,7 @@ class Http {
         return this.request({ method: 'GET', url, params })
 
     }
-    public post<T, P = Object>(url: string, data?: P): Promise<ApiResponse<T>> {
+    public post<T, P = Object>(url: string,  data?: P,_formData?: FormData,): Promise<ApiResponse<T>> {
         return this.request({ method: 'POST', url, data })
     }
     public delete<T, P = Object>(url: string, params?: P): Promise<ApiResponse<T>> {

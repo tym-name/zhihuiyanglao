@@ -47,22 +47,13 @@ export interface roleData {
 // 添加账号
 export interface accountAddData {
     id: number;
-    companyId: number;
-    level: number;
-    staffId: number;
-    name: string;
-    pwd: string;
-    newPwd: null;
-    type: number;
-    enable: number;
-    photo: string;
-    mobile: string;
-    username: string;
-    roleIds: Array<number>;
-    outLogs: null;
-    verifyCode: null;
-    verifyCodeId: null;
-    openId: null;
+  username: string;
+  pwd: string;
+  name: string;
+  enable: 0 | 1;
+  photo: string;
+  mobile: string;
+  roleIds: number[];
 };
 // 添加账号头像
 export interface uploadAddData {
