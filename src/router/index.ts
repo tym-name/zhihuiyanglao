@@ -51,7 +51,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/accountList",
         name: "AccountList",
-        component: () => import("../views/account/AccountList.vue"),
+        meta: {
+          title: "账号列表",
+        },
+        component: () => import("../views/system/Account.vue"),
       },
       {
         path: "/company-add",
@@ -61,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/company/CompanyAdd.vue"),
       },
-           {
+      {
         path: "/role",
         name: "Role",
         meta: {
