@@ -47,6 +47,10 @@ const columns: TableColumn[] = [
         width: "100px",
     },
     {
+        label: "头像",
+        image: "photo",
+    },
+    {
         label: "老人姓名",
         prop: "name",
     },

@@ -3,12 +3,12 @@
     <Table ref="tableRef" @selection-change="handleSelectionChange" :columns="columns" :init-params="params"
       :fetch-data="roleList">
       <template #buttons>
-        <el-button type="success" @click="router.push('/role-add')">添加</el-button>
-        <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled">批量删除</el-button>
+        <el-button type="success" @click="router.push('/role-add')"><i class="iconfont icon-jia"></i>添加角色</el-button>
+        <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
       </template>
 
       <template #operate="{ row }">
-        <el-button link type="primary"> <span style="font-size: 14px; margin-right: 5px;"
+        <el-button link type="primary" @click="edit(row)"> <span style="font-size: 14px; margin-right: 5px;"
             class="iconfont icon-bianji"></span>修改</el-button>
         <el-button link type="danger" @click="roleDel(row.id)"><span style="font-size: 14px; margin-right: 5px;"
             class="iconfont icon-shanchu"></span>删除</el-button>
@@ -56,6 +56,10 @@ const roleDel = (id: number) => {
     }
     )
 }
+
+const edit = (row: ItemList) => {
+  router.push(`/role-add?id=${row.id}`)
+};
 
 
 //要删除选中的数据
@@ -136,5 +140,8 @@ const columns: TableColumn[] = [
 <style scoped lang="less">
 .demo-form-inline {
   height: 35px;
+}
+.iconfont{
+  margin: 5px;
 }
 </style>

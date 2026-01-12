@@ -2,19 +2,28 @@
     <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="accountList" @selection-change="handleSelectionChange">
             <template #buttons>
-                <el-button type="success" @click="showDialogAdd">添加账号</el-button>
+                <el-button type="success" @click="showDialogAdd"><i class="iconfont icon-jia"></i>添加账号</el-button>
                 <el-button type="danger" :disabled="selectedIds.length === 0"
-                    @click="handleBatchDelete">批量删除</el-button>
+                    @click="handleBatchDelete"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
-                <el-button link type="primary" @click="resetPass(row)">重置密码</el-button>
-                <el-button link type="primary" @click="showDialogAdd(row)">修改</el-button>
-                <el-button link type="danger" @click="deleteAccount(row.id)">删除</el-button>
+                <el-button link type="primary" @click="handleResetPassword(row)"><i class="iconfont icon-shuaxin"></i>重置密码</el-button>
+                <el-button link type="primary" @click="showDialogAdd(row)"><i class="iconfont icon-bianji"></i>修改</el-button>
+                <el-button link type="danger" @click="deleteAccount(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
             </template>
         </Table>
-        <AccountDialog ref="accountDialogRef"></AccountDialog>
-        <Resetpass ref="resetpassDialogRef"></Resetpass>
+       <AccountDialog 
+            ref="accountDialogRef" 
+            @refreshAccountList="refreshAccountTable"
+        ></AccountDialog>
+           <ResetPasswordDialog  
+      v-model:visible="resetPasswordVisible"
+      :account-id="currentAccountId"
+      :name="currentCompanyName"
+      @reset-success="handleResetSuccess"
+      @reset-fail="handleResetFail" 
+    />
     </div>
 </template>
 
@@ -22,10 +31,10 @@
 import { ref } from "vue";
 import { accountList, deleteAccountList, accountDeleteAll } from "../../api/account/account";
 import Table, { type TableColumn } from "../../components/table.vue";
-import type { AccountResult } from "../../api/account/accountType";
+import type { accountAddData, AccountResult } from "../../api/account/accountType";
 import { ElMessage, ElMessageBox } from "element-plus";
 import AccountDialog from "../../components/account/AccountDialog.vue"
-import Resetpass from "../../components/account/Resetpass.vue"
+import ResetPasswordDialog from '../../components/form/ResetPasswordDialog.vue'
 
 // 表格
 const columns: TableColumn[] = [
@@ -53,7 +62,7 @@ const columns: TableColumn[] = [
     {
         label: "操作",
         slot: "operate",
-        width: 180,
+        width: 260  ,
         fixed: "right",
     }
 ];
@@ -67,6 +76,33 @@ const handleSelectionChange = (rows: AccountResult[]) => {
     selectedRows.value = rows;
     selectedIds.value = rows.map(row => row.id);
 };
+
+// 重置密码弹窗相关
+const resetPasswordVisible = ref(false);
+const currentAccountId = ref(0);
+const currentCompanyName = ref(""); // 新增：存储当前行的机构名称
+// 重置密码：接收完整行数据，提取id和name
+const handleResetPassword = (row: accountAddData) => {
+  currentAccountId.value = row.id;        // 账号ID
+  currentCompanyName.value = row.name;    // 核心：赋值机构名称
+  resetPasswordVisible.value = true;      // 打开弹窗
+  console.log("传递给弹窗的机构名称：", currentCompanyName.value);
+};
+
+// 处理密码重置成功
+const handleResetSuccess = () => {
+  resetPasswordVisible.value = false;
+  // 可选：刷新表格数据
+  tableRef.value?.refresh();
+};
+
+// 处理密码重置失败
+const handleResetFail = (error: any) => {
+  ElMessage.error(`密码重置失败：${error.msg || '未知错误'}`);
+  console.error('重置密码失败:', error);
+};
+
+
 // 单个删除
 const tableRef = ref<any>(null)
 const deleteAccount = (id: number) => {
@@ -137,14 +173,21 @@ const accountDialogRef = ref<InstanceType<typeof AccountDialog>>()
 const showDialogAdd = (row: AccountResult) => {
     accountDialogRef.value?.openDialog(row);
 };
-// 显示重置弹窗
-const resetpassDialogRef = ref<InstanceType<typeof Resetpass>>()
-const resetPass = (row: AccountResult) => {
-    // 调用子组件的openDialog，并传入当前用户的id和name
-    resetpassDialogRef.value?.openDialog({
-        id: row.id,
-        name: row.name
-    });
+
+const refreshAccountTable = async () => {
+    try {
+        if (tableRef.value) {
+            tableRef.value.refresh();
+        }
+    } catch (error) {
+        console.error('刷新账号列表失败：', error);
+        ElMessage.error('刷新列表失败，请手动刷新');
+    }
 };
 
 </script>
+<style scoped lang="less">
+.iconfont{
+  margin: 5px;
+}
+</style>

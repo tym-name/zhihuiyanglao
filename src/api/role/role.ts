@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { MenuPermission, MenuPermissionList, PageData, roleData } from './roleType';
+import type { ItemList, MenuPermission, MenuPermissionList, PageData, roleData } from './roleType';
 
 /**
  * 角色列表
@@ -26,6 +26,13 @@ export const roleAdd = (data: MenuPermission) => http.post<PageData>('/api/role/
  * 权限列表
  */
 export const menuList = () => http.get<MenuPermissionList>('/api/menu/list')
+
+/**
+ * 获取单个角色信息
+ */
+export const roleGet = (id:number) => http.get<ItemList>(`/api/role/get/${id}`)
+
+
 
 
 
