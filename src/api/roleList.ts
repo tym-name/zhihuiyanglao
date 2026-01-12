@@ -20,3 +20,29 @@ export interface PageData {
   pageSize: number;
   list: ItemList[];
 }
+
+  export interface RolePermission {
+  /** 角色/用户ID */
+  id: number;
+  /** 角色/用户名称 */
+  name: string;
+  /** 关联的菜单ID列表（注意：原始数据中19.20是笔误，应为19,20） */
+  menuIds: number[];
+}
+
+export interface MenuItem {
+  id: number;
+  name: string;
+  icon: string | null;
+  url: string | null;
+  pathName: string | null;
+  pid: number;
+  sort: number;
+  type: number;
+  isButton: number;
+  children: MenuItem[];
+}
+
+export interface RoleListData {
+list: MenuItem[];
+}

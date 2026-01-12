@@ -49,6 +49,22 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/market/ElderlyEdit.vue')
       },
       {
+        path: '/Role-edit',
+        name: 'RoleEdit',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/RoleEdit.vue')
+      },
+      {
+        path: '/Role',
+        name: 'Role',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/Role.vue')
+      },
+      {
         path: '/accountList',
         name: 'AccountList',
         component: () => import('../views/account/AccountList.vue')

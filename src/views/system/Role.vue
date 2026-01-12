@@ -3,7 +3,7 @@
     <Table ref="tableRef" @handleSelectionChange="handleSelectionChange" :columns="columns" :init-params="params"
       :fetch-data="roleList">
       <template #buttons>
-        <el-button type="success" @click="router.push('/roleAdd')">添加</el-button>
+        <el-button type="success" @click="addRole">添加</el-button>
         <el-button type="danger" @click="delAll">批量删除</el-button>
       </template>
 
@@ -54,6 +54,13 @@ const roleDel = (id: number) => {
       })
     }
     )
+}
+
+// 添加角色
+const addRole = () => {
+  router.push({
+    name: "RoleEdit"
+  })
 }
 
 //要删除选中的数据

@@ -1,5 +1,5 @@
 import http from '../utile/request';
-import type { PageData, roleData } from './roleList';
+import type { PageData, roleData, RoleListData } from './roleList';
 
 /**
  * 角色列表
@@ -22,4 +22,12 @@ export const roleDeleteAll = (ids: number[]) => http.post('/api/role/deleteAll',
 
 export const roleAdd = (data: any) => http.post<PageData>('/api/role/add', data)
 
+/**
+ * 获取所有权限列表
+ */
+export const menuList = () => http.get<RoleListData>("/api/menu/list");
 
+/**
+ * 根据id获取供应商信息
+ */
+export const supplierGet = (id: number) => http.get(`/api/supplier/get/${id}`, );

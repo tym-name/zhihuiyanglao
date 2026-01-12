@@ -15,15 +15,18 @@
             </template>
         </Table>
         <SupplierEdit :handleSuccess="handleSuccess" v-if="dialogForm" v-model="dialogForm"></SupplierEdit>
-        <SupplierUpdate :upd="upd"  v-if="dialogForm2" v-model="dialogForm2"></SupplierUpdate>
+        <SupplierUpdate  :refreshList="refreshList" :supplier-id="selectedSupplierId" :upd="currentSupplier" v-if="dialogForm2"
+            v-model="dialogForm2">
+        </SupplierUpdate>
+
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { provide, ref } from "vue";
 import Table, { type TableColumn } from "../../components/table.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { supplierDelete, supplierDeleteAll, supplierGet, supplierList } from "../../api/supplier/Supplier";
+import { supplierDelete, supplierDeleteAll ,supplierList } from "../../api/supplier/Supplier";
 import type { supplier, SupplierItem } from "../../api/supplier/SupplierType";
 import SupplierEdit from "./SupplierEdit.vue";
 import SupplierUpdate from "./SupplierUpdate.vue";
@@ -34,6 +37,13 @@ const params = ref<supplier>({
 const dialogForm = ref(false)
 
 const dialogForm2 = ref(false)
+
+const currentSupplier = ref<SupplierItem | null>(null)
+
+// 选中的供应商ID（传给子组件）
+const selectedSupplierId = ref<number>(0);
+provide("selectedSupplierId", selectedSupplierId)
+
 
 const tableRef = ref<any>(null)
 const isBatchDelDisabled = ref(true)
@@ -66,18 +76,17 @@ const deleteSupplier = (id: number) => {
 }
 
 // 编辑
-const supplierUpd = async (row: any) => {
+const supplierUpd = (row: any) => {
     dialogForm2.value = true
-    // let res = await supplierGet(id)
+    // let res = await supplierGet(row.id)
     // console.log('根据id获取供应商', res);
-    console.log(row);
+    selectedSupplierId.value = row.id;
     // 实现回显
-    dialogForm2.value = row
-}
-const upd = (row: any) => {
-    supplierUpd(row)
 }
 
+const refreshList = () => {
+    tableRef.value?.getData()
+}
 const handleSuccess = () => {
     dialogForm.value = false
     tableRef.value?.refresh()

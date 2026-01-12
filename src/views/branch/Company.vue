@@ -3,7 +3,7 @@
         <Table ref="tableRef" @handleSelectionChange="handleSelectionChange" :columns="columns" :init-params="params"
             :fetch-data="companyList">
             <template #buttons>
-                <el-button type="success"><i class="iconfont icon-jia"></i>添加</el-button>
+                <el-button type="success" @click="dialogFormVisible"><i class="iconfont icon-jia"></i>添加</el-button>
                 <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i
                         class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
@@ -27,27 +27,45 @@
                 <el-button link type="danger" @click="deleteCompany(row.id)">删除</el-button>
             </template>
         </Table>
+        <SupplierEdit :handleSuccess="handleSuccess" v-if="dialogForm" v-model="dialogForm"></SupplierEdit>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { companyDeleteAll, companyList, deleteAccount } from "../../api/company/company";
 import Table, { type TableColumn } from "../../components/table.vue";
 import type { HomeType, InstitutionItem } from "../../api/company/companyType";
 import { ElMessage, ElMessageBox } from "element-plus";
+import SupplierEdit from "./CompanyEdit.vue";
+
+onMounted(() => {
+    console.log('机构列表', companyList);
+})
+
 const params = ref<HomeType>({
     name: "",
     adminName: "",
-    page:1,
-    pageSize:15
+    page: 1,
+    pageSize: 15
 })
 
 const tableRef = ref<any>(null)
 const isBatchDelDisabled = ref(true)
 
+const dialogForm = ref(false)
+const handleSuccess = () => {
+    dialogForm.value = false
+    tableRef.value?.refresh()
+}
+
 const search = () => {
     tableRef.value?.refresh();
+}
+
+const dialogFormVisible = () => {
+    console.log('点击添加了');
+    dialogForm.value = true
 }
 
 const deleteCompany = (id: number) => {
@@ -74,32 +92,6 @@ const deleteCompany = (id: number) => {
         })
 }
 
-// const  selectionData= ref<InstitutionItem[]>([])
-// const delAll=()=>{
-//   ElMessageBox.confirm(
-//     '是否删除该条记录？',
-//     {
-//       confirmButtonText: '确定',
-//       cancelButtonText: '取消',
-//     }
-//   )
-//     .then(async () => {
-//       ElMessage({
-//         type: 'success',
-//         message: '删除成功',
-//       })
-//   let ids:number[] = selectionData.value.map((item) => item.id);
-//   await companyDeleteAll(ids)   
-//   tableRef.value?.getData();
-//     })
-//     .catch(() => {
-//       ElMessage({
-//         type: 'info',
-//         message: '已取消删除',
-//       })
-//     })
-// }
-
 //要删除选中的数据
 const selectionData = ref<InstitutionItem[]>([])
 const handleSelectionChange = (rows: InstitutionItem[]) => {
@@ -108,11 +100,25 @@ const handleSelectionChange = (rows: InstitutionItem[]) => {
     isBatchDelDisabled.value = rows.length === 0;
 }
 
-const delAll = async () => {
-    let ids: number[] = selectionData.value.map((item) => item.id);
-    await companyDeleteAll(ids)
-    tableRef.value?.getData();
+// 批量删除
+const delAll = () => {
+    ElMessageBox.confirm(
+        '是否删除选中的记录？',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+        }
+    )
+        .then(async () => {
+            ElMessage({
+                type: 'success',
+                message: '删除成功',
+            })
+            await companyDeleteAll(selectionData.value.map(item => item.id))
+        })
 }
+
+
 
 const columns: TableColumn[] = [
     {
