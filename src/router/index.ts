@@ -80,6 +80,15 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/system/RoleAdd.vue"),
       },
+      {
+        path: "/purchase-detail/:id",
+        name: "PurchaseDetail",
+        meta: {
+          title: "采购申请详情",
+        },
+        props: true,
+        component: () => import("../views/diet/PurchaseDetail.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面

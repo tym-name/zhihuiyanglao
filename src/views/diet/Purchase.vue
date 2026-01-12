@@ -23,7 +23,7 @@
     </el-card>
     <Table ref="tableRef" :columns="columns" :fetch-data="purchaseList">
         <template #operate="{ row }">
-            <el-button link type="primary" @click="">查看详情</el-button>
+            <el-button link type="primary" @click="goToDetail(row.id)">查看详情</el-button>
         </template>
     </Table>
 </template>
@@ -35,6 +35,7 @@ import { purchaseList } from '../../api/purchase/purchase';
 import type { purchaseParams } from '../../api/purchase/purchaseType';
 import { companyList } from '../../api/company/company';
 import type { HomeType } from '../../api/company/companyType';
+import router from '../../router';
 
 const form = ref<purchaseParams>({
     pageSize: 10,
@@ -126,18 +127,14 @@ const reset = async () => {
 // 查询
 const tableRef = ref()
 const search = async () => {
-    if (dateRange.value && dateRange.value.length === 2) {
-        form.value.beginDate = dateRange.value[0]
-        form.value.endDate = dateRange.value[1]
-    } else {
-        form.value.beginDate = ''
-        form.value.endDate = ''
-    }
-    form.value.page = 1
-    // 触发表格重新加载
-    if (tableRef.value) {
-        tableRef.value.refresh()
-    }
+
+}
+// 
+const goToDetail = (id: string | number) => {
+    router.push({
+        name: 'PurchaseDetail',
+        params: { id }
+    })
 }
 
 </script>

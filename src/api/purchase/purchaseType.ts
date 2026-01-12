@@ -17,7 +17,7 @@ export interface purchaseParam {
 export interface purchaseData {
     counts: number;
     pageSize: number;
-    list: Array<purchaseParams>;
+    list: Array<purchaseParam>;
 };
 
 export interface purchaseParams {
@@ -27,4 +27,23 @@ export interface purchaseParams {
     state: string
     beginDate: string
     endDate: string
+    id?: number;
 }
+// 根据采购id获取采购物品列表
+export interface PurchaseFoodItem {
+    id: number;
+    purchaseId: number;
+    foodName: string;
+    unit: string;
+    supplierId: number;
+    wholePrice: number;
+    sellPrice: number;
+    purchasePrice: number;
+    purchaseCounts: number;
+    receiveCounts: number;
+    supplierName: null;
+};
+
+interface purchaseFoodsData {
+    list: Array<PurchaseFoodItem>;
+};
