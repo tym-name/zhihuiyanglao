@@ -44,15 +44,13 @@ export interface InstitutionListResponse {
 
 export interface ResetPasswordParams {
   id: number; // 账号ID
-  newPassword: string; // 新密码
+  pwd: string; // 新密码
   confirmPassword?: string;
 }
 
-
-
 /** 机构/公司信息类型 */
 export interface CompanyInfo {
-  id: number | null;// 机构ID
+  id?: number | null;// 机构ID
   cityInfo: any;
   /** 机构名称 */
   name: string;

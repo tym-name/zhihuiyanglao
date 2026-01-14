@@ -1,4 +1,4 @@
-import http from '../utile/request';
+import http from '../utils/request';
 import type { PageData, roleData, RoleListData } from './roleList';
 
 /**

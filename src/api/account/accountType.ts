@@ -44,3 +44,31 @@ export interface roleData {
     accountCounts: number;
     menuIds: null;
 };
+// 添加账号
+export interface accountAddData {
+    id: number;
+  username: string;
+  pwd: string;
+  name: string;
+  enable: 0 | 1;
+  photo: string;
+  mobile: string;
+  roleIds: number[];
+};
+// 添加账号头像
+export interface uploadAddData {
+    url: string;
+};
+
+export interface uploadAddResult {
+    code: number;
+    msg: string;
+    data: uploadAddData;
+};
+// 重置密码
+export interface resetPwdType {
+    id: number;
+    pwd: string;
+    newPwd: string;
+    name: string;
+};

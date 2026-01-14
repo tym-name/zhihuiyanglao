@@ -10,9 +10,9 @@
       <el-form-item label="用户">
         <span class="user-name">{{ props.name }}</span>
       </el-form-item>
-      <el-form-item label="新密码" prop="newPassword">
+      <el-form-item label="新密码" prop="pwd">
         <el-input
-          v-model="resetPasswordForm.newPassword"
+          v-model="resetPasswordForm.pwd"
           type="password"
           placeholder="请输入新密码"
         />
@@ -37,6 +37,9 @@ import { ref, reactive, watch } from 'vue';
 import { ElMessage, type FormRules } from 'element-plus';
 import { resetPassword } from '../../api/company/company';
 import type { ResetPasswordParams } from '../../api/company/companyType';
+import { sm2 } from 'sm-crypto';
+import { getPublicKey } from '../../api/index';
+import type { ApiResponse } from '../../utils/request';
 
 // Props：新增name属性接收机构名称
 const props = defineProps<{
@@ -55,7 +58,7 @@ const emit = defineEmits<{
 // 响应式数据
 const dialogVisible = ref(props.visible);
 const resetPasswordForm = reactive({
-  newPassword: '',
+  pwd: '',
   confirmPassword: ''
 });
 
@@ -83,24 +86,26 @@ const handleCancel = () => {
 
 // 确认重置密码
 const handleConfirm = async () => {
-  if (!resetPasswordForm.newPassword) {
+  if (!resetPasswordForm.pwd) {
     ElMessage.warning('请输入新密码');
     return;
   }
   
-  if (resetPasswordForm.newPassword !== resetPasswordForm.confirmPassword) {
+  if (resetPasswordForm.pwd !== resetPasswordForm.confirmPassword) {
     ElMessage.warning('两次输入的密码不一致');
     return;
   }
   
   try {
     // 可选：如果接口需要，可把name传递到重置密码接口中
+    let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
+    resetPasswordForm.pwd = sm2.doEncrypt(resetPasswordForm.pwd, publicKey.data); //加密
     await resetPassword({
       id: props.accountId,
-      newPassword: resetPasswordForm.newPassword,
+      pwd: resetPasswordForm.pwd,
       // name: props.name // 如有需要，传递机构名称到后端
     });
-    
+    ElMessage.success('重置成功');
     dialogVisible.value = false;
     emit('reset-success');
     resetForm();
@@ -113,12 +118,12 @@ const handleConfirm = async () => {
 
 // 重置表单
 const resetForm = () => {
-  resetPasswordForm.newPassword = '';
+  resetPasswordForm.pwd = '';
   resetPasswordForm.confirmPassword = '';
 };
 
 const rules = reactive<FormRules<ResetPasswordParams>>({
-  newPassword: [
+  pwd: [
     { required: true, message: '请输入密码', trigger: 'blur' },
   ],
     confirmPassword: [

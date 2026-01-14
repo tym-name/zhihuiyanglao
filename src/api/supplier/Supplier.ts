@@ -1,5 +1,5 @@
-import http from '../../utile/request';
-import type { RuleForm, supplier, SupplierInfo, SupplierPageResult } from './SupplierType';
+import http from '../../utils/request';
+import type { supplier, SupplierInfo, SupplierPageResult } from './SupplierType';
 
 /**
  * 供应商列表
