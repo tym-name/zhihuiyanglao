@@ -61,6 +61,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/accountList",
         name: "AccountList",
+        meta: {
+          title: "账号列表",
+        },
         component: () => import("../views/system/Account.vue"),
       },
       {
@@ -71,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/company/CompanyAdd.vue"),
       },
-           {
+      {
         path: "/role",
         name: "Role",
         meta: {
@@ -94,6 +97,15 @@ const routes: Array<RouteRecordRaw> = [
           title: "地址管理",
         },
         component: () => import("../views/care/Address.vue"),
+      },
+      {
+        path: "/purchase-detail/:id",
+        name: "PurchaseDetail",
+        meta: {
+          title: "采购申请详情",
+        },
+        props: true,
+        component: () => import("../views/diet/PurchaseDetail.vue"),
       },
     ],
   },
