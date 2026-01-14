@@ -1,6 +1,5 @@
 <template>
     <el-card>
-        {{ ruleForm }}
         <Product v-model="ruleForm" :id="id"></Product>
         <div class="substr">
             <el-button @click="$router.push('/company')">取消</el-button>
@@ -54,13 +53,13 @@ const handleSave = async () => {
     if (!ruleForm.id) {
         let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
         ruleForm.adminPwd = sm2.doEncrypt(ruleForm.adminPwd, publicKey.data); //加密
-        await companyAdd(ruleForm);
+        await companyAdd(JSON.parse(JSON.stringify(ruleForm)));
         ElMessage.success('机构新增成功！');
         router.push('/company');
     } else {
         let publicKey: ApiResponse<string> = await getPublicKey(); //调接口获取公钥
         ruleForm.adminPwd = sm2.doEncrypt(ruleForm.adminPwd, publicKey.data); //加密
-        await companyAdd(ruleForm);
+        await companyAdd(JSON.parse(JSON.stringify(ruleForm)));
         ElMessage.success('机构修改成功！');
         router.push('/company');
     }

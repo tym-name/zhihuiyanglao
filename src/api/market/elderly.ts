@@ -1,5 +1,5 @@
 import http from "../../utils/request";
-import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse } from "./elderlyType";
+import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse, PersonInfo } from "./elderlyType";
 
 
 /**
@@ -31,3 +31,27 @@ export const SelfcareList=()=>http.get<IllnessListResponse>("/api/selfcare/list"
  */
 
 export const CheckupitemsList=()=>http.get<IllnessListResponse>("/api/checkupitems/list");
+
+/**
+ * 删除老人
+ */
+
+export const elderlyDelete=(id:number)=>http.delete(`/api/elderly/delete/${id}`);
+
+/**
+ * 批量删除老人
+ */
+
+export const elderlyDeleteAll=(id:number[])=>http.post(`/api/elderly/deleteAll`,id);
+
+/**
+ * 老人修改
+ */
+
+export const ElderlyUpdate=(_p0: number, data: ElderlyInfoAdd)=>http.put<ElderlyInfos>("/api/elderly/update",data);
+
+
+/**
+ * 获取单条老人
+ */
+export const elderlyGet = (id: number) => http.get<PersonInfo>(`/api/elderly/get/${id}`)

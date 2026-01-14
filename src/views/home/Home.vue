@@ -35,7 +35,14 @@
             </div> -->
           </el-card>
         </el-header>
-        <el-main style="background-color: #f2f3f5;"><router-view></router-view></el-main>
+        <el-main style="background-color: #f2f3f5;">
+          <router-view v-slot="{ Component }">
+            <KeepAlive>
+              <component v-if="$route.meta.keepAlive" :is="Component"></component>
+            </KeepAlive>
+            <component v-if="!$route.meta.keepAlive":is="Component"></component>
+          </router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -45,7 +52,7 @@
 import IeftAside from '../../components/home/leftAside.vue'
 
 const login = () => {
-  
+
 }
 
 </script>
