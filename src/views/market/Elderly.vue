@@ -1,5 +1,6 @@
 <template>
     <Table ref="tableRef" :columns="columns" :fetch-data="getCaptcha">
+       
         <template #buttons>
             <el-button type="primary" @click="handleAdd">新增老人</el-button>
             <el-button type="danger" disabled><i class="iconfont icon-shanchu"></i>批量删除</el-button>
