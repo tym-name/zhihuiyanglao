@@ -1,9 +1,9 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  // ============ 核心跨域配置 开始 ============
   server: {
     open: true, // 启动项目自动打开浏览器
     port: 5173, // 前端本地端口

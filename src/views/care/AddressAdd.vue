@@ -1,19 +1,9 @@
 <template>
-  <el-dialog
-    v-model="visible"
-    :title="dialogTitle"
-    width="500px"
-    @close="handleClose"
-  >
+  <el-dialog v-model="visible" :title="dialogTitle" width="500px" @close="handleClose">
     <el-form :model="addressForm" label-width="100px" :rules="formRules" ref="formRef">
       <el-form-item label="巡检地点:" prop="name">
-        <el-input
-          v-model="addressForm.name"
-          placeholder="请输入巡检地点"
-          maxlength="50"
-          show-word-limit
-          style="width: 300px;"
-        />
+        <el-input v-model="addressForm.name" placeholder="请输入巡检地点" maxlength="50" show-word-limit
+          style="width: 300px;" />
       </el-form-item>
       <el-form-item label="二维码:" prop="qrcode">
         <QrCode v-model="qrCodeUrl" :url="addressForm.name"></QrCode>
