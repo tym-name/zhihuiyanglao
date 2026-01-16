@@ -1,96 +1,336 @@
 <template>
     <div>
         <el-card>
+            <!-- 动态标题：区分新增/修改 -->
+            <div style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">
+                {{ isEdit ? '编辑外出登记' : '新增外出登记' }}
+            </div>
+
             <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto">
                 <el-form-item label="选择外出老人" prop="elderlyName">
                     <el-input v-model="ruleForm.elderlyName" disabled />
                 </el-form-item>
                 <el-form-item label="外出时间" prop="startTime">
-                    <el-date-picker v-model="value1" type="daterange" range-separator="-"
-                        start-placeholder="2026-01-13 15:05:36" end-placeholder="2026-01-14 15:05:36" :size="size"
-                        style="width: 200px;" />
+                    <el-date-picker v-model="dateRange" type="daterange" range-separator="-" start-placeholder="选择开始时间"
+                        end-placeholder="选择结束时间" :size="size" style="width: 100%;" @change="handleDateChange"
+                        format="YYYY-MM-DD" value-format="YYYY-MM-DD" :disabled="isEdit" />
                 </el-form-item>
                 <el-form-item label="陪同人员类型" prop="relation" placement="bottom">
-                    <Relation></Relation>
+                    <Relation v-model="ruleForm.relation"></Relation>
                 </el-form-item>
                 <el-form-item label="陪同人员姓名" prop="name">
-                    <el-input v-model="ruleForm.name" />
+                    <el-input v-model="ruleForm.name" placeholder="请输入陪同人员姓名" />
                 </el-form-item>
                 <el-form-item label="陪同人员电话" prop="mobile">
-                    <el-input v-model="ruleForm.mobile" />
+                    <el-input v-model="ruleForm.mobile" placeholder="请输入11位手机号码" />
                 </el-form-item>
                 <el-form-item label="陪同人员地址" prop="address">
-                    <el-input v-model="ruleForm.address" />
+                    <el-input v-model="ruleForm.address" placeholder="请输入陪同人员详细地址" />
                 </el-form-item>
-                <el-form-item label="外出原因" prop="begName">
-                    <el-input v-model="ruleForm.begName" style="width: 500px" :rows="2" type="textarea" />
+                <el-form-item label="外出原因" prop="content">
+                    <el-input v-model="ruleForm.content" style="width: 500px" :rows="2" type="textarea"
+                        placeholder="请输入外出原因" />
                 </el-form-item>
             </el-form>
-            <el-button size="small" type="primary" @click="sub">保存</el-button>
-            <el-button size="small" @click="router.push('/GoOut')">取消</el-button>
+            <!-- 动态按钮文案 -->
+            <el-button size="small" type="primary" @click="sub" :loading="isSubmitting">
+                <template v-if="isEdit">保存修改</template>
+                <template v-else>保存</template>
+            </el-button>
+            <el-button size="small" @click="cancel">取消</el-button>
         </el-card>
     </div>
 </template>
 
 <script setup lang='ts'>
-import { reactive, ref } from 'vue';
-import router from '../../router';
-import type { FormRules } from 'element-plus';
-import type { OutingApplication } from '../../api/goout/gooutType';
+import { reactive, ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage, type FormRules, type ElForm } from 'element-plus';
+import type { ElderlyOutingItem, GoOutInfo } from '../../api/goout/gooutType';
 import Relation from '../../components/form/Relation.vue'
-import { goOutadd } from '../../api/goout/goout';
+import { goOutadd, goOutUpdate } from '../../api/goout/goout';
 
-const begName = ref('')
+// 路由实例
+const route = useRoute();
+const router = useRouter();
 
+// 接收父组件参数
+const props = defineProps<{
+    elderlyInfo?: { id: number; name: string };
+    editInfo?: GoOutInfo; // 编辑回显数据
+}>();
+
+// 向父组件派发事件
+const emit = defineEmits(['submitSuccess', 'cancel']);
+
+// 提交加载状态
+const isSubmitting = ref(false);
+// 判断是否为编辑模式（有回显数据则为编辑）
+const isEdit = ref(!!props.editInfo);
 const size = ref<'default' | 'large' | 'small'>('default')
+const ruleFormRef = ref<InstanceType<typeof ElForm>>()
+const dateRange = ref<[string, string] | null>(null)
 
-const value1 = ref('')
+// 核心：获取路由/Props中的老人信息
+const getRouteElderlyInfo = () => {
+    const elderlyId = props.elderlyInfo?.id
+        || Number(route.query.elderlyId)
+        || Number(localStorage.getItem('elderlyId'))
+        || 0;
 
-const ruleForm = reactive<OutingApplication>({
-    name: '',
-    id: 0,
-    companyId: 0,
-    elderlyId: 0,
-    startTime: '',
-    endTime: '',
-    mobile: '',
-    address: '',
-    content: '',
-    state: 0,
-    relation: '',
-    addTime: '',
-    addAccountId: 0
-})
+    const elderlyName = props.elderlyInfo?.name
+        || (route.query.elderlyName as string)
+        || localStorage.getItem('elderlyName')
+        || '';
 
-const rules = reactive<FormRules<OutingApplication>>({
-    startTime: [{ required: true, message: '请输入外出时间', trigger: 'blur' }],
-    // relation: [{ required: true, message: '请选择陪同人关系', trigger: 'blur' }],
+    return { elderlyId, elderlyName };
+};
+
+// 初始化表单数据
+const initFormData = (): GoOutInfo => {
+    const { elderlyId, elderlyName } = getRouteElderlyInfo();
+    // 编辑模式：用回显数据初始化；新增模式：用默认值初始化
+    if (props.editInfo) {
+        return {
+            ...props.editInfo,
+            elderlyId: props.editInfo.elderlyId || elderlyId,
+            elderlyName: props.editInfo.elderlyName || elderlyName,
+        };
+    }
+    return {
+        name: '',
+        id: 0,
+        companyId: Number(localStorage.getItem('companyId')) || 0,
+        elderlyId: elderlyId,
+        elderlyName: elderlyName,
+        startTime: '',
+        endTime: '',
+        mobile: '',
+        address: '',
+        content: '',
+        state: 0,
+        relation: '',
+        addTime: new Date().toISOString(),
+        addAccountId: Number(localStorage.getItem('userId')) || 0,
+    };
+};
+
+// 表单核心数据
+const ruleForm = reactive<GoOutInfo>(initFormData());
+
+// 表单校验规则
+const rules = reactive<FormRules<GoOutInfo>>({
+    elderlyName: [
+        { required: true, message: '请先选择外出老人', trigger: 'blur' }
+    ],
+    startTime: [
+        { required: true, message: '请选择外出时间', trigger: 'change' },
+        {
+            validator: (rule, value, callback) => {
+                if (!ruleForm.startTime || !ruleForm.endTime) {
+                    callback(new Error('请完整选择开始和结束时间'));
+                } else if (new Date(ruleForm.startTime) > new Date(ruleForm.endTime)) {
+                    callback(new Error('开始时间不能晚于结束时间'));
+                } else {
+                    callback();
+                }
+            },
+            trigger: 'change'
+        }
+    ],
+    relation: [{ required: true, message: '请选择陪同人关系', trigger: 'blur' }],
     name: [{ required: true, message: '请输入陪同人姓名', trigger: 'blur' }],
-    mobile: [{ required: true, message: '请输入陪同人电话', trigger: 'blur' }],
+    mobile: [
+        { required: true, message: '请输入陪同人电话', trigger: 'blur' },
+        { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+    ],
     address: [{ required: true, message: '请输入陪同人地址', trigger: 'blur' }],
-    begName: [{ required: true, message: '请输入外出原因', trigger: 'blur' }],
-
+    content: [{ required: true, message: '请输入外出原因', trigger: 'blur' }],
 })
 
-const sub = async () => {
-    let res = await goOutadd(ruleForm)
-    console.log('新增老人', res);
-
+// 修改handleSingleElderly函数
+const handleSingleElderly = (elderly: ElderlyOutingItem) => {
+    if (elderly?.id && elderly?.name !== undefined) {
+        ruleForm.elderlyId = elderly.id;
+        ruleForm.elderlyName = elderly.name;
+        localStorage.setItem('elderlyId', elderly.id.toString());
+        localStorage.setItem('elderlyName', elderly.name || '');
+    } else {
+        ElMessage.error('老人信息不完整');
+    }
+}
+// 日期选择处理
+const handleDateChange = (val: [string, string] | null) => {
+    if (val) {
+        const [start, end] = val;
+        if (new Date(start) > new Date(end)) {
+            ElMessage.error('开始时间不能晚于结束时间，请重新选择');
+            dateRange.value = null;
+            ruleForm.startTime = '';
+            ruleForm.endTime = '';
+            return;
+        }
+        ruleForm.startTime = start;
+        ruleForm.endTime = end;
+    } else {
+        ruleForm.startTime = '';
+        ruleForm.endTime = '';
+    }
 }
 
+// 取消按钮逻辑
+const cancel = () => {
+    emit('cancel');
+    router.push('/GoOut');
+}
+
+// 提交核心逻辑：区分新增/修改
+// 修改提交核心逻辑部分
+const sub = async () => {
+    // 先做表单校验
+    if (!ruleFormRef.value) return;
+    try {
+        await ruleFormRef.value.validate();
+    } catch (error) {
+        ElMessage.error('请完善表单必填项');
+        return;
+    }
+
+    // 验证必填字段
+    if (!ruleForm.elderlyId || !ruleForm.elderlyName) {
+        ElMessage.error('请先选择外出老人');
+        return;
+    }
+
+    if (!ruleForm.startTime || !ruleForm.endTime) {
+        ElMessage.error('请完整选择外出时间');
+        return;
+    }
+
+    // 构建符合类型定义的数据对象
+    const submitData = {
+        id: ruleForm.id,
+        elderlyId: ruleForm.elderlyId,
+        elderlyName: ruleForm.elderlyName,
+        startTime: ruleForm.startTime,
+        endTime: ruleForm.endTime,
+        mobile: ruleForm.mobile || '',
+        address: ruleForm.address || '',
+        content: ruleForm.content || '',
+        relation: ruleForm.relation || '',
+        name: ruleForm.name || '',
+        companyId: ruleForm.companyId || Number(localStorage.getItem('companyId')) || 0,
+        state: ruleForm.state || 0,
+        addTime: ruleForm.addTime || new Date().toISOString(),
+        addAccountId: ruleForm.addAccountId || Number(localStorage.getItem('userId')) || 0,
+    };
+
+    isSubmitting.value = true;
+    try {
+        if (isEdit.value) {
+            // 编辑模式：调用修改接口
+            const res = await goOutUpdate(submitData);
+            if (res.code === 10000) {
+                ElMessage.success('修改成功');
+                emit('submitSuccess'); // 通知父组件刷新列表
+            }
+        } else {
+            // 新增模式：调用添加接口
+            const res = await goOutadd(submitData);
+            console.log('添加外出登记信息', res);
+
+            if (res.code === 10000) {
+                ElMessage.success('添加成功');
+                emit('submitSuccess');
+                resetForm(); // 新增成功后重置表单
+            }
+        }
+        // 提交成功后返回列表页
+        router.push('/GoOut');
+    } catch (error) {
+        ElMessage.error('网络异常，请稍后重试');
+        console.error('提交失败：', error);
+    } finally {
+        isSubmitting.value = false;
+    }
+}
+
+// 重置表单逻辑
+const resetForm = () => {
+    if (ruleFormRef.value) {
+        ruleFormRef.value.resetFields();
+    }
+    dateRange.value = null;
+
+    // 重置基础数据（保留老人信息）
+    const { elderlyId, elderlyName } = getRouteElderlyInfo();
+    Object.assign(ruleForm, {
+        name: '',
+        elderlyId: elderlyId,
+        elderlyName: elderlyName,
+        startTime: '',
+        endTime: '',
+        mobile: '',
+        address: '',
+        content: '',
+        relation: '',
+        id: isEdit.value ? ruleForm.id : 0
+    });
+};
+
+// 初始化编辑数据（日期范围回显）
+const initEditData = () => {
+    if (isEdit.value && ruleForm.startTime && ruleForm.endTime) {
+        dateRange.value = [ruleForm.startTime, ruleForm.endTime];
+    }
+};
+
+// 监听路由参数变化
+watch([() => route.query.elderlyId, () => route.query.elderlyName], () => {
+    const { elderlyId, elderlyName } = getRouteElderlyInfo();
+    ruleForm.elderlyId = elderlyId;
+    ruleForm.elderlyName = elderlyName;
+}, { immediate: true });
+
+// 监听编辑数据变化（父组件传值更新时重新初始化）
+watch(() => props.editInfo, (newVal) => {
+    if (newVal) {
+        isEdit.value = true;
+        Object.assign(ruleForm, initFormData());
+        initEditData();
+    }
+}, { immediate: true });
+
+// 页面挂载时初始化
+onMounted(() => {
+    initEditData();
+
+    // 提示未选择老人
+    if (!ruleForm.elderlyId) {
+        ElMessage.warning('请先返回选择外出老人');
+    }
+});
+
+// 暴露方法给父组件
+defineExpose({ resetForm, handleSingleElderly });
+</script>
+
+<script lang="ts">
+export default {
+    name: 'AddGoOut'
+}
 </script>
 
 <style scoped lang='less'>
 .el-form-item {
     width: 500px;
+    margin-bottom: 16px;
 }
 
-// 卡片内边距
 .el-card {
     padding: 20px;
 }
 
-// 按钮样式优化
 .el-button {
     margin-top: 20px;
     margin-right: 10px;

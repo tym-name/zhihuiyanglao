@@ -3,7 +3,7 @@
     <Table ref="tableRef" @selection-change="handleSelectionChange" :columns="columns" :init-params="params"
       :fetch-data="roleList">
       <template #buttons>
-        <el-button type="success" @click="addRole">添加</el-button>
+        <el-button type="success">添加</el-button>
         <el-button type="danger" @click="delAll">批量删除</el-button>
         <el-button type="success" @click="router.push('/role-add')"><i class="iconfont icon-jia"></i>添加角色</el-button>
         <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
@@ -59,19 +59,10 @@ const roleDel = (id: number) => {
     )
 }
 
-<<<<<<< HEAD
-// 添加角色
-const addRole = () => {
-  router.push({
-    name: "RoleEdit"
-  })
-}
-=======
 const edit = (row: ItemList) => {
   router.push(`/role-add?id=${row.id}`)
 };
 
->>>>>>> fd19cf0726ae102779924fc4613ba0f53bd90294
 
 //要删除选中的数据
 const selectionData = ref<ItemList[]>([])

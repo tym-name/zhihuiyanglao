@@ -24,7 +24,7 @@
       </el-tab-pane>
     </el-tabs>
     <div class="round">
-      <el-button>取消</el-button>
+      <el-button @click="router.push('/elderly')">取消</el-button>
       <el-button type="primary" @click="handleSubmit">保存</el-button>
     </div>
   </el-card>
@@ -40,6 +40,7 @@ import Checkups from '../../components/elderly/Checkups.vue'
 import Family from '../../components/elderly/Family.vue'
 import { ElderlyAdd } from '../../api/market/elderly';
 import { ElMessage } from 'element-plus';
+import router from '../../router';
 const activeName = ref('first')
 
 // 老人表单
@@ -68,30 +69,7 @@ let elderlyForm = reactive<ElderlyInfos>({
     elderlyId: 0
   },
   selfCares: [],
-  checkups: [ {
-    name: "肝功能+HbsAg",
-    picture: "upload/2024/5/21/20240521091004371.png",
-    id: 0,
-    elderlyId: 0
-  },
-        {
-          name: "肝功能+HbsAg",
-          picture: "upload/2024/5/21/20240521091007413.jpg",
-          id: 0,
-          elderlyId: 0
-        },
-        {
-          name: "血脂全套",
-          picture: "upload/2024/5/21/20240521091013674.png",
-          id: 0,
-          elderlyId: 0
-        },
-        {
-          name: "血脂全套",
-          picture: "upload/2024/5/21/20240521091010339.jpg",
-          id: 0,
-          elderlyId: 0
-        }],
+  checkups: [],
   family: [],
   id: 0,
   companyId: 0,
@@ -104,15 +82,25 @@ let elderlyForm = reactive<ElderlyInfos>({
   begName: null,
   addAccountName: null,
   houseName: null,
-  buildingName: null
+  buildingName: null,
 });
 let familyData = ref<FamilyMember[]>([]);
 provide('familyData', familyData.value)
 // 保存老人信息
 const handleSubmit = async () => {
-    let res=await ElderlyAdd(elderlyForm)
-    console.log('老人添加',res);
-    ElMessage.success('新增老人成功');
+  // 为checkups数组中的每个元素添加缺失的picture属性
+  const formWithValidCheckups = {
+    ...elderlyForm,
+    checkups: elderlyForm.checkups.map(checkup => ({
+      ...checkup,
+      picture: (checkup as any).picture || ''  // 如果picture不存在，则默认为空字符串
+    }))
+  };
+  
+  let res = await ElderlyAdd(formWithValidCheckups);
+  console.log('老人添加', res);
+  ElMessage.success('新增老人成功');
+  router.push('/elderly');
 };
 
 watch(familyData.value, () => {

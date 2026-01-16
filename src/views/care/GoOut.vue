@@ -1,193 +1,209 @@
 <template>
-    <div>
-        <Table ref="tableRef" :columns="columns" :init-params="params" :fetch-data="goOutList">
-            <template #buttons>
-                <el-button type="success" @click="addGoOut"><i class="iconfont icon-jia"></i>添加</el-button>
-                <el-button type="danger" :disabled="isBatchDelDisabled"><i
-                        class="iconfont icon-shanchu"></i>批量删除</el-button>
-            </template>
-            <template #search>
-                <el-form :inline="true" class="demo-form-inline">
-                    <el-form-item label="老人姓名:">
-                        <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />
-                    </el-form-item>
-                    <el-form-item label="审批状态:">
-                        <el-select placeholder="请选择状态" v-model="params.adminName" clearable style="width: 200px;">
-                            <el-option label="未返回" value="pending" />
-                            <el-option label="已返回" value="approved" />
-                            <el-option label="逾期未返回" value="rejected" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="外出时间:">
-                        <el-date-picker v-model="value1" type="daterange" range-separator="-" start-placeholder="开始日期"
-                            end-placeholder="结束日期" :size="size" style="width: 200px;" />
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="search">查询</el-button>
-                        <el-button @click="reset">重置</el-button>
-                    </el-form-item>
-                </el-form>
-            </template>
-            <template #operate="{ row }" style="font-size: 12px;">
-                <el-button link type="primary">查看详情</el-button>
-                <el-button link type="primary"><i class="iconfont icon-bianji"></i>修改</el-button>
-                <el-button link type="danger" @click="delGoGout(row.id)"><i
-                        class="iconfont icon-shanchu"></i>删除</el-button>
-            </template>
-        </Table>
-        <GoOutAdd :is-add="isAdd" :editData="editData" :handleSuccess="handleSuccess" v-model="dialogForm"></GoOutAdd>
-    </div>
+   <div>
+      <Etabs v-bind="tableListData">
+         <template #Delete="{ row, delListOne }">
+            <el-button type="primary" link @click="GoOutDetails(row)"><el-icon>
+                  <Tickets />
+               </el-icon>查看详情</el-button>
+            <el-button type="primary" link @click="edit(row)"><el-icon>
+                  <Edit />
+               </el-icon>编辑</el-button>
+            <el-button type="danger" link @click="delListOne(row.id)"><el-icon>
+                  <Delete />
+               </el-icon>删除</el-button>
+         </template>
+         <template #delCard="{ delAll, checkLength }">
+            <div style="margin-bottom:20px">
+               <el-button type="success" @click="openSelectDialog"><el-icon>
+                     <Plus />
+                  </el-icon>新增</el-button>
+               <el-button type="danger" :disabled="checkLength === 0" @click="delAll"><el-icon>
+                     <Delete />
+                  </el-icon>批量删除</el-button>
+            </div>
+
+         </template>
+         <template #searchCard="{ Params, search }">
+            <el-form :inline="true" class="demo-form-inline">
+               <el-form-item label="老人姓名:">
+                  <el-input v-model="Params.name" placeholder="请输入老人姓名" clearable style="width: 195px" />
+               </el-form-item>
+               <el-form-item label="审批状态:">
+                  <el-select v-model="Params.state" placeholder="请选择审批状态" style="width: 240px">
+                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
+               </el-form-item>
+               <el-form-item label="外出时间:">
+                  <el-date-picker v-model="Params.date" type="daterange" value-format="YYYY-MM-DD" range-separator="-"
+                     start-placeholder="开始日期" end-placeholder="结束日期" style="width: 250px;" size="default"
+                     @change="(val: string[]) => dateChange(val, Params)" />
+               </el-form-item>
+               <el-form-item>
+                  <el-button type="primary" @click="search"><el-icon>
+                        <Search />
+                     </el-icon>查询</el-button>
+                  <el-button @click="reset(search, Params)"><el-icon>
+                        <Refresh />
+                     </el-icon>重置</el-button>
+               </el-form-item>
+            </el-form>
+         </template>
+      </Etabs>
+       <ElderSelectDialog
+      v-model="dialogVisible"
+      @confirm="handleConfirm"
+    />
+   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import Table, { type TableColumn } from "../../components/table.vue";
-import { goOutDelete, goOutList } from "../../api/goout/goout";
-import type { goOutType } from "../../api/goout/gooutType";
-import GoOutAdd from "./GoOutAdd.vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import Etabs from '../../utils/Etabs.vue';
+import { ref, reactive } from 'vue';
+import type { propDataType } from '../../utils/Etabs.vue';
+import { goOutDelete,  goOutlist } from '../../api/goout/goout';
+import { Delete, Search, Refresh } from '@element-plus/icons-vue';
+import { Plus, Tickets, Edit } from '@element-plus/icons-vue'
+import ElderSelectDialog from '../../components/ElderSelectDialog.vue'
+import router from '../../router';
 
-
-const size = ref<'default' | 'large' | 'small'>('default')
-
-const value1 = ref('')
-
-//定义一个false值，用于判断是添加还是修改 true是添加 false是修改
-const isAdd = ref(false)
-// 添加编辑数据的响应式变量
-const editData = ref()
-
-const dialogForm = ref(false)
-const handleSuccess = () => {
-    dialogForm.value = false
-    // 清空编辑数据
-    editData.value = {}
-    tableRef.value?.refresh()
+// 定义插槽数据类型
+interface SlotData {
+  row: any;
+  delListOne: (id: number | string) => void;
 }
 
-// 添加
-const addGoOut = () => {
-    isAdd.value = true
-    console.log('点击添加了');
-    dialogForm.value = true
+interface DelCardSlotData {
+  delAll: () => void;
+  checkLength: number;
 }
 
-// 扩展类型定义以包含搜索参数
-interface GoOutSearchParams extends goOutType {
-    name?: string;
-    adminName?: string;
+interface SearchCardSlotData {
+  Params: any;
+  search: () => void;
 }
 
+const dialogVisible = ref(false)
 
+// 使用泛型或扩展类型来解决类型问题
+let tableListData: propDataType & {
+  slots?: {
+    Delete?: SlotData;
+    delCard?: DelCardSlotData;
+    searchCard?: SearchCardSlotData;
+  }
+} = reactive({
+   column: [
+      {
+         label: "序号",
+         prop: "id"
+      },
+      {
+         label: "老人姓名",
+         prop: "elderlyName"
+      },
+      {
+         label: "床位号",
+         prop: "begName"
+      },
+      {
+         label: "陪同人员姓名",
+         prop: "name"
+      },
+      {
+         label: "陪同人员手机号",
+         prop: "mobile",
+         width: "155"
+      },
+      {
+         label: "外出时间",
+         prop: "startTime",
+         width: "155"
+      },
 
-onMounted(() => {
-    console.log('外出登记列表', goOutList);
+      {
+         label: "上报人",
+         prop: "addAccountName"
+      },
+      {
+         label: "上报时间",
+         prop: "addTime",
+         width: "155"
+      },
+      {
+         label: "审批状态",
+         prop: "stateName",
+
+      },
+      {
+         label: "操作",
+         prop: 'Delete',
+         slot: true,
+         width: "240"
+      }
+   ],
+   getList: goOutlist,
+   delListOne: goOutDelete,
+
+   isPage: true
 })
 
-const isBatchDelDisabled = ref(true)
+// 搜索选择器结果
+const options = [
+   {
+      value: '0',
+      label: '未返回',
+   },
+   {
+      value: '1',
+      label: '已返回',
+   },
+   {
+      value: '2',
+      label: '逾期未返回',
+   },
+]
 
-// 声明 tableRef 变量
-const tableRef = ref<InstanceType<typeof Table> | null>(null);
+const reset = (search: Function, Params: any) => {
+   Params.name = ''
+   Params.state = ''
 
-const params = ref<GoOutSearchParams>({
-    page: 1,
-    pageSize: 15,
-    name: "",           // 添加搜索字段
-    adminName: ""       // 添加搜索字段
+   search()
+}
+
+const dateChange = (val: string[], Params: any) => {
+   if (!Params.date) Params.date = [];
+   Params.date[0] = val[0]
+   Params.date[1] = val[1]
+   Params.startTime = val[0];
+   Params.beginDate = val[0];
+   Params.endDate = val[1];
+};
+
+const GoOutDetails = (row: any) => {
+   router.push({ path: `/care/care/details/${row.id}` })
+
+}
+
+const edit = (row: any) => {
+   router.push({ path: `/care/care/edit/${row.id}` })
+
+}
+
+const openSelectDialog = () => {
+  dialogVisible.value = true 
+}
+
+const handleConfirm = (data: any) => {
+   console.log(data,"2222");
+   console.log(data.name);
+   
+router.push({ 
+  path: '/care/care/add',
+  query: { 
+    oldId: encodeURIComponent(data.id), 
+  } 
 })
-
-const reset = () => {
-    params.value = {
-        name: "",
-        adminName: "",
-        page: 1,
-        pageSize: 15
-    }
-    tableRef.value?.refresh();
 }
-
-const search = () => {
-    tableRef.value?.refresh();
-}
-
-
-
-
-
-// 删除
-const delGoGout = (id: number) => {
-    ElMessageBox.confirm(
-        '是否删除该条记录？',
-        {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-        }
-    )
-        .then(async () => {
-            ElMessage({
-                type: 'success',
-                message: '删除成功',
-            })
-            await goOutDelete(id)
-            tableRef.value?.refresh();
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '已取消删除',
-            })
-        })
-}
-
-const columns: TableColumn[] = [
-    {
-        type: "selection",
-        width: "30",
-    },
-    {
-        label: "序号",
-        prop: "id",
-        width: "100px",
-    },
-    {
-        label: "老人姓名",
-        prop: "elderlyName",
-    },
-    {
-        label: "床位号",
-        prop: "begName",
-    },
-    {
-        label: "陪同人姓名",
-        prop: "name",
-    },
-    {
-        label: "陪同人手机号",
-        prop: "mobile",
-        width: "150px",
-    },
-    {
-        label: "外出时间",
-        // prop: `substring(startTime, 0, 10)`,  // 修正为正确的属性名
-        prop: "startTime",
-    },
-    {
-        label: "上报人",
-        prop: "addAccountName", // 修正为正确的属性名
-    },
-    {
-        label: "上报时间",
-        prop: "addTime", // 修正为正确的属性名
-    },
-    {
-        label: "审批状态",
-        prop: 'stateName', // 修正为正确的属性名
-    },
-    {
-        label: "操作",
-        slot: "operate",
-        width: 250,
-        fixed: "right",
-    }
-];
 </script>
+
+<style scoped lang='less'></style>

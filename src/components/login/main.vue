@@ -15,7 +15,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input v-model="ruleForm.pwd" placeholder="密码">
+                    <el-input v-model="ruleForm.pwd" type="password" placeholder="密码">
                         <template #prefix>
                             <i class="icon iconfont icon-jiesuo"></i>
                         </template>

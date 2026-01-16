@@ -10,7 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref<string>('')
   const permission = ref<MenuItem[]>([])
   const meuns = ref<MenuItem[]>([])
-  
+   //刷新token
+  const refreshToken = ref<string>('')
   //登录 
   const userLogin = async (data: LoginPayload) => {
 
@@ -23,6 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!res) return;
 
     token.value = res.data.token;
+    refreshToken.value = res.data.refreshToken;
 
     return res;
   }
@@ -37,7 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
     return permission.value
   }
   return {
-    token,meuns,userLogin,getMenu,
+    token,meuns,userLogin,getMenu,refreshToken
   }
 }, {
  persist:true

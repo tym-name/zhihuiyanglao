@@ -67,16 +67,17 @@ export interface SelfCare {
   elderlyId: number;
   name: string; // 评估项名称（进食/修饰/穿衣等）
   val: string; // 评估值（正常/轻度依赖等）
+  picture: string; // 体检报告图片路径
 }
 
 /**
  * 体检报告子类型
  */
 export interface Checkup {
-  id: number;
-  elderlyId: number;
-  name: string; // 体检项目名称（肝功能+HbsAg/血脂全套等）
-  picture: string; // 体检报告图片路径
+    id: number;
+    name: string;
+    val: string;
+    // 其他原有字段...
 }
 
 /**
@@ -173,6 +174,7 @@ export interface ElderlyFamily {
  * 老人信息主类型（简化版，匹配最新的 JSON 结构）
  */
 export interface ElderlyInfoAdd {
+  id: number;
   name: string; // 老人姓名
   mobile: string; // 老人手机号
   photo: string; // 老人照片路径
@@ -195,9 +197,11 @@ export interface ElderlyInfoAdd {
 }
 
 export interface IllnessItem {
-  id: number; // 疾病ID
-  name: string; // 疾病名称（如高血压、脑血管意外等）
-  val: string; // 评估值（正常/轻度依赖等）
+    id: number; // 行唯一标识
+    name: string; // 体检项目名称
+    picture: string; // 上传的图片地址（新增该字段，用于双向绑定）
+    val: string;
+    // 其他原有字段...
 }
 
 /**

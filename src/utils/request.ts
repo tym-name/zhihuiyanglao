@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
+import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 import { useAuthStore } from '../stores/auth'
 
@@ -7,10 +7,36 @@ enum ResultEnum {
 }
 
 export interface ApiResponse<T> {
+    message: string;
     code: number,
     msg: string,
     data: T
 }
+
+const service: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8'
+  }
+})
+
+//请求拦截
+service.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const authStore = useAuthStore()
+    const token = authStore.token
+    if (token && config.headers) {
+      config.headers.Authorization = `${token}`
+    }
+    return config
+  },
+  (error: AxiosError) => {
+    console.error('请求错误:', error)
+    return Promise.reject(error)
+  }
+)
+let isRefreshing = false;
 
 class Http {
     private instance: AxiosInstance;
@@ -93,8 +119,35 @@ class Http {
 
             switch (error.response.status) {
                 case 401:
-                    errorMessage = '未授权，请重新登录'
-                    break
+                    if (!isRefreshing) {
+          isRefreshing = true;
+          errorMessage = '未授权，请重新登录'
+          console.log("401");
+
+
+          return getrRfreshToken().then((res:any)=>{
+
+            console.log("根据刷新token获取新的token",res.data.data.refreshToken);
+            
+            const authStore = useAuthStore();
+            //新的token替换调过期token
+            authStore.token=res.data.data.token;
+            authStore.refreshToken=res.data.data.refreshToken;
+ 
+            // 重新请求 实现无感刷新
+            return service(error.config!)
+
+
+
+          }).catch(()=>{
+            //刷新token失败，跳转到登录页
+            // location.href="/login"
+          }).finally(()=>{
+            isRefreshing = false;
+          })
+
+        }
+        break
                 case 403:
                     errorMessage = '拒绝访问'
                     break
@@ -127,6 +180,9 @@ class Http {
 
     }
 
+    //根据刷新token返回新的token
+
+
 
     public request<T>(config: AxiosRequestConfig): Promise<ApiResponse<T>> {
 
@@ -154,5 +210,24 @@ class Http {
 
 }
 
+const getrRfreshToken=()=>{
+
+  const authStore = useAuthStore()
+  const refreshToken = authStore.refreshToken; //从pinia中获取刷新token
+
+  //获取刷新token
+  return axios.request({
+    url: '/account/refreshToken',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    method: 'get',
+    headers: {
+      Authorization: refreshToken
+    }
+  })
+
+}
+
 const http = new Http();
 export default http;
+
+

@@ -10,6 +10,8 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
+const keepAlivePages = ["company"]
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/login",
@@ -49,6 +51,14 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/ElderlyEdit.vue"),
       },
       {
+        path: "/elderly",
+        name: "Elderly",
+        meta: {
+          title: "新增老人",
+        },
+        component: () => import("../views/market/Elderly.vue"),
+      },
+      {
         path: '/Role-edit',
         name: 'RoleEdit',
         meta: {
@@ -67,6 +77,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/accountList",
         name: "AccountList",
+        meta: {
+          title: "账号列表",
+        },
         component: () => import("../views/system/Account.vue"),
       },
       {
@@ -77,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/company/CompanyAdd.vue"),
       },
-           {
+      {
         path: "/role",
         name: "Role",
         meta: {
@@ -94,11 +107,38 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/system/RoleAdd.vue"),
       },
       {
-        path: "/addGoOut",
+        path: "/address",
+        name: "Address",
+        meta: {
+          title: "地址管理",
+        },
+        component: () => import("../views/care/Address.vue"),
+      },
+      {
+        path: "/purchase-detail/:id",
+        name: "PurchaseDetail",
+        meta: {
+          title: "采购申请详情",
+        },
+        props: true,
+        component: () => import("../views/diet/PurchaseDetail.vue"),
+      },
+      {
+        path: "GoOut",
+        name: "GoOut",
+        meta: {
+          title: "外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/GoOut.vue"),
+      },
+      {
+        path: "addGoOut",
         name: "addGoOut",
         meta: {
-          title: "新增外出",
+          title: "新增外出登记",
         },
+        props: true,
         component: () => import("../views/care/addGoOut.vue"),
       },
     ],
@@ -132,7 +172,7 @@ router.beforeEach(async (to, from) => {
 
   // 无token则跳转登录页
   if (!token) {
-    return "/login";
+     return "/login";
   }
 
   // 核心优化1：判断是否已添加动态路由，避免重复添加
@@ -163,6 +203,7 @@ router.beforeEach(async (to, from) => {
                 childrenName: child.name,
                 pathBtn: child.url,
                 menusFath: item.url,
+                keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
                   url: "/care/" + `${item.url}/${child.url}`,
@@ -177,6 +218,7 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
+
 
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
