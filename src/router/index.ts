@@ -10,6 +10,8 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
+const keepAlivePages=["company"]
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/login",
@@ -48,45 +50,62 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/market/ElderlyEdit.vue"),
       },
-      {
-        path: "/accountList",
-        name: "AccountList",
+            {
+        path: "/elderly",
+        name: "Elderly",
         meta: {
-          title: "机构列表",
+          title: "新增老人",
         },
-        component: () => import("../views/account/AccountList.vue"),
+        component: () => import("../views/market/Elderly.vue"),
       },
       {
         path: "/accountList",
         name: "AccountList",
         meta: {
+          title: "账号列表",
+        },
+        component: () => import("../views/system/Account.vue"),
+      },
+      {
+        path: "/company-add",
+        name: "CompanyAdd",
+        meta: {
           title: "机构列表",
         },
-        component: () => import("../views/account/AccountList.vue"),
+        component: () => import("../views/company/CompanyAdd.vue"),
       },
       {
-        path: "/food",
-        name: "Food",
+        path: "/role",
+        name: "Role",
         meta: {
-          title: "食材管理",
+          title: "角色列表",
         },
-        component: () => import("../views/diet/FoodView.vue"),
+        component: () => import("../views/system/Role.vue"),
       },
       {
-        path: "/priceanalysis",
-        name: "PriceAnalysis",
+        path: "/role-add",
+        name: "RoleAdd",
         meta: {
-          title: "价格分析",
+          title: "新增角色",
         },
-        component: () => import("../views/diet/PriceAnalysis.vue"),
+        component: () => import("../views/system/RoleAdd.vue"),
+      },
+            {
+        path: "/address",
+        name: "Address",
+        meta: {
+          title: "地址管理",
+        },
+        component: () => import("../views/care/Address.vue"),
       },
       {
-        path: "/activity",
-        name: "Activity",
+        path: "/purchase-detail/:id",
+        name: "PurchaseDetail",
         meta: {
-          title: "院内活动",
+          title: "采购申请详情",
         },
-        component: () => import("../views/care/activity.vue"),
+        props: true,
+        component: () => import("../views/diet/PurchaseDetail.vue"),
       },
     ],
   },
@@ -127,7 +146,7 @@ router.beforeEach(async (to, from) => {
     try {
       //  获取权限列表
       const res = await authStore.getMenu();
-      console.log(111, res);
+      console.log("权限列表", res);
 
       // 动态添加路由
       res.forEach((item) => {
@@ -135,8 +154,6 @@ router.beforeEach(async (to, from) => {
           if (child.pathName) {
             const component =
               modules[`../views/${item.url}/${child.pathName}.vue`];
-            console.log(`../views/${item.url}/${child.pathName}.vue`);
-
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,
@@ -152,6 +169,7 @@ router.beforeEach(async (to, from) => {
                 childrenName: child.name,
                 pathBtn: child.url,
                 menusFath: item.url,
+                keepAlive:keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
                   url: "/care/" + `${item.url}/${child.url}`,
@@ -166,13 +184,13 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
+      
 
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());
 
       let path = to.redirectedFrom?.fullPath || to.fullPath;
-
       return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);
@@ -181,7 +199,6 @@ router.beforeEach(async (to, from) => {
       return "/login";
     }
   }
-
   // 动态路由已添加，直接放行
   return true;
 });

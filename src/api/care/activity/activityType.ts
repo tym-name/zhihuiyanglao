@@ -38,7 +38,7 @@ export interface playListItem {
 /**
  * 活动参与老人信息接口
  */
-interface Elderly {
+export interface Elderly {
   id: number;
   playId: number;
   elderlyId: number;
@@ -58,4 +58,40 @@ export interface ActivityTypePageData {
   counts: number;
   pageSize: number;
   list: ActivityTypeItem[];
+}
+
+/**
+ * 老人信息详情
+ */
+export interface ElderlyDetails {
+  id: number;
+  playId: number;
+  elderlyId: number;
+  elderlyName: null | string; // 实际返回为 null，定义为 null 或 string 兼容后续可能的非 null 场景
+  elderlyPhoto: null | string;
+  begName: null | string;
+  houseName: null | string;
+  buildingName: string;
+}
+
+// 图片信息子接口
+interface ElderlyPicture {
+  id: number;
+  playId: number;
+  picture: string;
+}
+
+// 核心数据接口（对应外层 data 对象）
+export interface ElderlyDetailsData {
+  id: number;
+  companyId: number;
+  title: string;
+  addTime: string;
+  type: number;
+  typeName: null | string;
+  content: string;
+  addAccountId: number;
+  addAccountName: null | string;
+  elderly: ElderlyDetails[]; // 老年人信息数组
+  pictures: ElderlyPicture[]; // 图片信息数组
 }

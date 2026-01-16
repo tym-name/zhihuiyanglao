@@ -15,7 +15,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input v-model="ruleForm.pwd" placeholder="密码">
+                    <el-input v-model="ruleForm.pwd" type="password" placeholder="密码">
                         <template #prefix>
                             <i class="icon iconfont icon-jiesuo"></i>
                         </template>
@@ -101,10 +101,7 @@ const handleLogin = async () => {
         if (valid) {
             loading.value = true
             try {
-                console.log("123456");
-
                 let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
-                console.log(data, "0000");
 
                 const res = await useAuthStore().userLogin(data)
                 console.log('登录成功', res);

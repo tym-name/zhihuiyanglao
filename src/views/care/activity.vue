@@ -1,6 +1,7 @@
 <template>
     <div>
-        <Table ref="tableRef" :columns="columns" :fetch-data="getPlayList" :init-params="searchForm">
+        <Table ref="tableRef" :columns="columns" :fetch-data="getPlayList" :init-params="searchForm"
+            @selection-change="handleSelectionChange">
             <template #search>
                 <!-- //:model="formInline" -->
                 <el-form :inline="true" class="demo-form-inline">
@@ -27,8 +28,8 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success">添加</el-button>
-                <el-button type="danger">批量删除</el-button>
+                <el-button type="success" @click="openDialog">添加</el-button>
+                <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled">批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
@@ -40,7 +41,7 @@
                     <i class="iconfont icon-bianji"></i>
                     编辑
                 </el-button>
-                <el-button link type="danger">
+                <el-button link type="danger" @click="deletePlay(row.id)">
                     <i class="iconfont icon-shanchu"></i>
                     删除
                 </el-button>
@@ -57,16 +58,22 @@
                 </div>
             </template>
         </Table>
-        <ViewDetails :drawer="detailsIsShow" :id="activityId"></ViewDetails>
+        <ViewDetails :drawer="detailsIsShow" :id="activityId" :typeList="playTypeOptions" :close="closeViewDetails">
+        </ViewDetails>
+
+        <PlayAddOrUpdate :open="addOrUpdateIshow" :close="closeDialog"></PlayAddOrUpdate>
+
     </div>
 </template>
 
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
-import { getPlayList, getPlayTypeList } from '../../api/care/activity/activity';
+import { delAllPlay, delPlay, getPlayList, getPlayTypeList } from '../../api/care/activity/activity';
 import type { ActivityTypeItem, playListItem, playListParams } from '../../api/care/activity/activityType';
 import ViewDetails from '../../components/care/ViewDetails.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import PlayAddOrUpdate from '../../components/care/PlayAddOrUpdate.vue';
 
 const tableRef = ref<any>(null);
 
@@ -107,6 +114,19 @@ const columns: TableColumn[] = [
         fixed: "right",
     }
 ]
+//刷新页面
+const Refresh = () => {
+    tableRef.value?.refresh();
+}
+
+//添加修改
+const addOrUpdateIshow = ref(false)
+const openDialog = () => {
+    addOrUpdateIshow.value = !addOrUpdateIshow.value
+}
+const closeDialog = () => {
+    addOrUpdateIshow.value = false
+}
 
 const searchForm = ref<playListParams>({
     name: '',
@@ -143,8 +163,74 @@ const handleReset = () => {
 const detailsIsShow = ref(false)
 const activityId = ref<number>(0)
 const handleViewDetails = (id: number) => {
+    detailsIsShow.value = !detailsIsShow.value
     activityId.value = id
 }
+
+const closeViewDetails = () => {
+    detailsIsShow.value = false
+}
+
+//删除单条数据
+const deletePlay = (id: number) => {
+    ElMessageBox.confirm(
+        '是否删除该条记录？',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: "warning"
+        }
+    )
+        .then(async () => {
+            await delPlay(id); // 先执行删除接口
+            ElMessage({
+                type: 'success',
+                message: '删除成功',
+            })
+            Refresh()
+        })
+}
+
+//批量删除
+const isBatchDelDisabled = ref(true)
+const selectionData = ref<playListItem[]>([])
+const ids = ref<number[]>([])
+const handleSelectionChange = (rows: playListItem[]) => {
+    selectionData.value = rows;
+    ids.value = rows.map(row => row.id);
+    isBatchDelDisabled.value = rows.length === 0;//判断是否禁用
+}
+
+const delAll = async () => {
+    ElMessageBox.confirm(
+        '是否删除多条记录？',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            let res = await delAllPlay(ids.value)
+            console.log(res);
+            if (res.code === 10000) {
+                ElMessage({
+                    type: 'success',
+                    message: '删除成功',
+                })
+                Refresh()
+            }
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消删除',
+            })
+        })
+}
+
+
+
 
 </script>
 

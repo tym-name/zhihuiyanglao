@@ -20,72 +20,92 @@
         <Checkups v-model="elderlyForm.checkups"></Checkups>
       </el-tab-pane>
       <el-tab-pane label="家属信息" name="third">
-        <Family v-model="elderlyForm.family"></Family>
+        <Family></Family>
       </el-tab-pane>
     </el-tabs>
     <div class="round">
-      <el-button>取消</el-button>
+      <el-button @click="router.push('/elderly')">取消</el-button>
       <el-button type="primary" @click="handleSubmit">保存</el-button>
     </div>
   </el-card>
 </template>
 
 <script setup lang='ts'>
-import { reactive, ref } from 'vue';
-import type { ElderlyInfos } from '../../api/market/elderlyType';
+import { provide, reactive, ref, watch } from 'vue';
+import type { ElderlyInfos, FamilyMember } from '../../api/market/elderlyType';
 import ElderlyInfo from '../../components/elderly/ElderlyInfo.vue'
 import Nowillness from '../../components/elderly/Nowillness.vue'
 import SelfCares from '../../components/elderly/SelfCares.vue'
 import Checkups from '../../components/elderly/Checkups.vue'
 import Family from '../../components/elderly/Family.vue'
+import { ElderlyAdd } from '../../api/market/elderly';
+import { ElMessage } from 'element-plus';
+import router from '../../router';
 const activeName = ref('first')
 
 // 老人表单
 let elderlyForm = reactive<ElderlyInfos>({
-  id: 0,
-  companyId: 0,
-  name: '',
-  mobile: '',
-  photo: '',
-  gender: 1,
-  birthday: '',
-  nativePlace: '',
-  nation: '',
-  idCard: '',
-  politics: '',
-  socialCard: '',
-  marriage: '',
-  eduLevel: '',
-  education: '',
-  resident: '',
-  address: '',
-  begId: 0,
-  houseId: 0,
-  state: 3,
-  addTime: '',
-  addAccountId: 0,
-  stateName: '',
-  begName: '',
-  addAccountName: '',
-  houseName: '',
-  buildingName: '',
+  name: "",
+  mobile: "",
+  photo: "",
+  gender: 0,
+  birthday: "",
+  nativePlace: "",
+  nation: "",
+  idCard: "",
+  politics: "",
+  socialCard: "",
+  marriage: "",
+  eduLevel: "",
+  education: "",
+  resident: "",
+  address: "",
   health: {
-    nowillness: '',
-    oldillness: '',
-    otherillness: '',
-    otherCase: '',
+    oldillness: "",
+    nowillness: "",
+    otherillness: "",
+    otherCase: "",
     id: 0,
     elderlyId: 0
   },
   selfCares: [],
   checkups: [],
-  family: []
+  family: [],
+  id: 0,
+  companyId: 0,
+  begId: 0,
+  houseId: 0,
+  state: 1,
+  addTime: '',
+  addAccountId: 0,
+  stateName: null,
+  begName: null,
+  addAccountName: null,
+  houseName: null,
+  buildingName: null,
 });
-
+let familyData = ref<FamilyMember[]>([]);
+provide('familyData', familyData.value)
 // 保存老人信息
 const handleSubmit = async () => {
-
+  // 为checkups数组中的每个元素添加缺失的picture属性
+  const formWithValidCheckups = {
+    ...elderlyForm,
+    checkups: elderlyForm.checkups.map(checkup => ({
+      ...checkup,
+      picture: (checkup as any).picture || ''  // 如果picture不存在，则默认为空字符串
+    }))
+  };
+  
+  let res = await ElderlyAdd(formWithValidCheckups);
+  console.log('老人添加', res);
+  ElMessage.success('新增老人成功');
+  router.push('/elderly');
 };
+
+watch(familyData.value, () => {
+  elderlyForm.family = familyData.value
+})
 </script>
 
 <style scoped lang='less'>
@@ -96,10 +116,12 @@ const handleSubmit = async () => {
 .text {
   margin-bottom: 10px;
 }
-.edit{
+
+.edit {
   margin-top: 20px;
 }
-.round{
+
+.round {
   margin-top: 20px;
 }
 </style>
