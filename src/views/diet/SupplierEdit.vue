@@ -69,7 +69,7 @@ let formRef = defineProps<{ handleSuccess: any }>()
 //     }
 //     dialogVisible.value = false
 // }
-
+// 表单验证
 const ruleFormRef = ref<FormInstance>()
 const addSipplier = async () => {
     if (!ruleFormRef.value) return

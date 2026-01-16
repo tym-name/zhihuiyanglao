@@ -59,6 +59,22 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/Elderly.vue"),
       },
       {
+        path: '/Role-edit',
+        name: 'RoleEdit',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/RoleEdit.vue')
+      },
+      {
+        path: '/Role',
+        name: 'Role',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/Role.vue')
+      },
+      {
         path: "/accountList",
         name: "AccountList",
         meta: {
@@ -116,6 +132,30 @@ const routes: Array<RouteRecordRaw> = [
         path: "/elderly-work",
         name: "ElderlyWork",
         component: () => import("../views/market/ElderlyWork.vue"),
+      },
+            {
+        path: "GoOut",
+        name: "GoOut",
+        meta: {
+          title: "外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/GoOut.vue"),
+      },
+      {
+        path: "addGoOut",
+        name: "addGoOut",
+        meta: {
+          title: "新增外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/addGoOut.vue"),
+      },
+      {
+        path: "/priceanalysis",
+        name: "PriceAnalysis",
+        props: true,
+        component: () => import("../views/diet/PriceAnalysis.vue"),
       },
     ],
   },
@@ -200,7 +240,6 @@ router.beforeEach(async (to, from) => {
     console.log("路由列表", router.getRoutes());
 
     let path = to.redirectedFrom?.fullPath || to.fullPath;
-    console.log(path,'path');
     
     return path;
     } catch (error) {

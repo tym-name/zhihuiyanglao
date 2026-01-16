@@ -17,7 +17,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="search">查询</el-button>
+                <el-button type="primary">查询</el-button>
                 <el-button @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
@@ -126,9 +126,6 @@ const reset = async () => {
 }
 // 查询
 const tableRef = ref()
-const search = async () => {
-    tableRef.value.refresh()
-}
 // 
 const goToDetail = (id: string | number) => {
     router.push({

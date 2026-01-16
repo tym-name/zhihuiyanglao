@@ -2,7 +2,7 @@
   <div class="table-container">
     <!-- 搜索卡片 -->
     <el-card v-if="$slots.search" class="search-card" shadow="never">
-      <slot name="search"></slot>
+      <slot name="search"> </slot>
     </el-card>
 
     <!-- 表格卡片 -->
@@ -17,7 +17,6 @@
         :style="{ width: tableWidth }" v-loading="isLoading" stripe>
         <!-- 选择列（通过配置控制显示） -->
         <el-table-column v-if="showSelectionColumn" type="selection" width="55" fixed="left" />
-
         <!-- 动态列渲染 -->
         <el-table-column v-for="column in columns" :key="column.prop || column.label" :type="column.type"
           :fixed="column.fixed" :prop="column.prop" :label="column.label" :width="column.width"
@@ -39,8 +38,6 @@
               :preview-src-list="[getImageUrl(scope.row[column.image!])]" show-progress fit="cover" />
             <span v-else>暂无图片</span>
           </template>
-
-
         </el-table-column>
       </el-table>
 
