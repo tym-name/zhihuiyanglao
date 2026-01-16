@@ -172,7 +172,7 @@ router.beforeEach(async (to, from) => {
 
   // 无token则跳转登录页
   if (!token) {
-     return "/login";
+    return "/login";
   }
 
   // 核心优化1：判断是否已添加动态路由，避免重复添加

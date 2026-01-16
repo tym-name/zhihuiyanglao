@@ -44,6 +44,3 @@ export interface PurchaseFoodItem {
     supplierName: null;
 };
 
-interface purchaseFoodsData {
-    list: Array<PurchaseFoodItem>;
-};
