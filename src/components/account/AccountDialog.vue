@@ -55,7 +55,7 @@ const dialogTitle = computed(() => {
 
 const VITE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
-const imageUrl = VITE_BASE_URL + '/api/upload/add';
+const imageUrl = VITE_BASE_URL + 'upload/add';
 
 // 表单
 const ruleFormRef = ref<FormInstance>()

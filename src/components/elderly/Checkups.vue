@@ -44,7 +44,7 @@ const values = defineModel<Checkup[]>({ default: () => [] })
 // 2. 环境变量获取
 const VITE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const VITE_IMG_URL = import.meta.env.VITE_API_BASE_URL; // 修正：图片预览地址通常与接口地址一致，可根据实际调整
-const imageUrl = VITE_BASE_URL + '/api/upload/add';
+const imageUrl = VITE_BASE_URL + '/upload/add';
 
 // 3. 表格列表数据（确保 IllnessItem 类型包含 id、name、picture 字段）
 const list = ref<IllnessItem[]>([])

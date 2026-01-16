@@ -10,7 +10,7 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
-const keepAlivePages=["company"]
+const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/market/ElderlyEdit.vue"),
       },
-            {
+      {
         path: "/elderly",
         name: "Elderly",
         meta: {
@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/system/RoleAdd.vue"),
       },
-            {
+      {
         path: "/address",
         name: "Address",
         meta: {
@@ -106,6 +106,16 @@ const routes: Array<RouteRecordRaw> = [
         },
         props: true,
         component: () => import("../views/diet/PurchaseDetail.vue"),
+      },
+      {
+        path: "/elderly-records",
+        name: "ElderlyRecords",
+        component: () => import("../views/market/ElderlyRecords.vue"),
+      },
+      {
+        path: "/elderly-work",
+        name: "ElderlyWork",
+        component: () => import("../views/market/ElderlyWork.vue"),
       },
     ],
   },
@@ -138,60 +148,61 @@ router.beforeEach(async (to, from) => {
 
   // 无token则跳转登录页
   if (!token) {
-    // return "/login";
+    return "/login";
   }
 
   // 核心优化1：判断是否已添加动态路由，避免重复添加
   if (!hasAddedDynamicRoutes) {
     try {
-      //  获取权限列表
-      const res = await authStore.getMenu();
-      console.log("权限列表", res);
-
-      // 动态添加路由
-      res.forEach((item) => {
-        item.children.forEach((child) => {
-          if (child.pathName) {
-            const component =
-              modules[`../views/${item.url}/${child.pathName}.vue`];
-            if (!component) return; // 避免组件不存在导致报错
-            console.log(
-              `${child.name}../views/${item.url}/${child.pathName}.vue`,
-              `${item.url}/${child.url}`
-            );
-            router.addRoute("Home", {
-              path: `/${item.url}/${child.url}`,
-              name: child.url + child.id,
-              meta: {
-                menuColor: "#4080FF",
-                path: item.children[0].url,
+    //  获取权限列表
+    const res = await authStore.getMenu();
+    console.log("权限列表", res);
+   
+    // 动态添加路由
+    res.forEach((item) => {
+      item.children.forEach((child) => {
+        if (child.pathName) {
+          const component =
+            modules[`../views/${item.url}/${child.pathName}.vue`];
+          if (!component) return; // 避免组件不存在导致报错
+          console.log(
+            `${child.name}../views/${item.url}/${child.pathName}.vue`,
+            `${item.url}/${child.url}`
+          );
+          router.addRoute("Home", {
+            path: `/${item.url}/${child.url}`,
+            name: child.url + child.id,
+            meta: {
+              menuColor: "#4080FF",
+              path: item.children[0].url,
+              name: item.name,
+              childrenName: child.name,
+              pathBtn: child.url,
+              menusFath: item.url,
+              keepAlive: keepAlivePages.includes(item.url),
+              parent: {
                 name: item.name,
-                childrenName: child.name,
-                pathBtn: child.url,
-                menusFath: item.url,
-                keepAlive:keepAlivePages.includes(item.url),
-                parent: {
-                  name: item.name,
-                  url: "/care/" + `${item.url}/${child.url}`,
-                }, // 修复parent.url中parent未定义的问题
-                current: {
-                  name: child.name,
-                  url: "/care/" + `${item.url}/${child.url}`,
-                },
+                url: "/care/" + `${item.url}/${child.url}`,
+              }, // 修复parent.url中parent未定义的问题
+              current: {
+                name: child.name,
+                url: "/care/" + `${item.url}/${child.url}`,
               },
-              component: component,
-            });
-          }
-        });
+            },
+            component: component,
+          });
+        }
       });
-      
+    });
 
-      // 标记动态路由已添加，防止重复执行
-      hasAddedDynamicRoutes = true;
-      console.log("路由列表", router.getRoutes());
+    // 标记动态路由已添加，防止重复执行
+    hasAddedDynamicRoutes = true;
+    console.log("路由列表", router.getRoutes());
 
-      let path = to.redirectedFrom?.fullPath || to.fullPath;
-      return path;
+    let path = to.redirectedFrom?.fullPath || to.fullPath;
+    console.log(path,'path');
+    
+    return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);
       // 异常时清除token并跳转登录

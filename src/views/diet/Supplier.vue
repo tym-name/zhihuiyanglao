@@ -23,7 +23,7 @@
 import { ref } from "vue";
 import Table, { type TableColumn } from "../../components/table.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { supplierDelete, supplierDeleteAll, supplierGet, supplierList } from "../../api/supplier/Supplier";
+import { supplierDelete, supplierDeleteAll, supplierList } from "../../api/supplier/Supplier";
 import type { supplier, SupplierItem } from "../../api/supplier/SupplierType";
 import SupplierEdit from "./SupplierEdit.vue";
 import SupplierUpdate from "./SupplierUpdate.vue";

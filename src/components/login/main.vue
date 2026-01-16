@@ -66,8 +66,8 @@ const captchaImage = ref()
 
 const loginFormRef = ref<FormInstance | undefined>(undefined)
 const ruleForm = reactive<RuleForm>({
-    username: '',
-    pwd: '',
+    username: 'cpglyzh',
+    pwd: 'cpglyzh',
     verifyCode: '',
     verifyCodeId: ''
 })
