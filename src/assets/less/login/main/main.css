@@ -10,7 +10,6 @@
 #Main .login_form {
   width: 400px;
   height: 480px;
-  padding: 30px;
   box-sizing: border-box;
 }
 #Main .login_form .form_title {

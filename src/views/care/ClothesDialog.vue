@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import type { ClothesList } from '../../api/clothes/clothesType';
 
 const form = reactive<ClothesList>({

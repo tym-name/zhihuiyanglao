@@ -1,13 +1,12 @@
-import http from "../../utile/request";
+import http from "../../utils/request";
 import type {
-  PermissionItem,
   PermissionResponseData,
   RoleResponse,
   RoleType,
 } from "./examType";
 
 export const getRoleList = (params: RoleType) =>
-  http.get<RoleResponse>("/api/role/list", params);
+  http.get<RoleResponse>("/role/list", params);
 
 export const MenuList = () =>
-  http.get<PermissionResponseData>("/api/menu/list");
+  http.get<PermissionResponseData>("/menu/list");

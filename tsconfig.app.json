@@ -9,7 +9,16 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    // 1. 可选：设置基础路径（配合 paths 使用，简化配置）
+    "baseUrl": ".",
+    // 2. 核心配置：映射别名到实际目录（与 vite.config.ts 对应）
+    "paths": {
+      "@/*": ["./src/*"], // @/* 匹配 src 下所有文件/子目录
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@api/*": ["./src/api/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

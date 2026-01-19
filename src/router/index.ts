@@ -22,6 +22,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/login/Login.vue"),
   },
   {
+    path: "/worldmap",
+    name: "WorldMap",
+    component: () => import("../components/form/WorldMap.vue"),
+  },
+  {
+    path: "/baidumap",
+    name: "BaiduMap",
+    component: () => import("../components/form/BaiduMap.vue"),
+  },
+  {
     path: "/",
     name: "Home",
     component: () => import("../views/home/Home.vue"),
@@ -167,7 +177,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/dist'),
   routes,
 });
 

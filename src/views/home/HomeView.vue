@@ -32,7 +32,6 @@ import Institution from '../../components/homeView/institution.vue';
 </script>
 
 <style scoped lang='less'>
-@import url('../../assets/less/home/homeView/homeView.less');
 
 .echarts {
     width: 100%;

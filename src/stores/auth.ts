@@ -14,6 +14,8 @@ export const useAuthStore = defineStore(
     const meuns = ref<MenuItem[]>([]);
     //刷新token
     const refreshToken = ref<string>("");
+    //登录接口返回的model数据
+    const model = ref<any>({});
     //登录
     const userLogin = async (data: LoginPayload) => {
       try {
@@ -26,11 +28,15 @@ export const useAuthStore = defineStore(
         data.pwd = sm2.doEncrypt(data.pwd, publicKey.data); //加密
 
         const res = await login(data).catch(() => undefined);
-
+        
         if (!res) return;
-
         token.value = res.data.token;
         refreshToken.value = res.data.refreshToken;
+        
+        // 保存登录接口返回的model数据
+        if (res.data.model) {
+          model.value = res.data.model;
+        }
 
         return res;
       } catch (error) {
@@ -60,6 +66,7 @@ export const useAuthStore = defineStore(
       userLogin,
       getMenu,
       refreshToken,
+      model
     };
   },
   {

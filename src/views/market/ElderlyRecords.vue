@@ -40,14 +40,14 @@
                 <el-table-column label="操作" align="center" width="120">
                   <template #default="scope"> <!-- 关键：接收 scope，获取当前行 scope.row -->
         <uploads 
-            v-model="Image"
+            v-model="currentImage"
             :baseUrl="VITE_IMG_URL"
             :uploadUrl="imageUrl"
             :isText="true"
+            @success="handleUploadSuccess(scope.row)"
         >
             <template #upload-text>
-                <!-- 关键：点击上传时，传递当前行数据 scope.row 给事件处理函数 -->
-                <el-button type="primary" size="small" @click="getelderlyFilesAdd(scope.row)">上传图片</el-button>
+                <el-button type="primary" size="small">上传图片</el-button>
             </template>
         </uploads>
     </template>
@@ -75,7 +75,7 @@ const imageUrl = VITE_BASE_URL + '/upload/add';
 const route = useRoute();
 const elderlyId = ref<number>(0);
 const fileList = ref<FormItem[]>([]);
-const Image = ref<string>('');
+const currentImage = ref<string>(''); // 当前上传的图片URL
 
 onMounted(async () => {
     const id = route.query.id || route.params.id;
@@ -88,11 +88,11 @@ onMounted(async () => {
     fileList.value = fileitems.data.list;
 });
 
-// 修改：接收当前表格行参数 currentRow
-const getelderlyFilesAdd = async (currentRow: FormItem) => {
-    // 2. 提取所需参数（核心：收集 elderlyId、currentRow.name、fileName）
-    // 提取 fileName：从 Image.value（完整文件路径）中截取文件名（也可根据实际上传结果调整）
-    const fileName = Image.value.substring(Image.value.lastIndexOf('/') + 1);
+// 文件上传成功后调用
+const handleUploadSuccess = async (currentRow: FormItem) => {
+    // 从上传成功的图片URL中提取文件名
+    const fileName = currentImage.value.substring(currentImage.value.lastIndexOf('/') + 1);
+    
     // 构造接口请求参数
     const uploadParams: FileItemDetail = {
         elderlyId: elderlyId.value, // 当前老人ID
@@ -102,18 +102,18 @@ const getelderlyFilesAdd = async (currentRow: FormItem) => {
     };
 
     try {
-        // 3. 调用上传接口，提交参数
+        // 调用上传接口，提交参数
         const res = await elderlyFilesAdd(uploadParams);
         console.log('文件上传关联成功', res);
 
-        // 4. 更新表格对应行的 fileName（视图实时刷新）
+        // 更新表格对应行的 fileName（视图实时刷新）
         const rowIndex = fileList.value.findIndex(item => item.id === currentRow.id);
         if (rowIndex !== -1) {
             fileList.value[rowIndex].fileName = fileName;
         }
 
-        // 5. 清空上传缓存（可选，避免下次上传携带旧文件）
-        Image.value = '';
+        // 清空上传缓存
+        currentImage.value = '';
     } catch (error) {
         console.error('文件上传关联失败', error);
     }

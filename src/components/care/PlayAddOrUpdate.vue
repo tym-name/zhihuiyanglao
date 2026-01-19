@@ -15,8 +15,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
-import { ElMessageBox } from 'element-plus'
+import { ref } from 'vue';
 
 const props = defineProps<{
     open: boolean
@@ -25,15 +24,6 @@ const props = defineProps<{
 
 const dialogVisible = ref(false)
 
-const handleClose = (done: () => void) => {
-    ElMessageBox.confirm('Are you sure to close this dialog?')
-        .then(() => {
-            done()
-        })
-        .catch(() => {
-            // catch error
-        })
-}
 </script>
 
 <style scoped lang='less'></style>
