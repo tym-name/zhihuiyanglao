@@ -98,12 +98,6 @@ const rules = reactive<FormRules<FoodPriceType>>({
         { required: true, message: '请输入采购价', trigger: 'blur' },
     ]
 })
-
-
-
-
-
-
 const update = async () => {
     // 第一步：先校验表单
     if (!ruleFormRef.value) return
