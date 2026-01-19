@@ -23,7 +23,7 @@
                 {{ form.content }}
             </el-form-item>
             <el-form-item label="图片：" v-model="form.pictures">
-                
+
             </el-form-item>
         </el-form>
         <template #footer>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import type { ClothesList } from '../../api/clothes/clothesType';
 
 const form = reactive<ClothesList>({

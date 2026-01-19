@@ -10,7 +10,7 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
-const keepAlivePages=["company"]
+const keepAlivePages = ["company"]
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/market/ElderlyEdit.vue"),
       },
-            {
+      {
         path: "/elderly",
         name: "Elderly",
         meta: {
@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/system/RoleAdd.vue"),
       },
-            {
+      {
         path: "/address",
         name: "Address",
         meta: {
@@ -106,6 +106,52 @@ const routes: Array<RouteRecordRaw> = [
         },
         props: true,
         component: () => import("../views/diet/PurchaseDetail.vue"),
+      },
+      {
+        path: "/discharge",
+        name: "discharge",
+        meta: {
+          title: "出院管理",
+        },
+        props: true,
+        component: () => import("../views/market/Discharge.vue"),
+      },
+      // 
+      {
+        path: "position-edit/:id",
+        name: "position-edit/:id",
+        meta: {
+          title: "修改岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/position-add",
+        name: "AddPost",
+        meta: {
+          title: "新增岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/staff-add",
+        name: "staff-ad",
+        meta: {
+          title: "新增护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
+        path: "/staff-edit/:id",
+        name: "AddStaff",
+        meta: {
+          title: "编辑护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
       },
     ],
   },
@@ -169,7 +215,7 @@ router.beforeEach(async (to, from) => {
                 childrenName: child.name,
                 pathBtn: child.url,
                 menusFath: item.url,
-                keepAlive:keepAlivePages.includes(item.url),
+                keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
                   url: "/care/" + `${item.url}/${child.url}`,
@@ -184,7 +230,7 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
-      
+
 
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;

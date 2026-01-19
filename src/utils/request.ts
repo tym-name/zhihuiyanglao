@@ -13,27 +13,27 @@ export interface ApiResponse<T> {
 }
 
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8'
-  }
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+    }
 })
 
 //请求拦截
 service.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const authStore = useAuthStore()
-    const token = authStore.token
-    if (token && config.headers) {
-      config.headers.Authorization = `${token}`
+    (config: InternalAxiosRequestConfig) => {
+        const authStore = useAuthStore()
+        const token = authStore.token
+        if (token && config.headers) {
+            config.headers.Authorization = `${token}`
+        }
+        return config
+    },
+    (error: AxiosError) => {
+        console.error('请求错误:', error)
+        return Promise.reject(error)
     }
-    return config
-  },
-  (error: AxiosError) => {
-    console.error('请求错误:', error)
-    return Promise.reject(error)
-  }
 )
 let isRefreshing = false;
 
@@ -75,9 +75,7 @@ class Http {
             (response: AxiosResponse) => {
                 // 处理二进制响应 (文件下载等)
                 if (response.config.responseType === "blob") {
-
                     return response.data;
-
                 }
 
                 //特殊处理
@@ -86,9 +84,7 @@ class Http {
                 }
 
                 if (response.data.code === ResultEnum.SUCCESS) {
-
                     return response.data;
-
                 }
                 else {
                     let errorMessage = response.data.msg || "请求失败";
@@ -119,34 +115,34 @@ class Http {
             switch (error.response.status) {
                 case 401:
                     if (!isRefreshing) {
-          isRefreshing = true;
-          errorMessage = '未授权，请重新登录'
-          console.log("401");
+                        isRefreshing = true;
+                        errorMessage = '未授权，请重新登录'
+                        console.log("401");
 
 
-          return getrRfreshToken().then((res:any)=>{
+                        return getrRfreshToken().then((res: any) => {
 
-            console.log("根据刷新token获取新的token",res.data.data.refreshToken);
-            
-            const authStore = useAuthStore();
-            //新的token替换调过期token
-            authStore.token=res.data.data.token;
-            authStore.refreshToken=res.data.data.refreshToken;
- 
-            // 重新请求 实现无感刷新
-            return service(error.config!)
+                            console.log("根据刷新token获取新的token", res.data.data.refreshToken);
+
+                            const authStore = useAuthStore();
+                            //新的token替换调过期token
+                            authStore.token = res.data.data.token;
+                            authStore.refreshToken = res.data.data.refreshToken;
+
+                            // 重新请求 实现无感刷新
+                            return service(error.config!)
 
 
 
-          }).catch(()=>{
-            //刷新token失败，跳转到登录页
-            location.href="/login"
-          }).finally(()=>{
-            isRefreshing = false;
-          })
+                        }).catch(() => {
+                            //刷新token失败，跳转到登录页
+                            location.href = "/login"
+                        }).finally(() => {
+                            isRefreshing = false;
+                        })
 
-        }
-        break
+                    }
+                    break
                 case 403:
                     errorMessage = '拒绝访问'
                     break
@@ -194,7 +190,7 @@ class Http {
         return this.request({ method: 'GET', url, params })
 
     }
-    public post<T, P = Object>(url: string,  data?: P,_formData?: FormData,): Promise<ApiResponse<T>> {
+    public post<T, P = Object>(url: string, data?: P, _formData?: FormData,): Promise<ApiResponse<T>> {
         return this.request({ method: 'POST', url, data })
     }
     public delete<T, P = Object>(url: string, params?: P): Promise<ApiResponse<T>> {
@@ -209,20 +205,20 @@ class Http {
 
 }
 
-const getrRfreshToken=()=>{
+const getrRfreshToken = () => {
 
-  const authStore = useAuthStore()
-  const refreshToken = authStore.refreshToken; //从pinia中获取刷新token
+    const authStore = useAuthStore()
+    const refreshToken = authStore.refreshToken; //从pinia中获取刷新token
 
-  //获取刷新token
-  return axios.request({
-    url: '/api/account/refreshToken',
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    method: 'get',
-    headers: {
-      Authorization: refreshToken
-    }
-  })
+    //获取刷新token
+    return axios.request({
+        url: '/api/account/refreshToken',
+        baseURL: import.meta.env.VITE_API_BASE_URL,
+        method: 'get',
+        headers: {
+            Authorization: refreshToken
+        }
+    })
 
 }
 

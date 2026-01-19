@@ -32,3 +32,13 @@ export interface clothesData {
     list: Array<ClothesList>;
 };
 // 
+export interface ClothesQueryParams {
+    page?: number
+    limit?: number
+    elderlyName?: string
+    type?: string
+    state?: string
+    startTime?: string
+    endTime?: string
+}
+
