@@ -1,6 +1,7 @@
 <template>
-    <el-card style="margin-bottom: 10px;">
-        <el-form :model="form" label-width="auto" inline>
+    <Table ref="tableRef" :columns="columns" :init-params="form" :fetch-data="purchaseList">
+        <template #search>
+                    <el-form :model="form" label-width="auto" inline>
             <el-form-item label="机构名称：">
                 <el-select v-model="form.companyId" placeholder="请选择" style="width: 180px" clearable>
                     <el-option v-for="item in paramsData" :label="item.name" :value="item.name" />
@@ -20,8 +21,7 @@
                 <el-button @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
-    </el-card>
-    <Table ref="tableRef" :columns="columns" :fetch-data="purchaseList">
+        </template>
         <template #operate="{ row }">
             <el-button link type="primary" @click="goToDetail(row.id)">查看详情</el-button>
         </template>
@@ -126,7 +126,6 @@ const reset = async () => {
 }
 // 查询
 const tableRef = ref()
-
 // 
 const goToDetail = (id: string | number) => {
     router.push({

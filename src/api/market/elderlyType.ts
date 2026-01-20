@@ -3,6 +3,8 @@ export interface ElderlyType {
   pageSize?: number; // 每页条数
   name?: string;
   idCard?: string;
+  begId?: number;
+  state?:number | null;
 }
 
 // 单个人员信息的接口（对应JSON中的list数组元素）
@@ -77,6 +79,7 @@ export interface Checkup {
     id: number;
     name: string;
     val: string;
+    picture: string;
     // 其他原有字段...
 }
 
@@ -209,4 +212,57 @@ export interface IllnessItem {
  */
 export interface IllnessListResponse {
   list: IllnessItem[]; // 疾病列表数组
+}
+
+export interface BuildingType {
+  page?: number; // 当前页码
+  pageSize?: number; // 每页条数
+}
+
+export interface BuildingItem {
+  /** 唯一标识 ID */
+  id: number;
+  /** 公司 ID */
+  companyId: number;
+  /** 名称（楼栋名/单元名/楼层名） */
+  name: string;
+  /** 添加时间 */
+  addTime: string;
+  /** 添加人账户 ID */
+  addAccountId: number;
+  /** 父级 ID（pid=0 表示顶级节点，如楼栋；pid>0 表示子节点，如单元/楼层） */
+  pid: number;
+}
+
+// 定义完整的返回数据格式（包含总条数和列表）
+export interface BuildingResponse {
+  /** 数据总条数 */
+  counts: number;
+  /** 楼栋/单元/楼层列表数组 */
+  list: BuildingItem[];
+}
+
+// 定义单个表单项的接口
+export interface FormItem {
+  id: number;
+  name: string;
+  fileName:string
+}
+
+// 定义包含表单列表的根接口
+export interface FormListResponse {
+  list: FormItem[];
+}
+
+export interface FileItemDetail {
+  elderlyId: number; // 老人ID
+  fileName: string; // 文件路径/名称
+  id: number; // 项ID
+  name: string; // 项目名称（如“老人体检表”）
+}
+
+export interface RuleForm {
+  id: number
+  name: string
+  pid: number
 }

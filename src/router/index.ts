@@ -22,6 +22,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/login/Login.vue"),
   },
   {
+    path: "/worldmap",
+    name: "WorldMap",
+    component: () => import("../components/form/WorldMap.vue"),
+  },
+  {
+    path: "/baidumap",
+    name: "BaiduMap",
+    component: () => import("../components/form/BaiduMap.vue"),
+  },
+  {
     path: "/",
     name: "Home",
     component: () => import("../views/home/Home.vue"),
@@ -57,6 +67,22 @@ const routes: Array<RouteRecordRaw> = [
           title: "新增老人",
         },
         component: () => import("../views/market/Elderly.vue"),
+      },
+      {
+        path: '/Role-edit',
+        name: 'RoleEdit',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/RoleEdit.vue')
+      },
+      {
+        path: '/Role',
+        name: 'Role',
+        meta: {
+          title: "新增角色",
+        },
+        component: () => import('../views/system/Role.vue')
       },
       {
         path: "/accountList",
@@ -153,6 +179,40 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/personel/AddStaff.vue"),
       },
+      {
+        path: "/elderly-records",
+        name: "ElderlyRecords",
+        component: () => import("../views/market/ElderlyRecords.vue"),
+      },
+      {
+        path: "/elderly-work",
+        name: "ElderlyWork",
+        component: () => import("../views/market/ElderlyWork.vue"),
+      },
+      {
+        path: "GoOut",
+        name: "GoOut",
+        meta: {
+          title: "外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/GoOut.vue"),
+      },
+      {
+        path: "addGoOut",
+        name: "addGoOut",
+        meta: {
+          title: "新增外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/addGoOut.vue"),
+      },
+      {
+        path: "/priceanalysis",
+        name: "PriceAnalysis",
+        props: true,
+        component: () => import("../views/diet/PriceAnalysis.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -163,7 +223,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/dist'),
   routes,
 });
 
@@ -184,7 +244,7 @@ router.beforeEach(async (to, from) => {
 
   // 无token则跳转登录页
   if (!token) {
-    // return "/login";
+    return "/login";
   }
 
   // 核心优化1：判断是否已添加动态路由，避免重复添加
@@ -218,6 +278,18 @@ router.beforeEach(async (to, from) => {
                 keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
+                  childrenName: child.name,
+                  pathBtn: child.url,
+                  menusFath: item.url,
+                  keepAlive: keepAlivePages.includes(item.url),
+                  parent: {
+                    name: item.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  }, // 修复parent.url中parent未定义的问题
+                  current: {
+                    name: child.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  },
                   url: "/care/" + `${item.url}/${child.url}`,
                 }, // 修复parent.url中parent未定义的问题
                 current: {
@@ -230,13 +302,12 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
-
-
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());
 
       let path = to.redirectedFrom?.fullPath || to.fullPath;
+
       return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);

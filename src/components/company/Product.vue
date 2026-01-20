@@ -129,7 +129,7 @@ import { ElMessage } from 'element-plus';
 
 const VITE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
-const imageUrl = VITE_BASE_URL + '/api/upload/add';
+const imageUrl = VITE_BASE_URL + '/upload/add';
 
 // 1. 定义双向绑定的表单数据（扩展cityInfo存储省市）
 const data = defineModel<CompanyInfo & {

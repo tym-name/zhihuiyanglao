@@ -1,7 +1,7 @@
 <template>
     <div class="summary_box">
         <div class="left">
-            <img src="../../assets/image/login/header.jpg" alt="" class="header">
+            <img src="../../assets/image/login/imgCode.png" alt="" class="header">
             <div class="tips_box">
                 <p class="username">晚上好! admin</p>
                 <div class="tips">
@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
 </script>
 
 <style scoped lang='less'>

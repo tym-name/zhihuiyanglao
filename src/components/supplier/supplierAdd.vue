@@ -19,7 +19,7 @@
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
 
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormRules } from 'element-plus'
 
 const dialogFormVisible = ref(false)
 
@@ -29,7 +29,6 @@ interface RuleForm {
     mobile: string
 }
 
-const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
     name: '',
     linkMan: '',
