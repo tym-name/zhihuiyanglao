@@ -20,8 +20,8 @@
 
 <script setup lang='ts'>
 import { onMounted, reactive, ref } from 'vue';
-import { menuList, roleAdd } from '../../api/role';
-import type { MenuItem, RolePermission } from '../../api/roleList';
+import { menuList, roleAdd } from '../../api/role/role';
+import type { MenuItem, RolePermission } from '../../api/role/roleType';
 import { ElMessage } from 'element-plus';
 import router from '../../router';
 

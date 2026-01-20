@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 5100928 */
-  src: url('src/assets/iconfont/iconfont.woff2?t=1767407796527') format('woff2'),
-       url('src/assets/iconfont/iconfont.woff?t=1767407796527') format('woff'),
-       url('src/assets/iconfont/iconfont.ttf?t=1767407796527') format('truetype');
+  src: url('iconfont.woff2?t=1768821654816') format('woff2'),
+       url('iconfont.woff?t=1768821654816') format('woff'),
+       url('iconfont.ttf?t=1768821654816') format('truetype');
 }
 
 .iconfont {
@@ -13,7 +13,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-gouwuchekong:before {
+.icon-role:before {
+  content: "\e616";
+}
+
+.icon-nursingservice:before {
+  content: "\e60c";
+}
+
+.icon-personnel:before {
+  content: "\e622";
+}
+
+.icon-goout:before {
+  content: "\e640";
+}
+
+.icon-quanping:before {
+  content: "\e7cf";
+}
+
+.icon-market:before {
   content: "\e604";
 }
 
@@ -21,15 +41,15 @@
   content: "\e605";
 }
 
-.icon-jiadiantiwenji:before {
+.icon-temperature:before {
   content: "\e9ba";
 }
 
-.icon-fangxingguanli:before {
+.icon-housetype:before {
   content: "\e606";
 }
 
-.icon-iconxt:before {
+.icon-sugar:before {
   content: "\e60e";
 }
 
@@ -37,7 +57,7 @@
   content: "\e624";
 }
 
-.icon-liaotian:before {
+.icon-comfort:before {
   content: "\e60f";
 }
 
@@ -49,35 +69,31 @@
   content: "\e63f";
 }
 
-.icon-ic_reserve:before {
+.icon-reserve:before {
   content: "\e611";
 }
 
-.icon-bumen:before {
+.icon-department:before {
   content: "\e64e";
 }
 
-.icon-lunyi:before {
+.icon-nurse:before {
   content: "\e610";
 }
 
-.icon-quanping:before {
-  content: "\e66a";
-}
-
-.icon-ico_yiyuanguanjia_banliruyuan:before {
+.icon-hospitalized:before {
   content: "\e93e";
 }
 
-.icon-ico_yunyingguanli_quxiaochuyuan:before {
+.icon-discharge:before {
   content: "\e954";
 }
 
-.icon-kehu:before {
+.icon-client:before {
   content: "\e625";
 }
 
-.icon-xieya:before {
+.icon-blood:before {
   content: "\e6f2";
 }
 
@@ -85,15 +101,15 @@
   content: "\e613";
 }
 
-.icon-zixun:before {
+.icon-zxdj:before {
   content: "\e636";
 }
 
-.icon-chakan:before {
+.icon-doctor:before {
   content: "\e620";
 }
 
-.icon-fangjianweihu:before {
+.icon-house:before {
   content: "\e659";
 }
 
@@ -101,43 +117,43 @@
   content: "\e7eb";
 }
 
-.icon-dizhiben:before {
+.icon-address:before {
   content: "\e65a";
 }
 
-.icon-sp-chayihuayunweiguanli-yexun:before {
+.icon-nightwatch:before {
   content: "\e8ce";
 }
 
-.icon-gangweiguanli:before {
+.icon-post:before {
   content: "\e6a4";
 }
 
-.icon-loufang:before {
+.icon-building:before {
   content: "\e614";
 }
 
-.icon-gengduo:before {
+.icon-config:before {
   content: "\e69a";
 }
 
-.icon-xiyiji:before {
+.icon-laundry:before {
   content: "\e8c8";
 }
 
-.icon-yiliao_jizhenxiang_yiliaoxiang_yaopin_xiangzi:before {
+.icon-medicalcare:before {
   content: "\e850";
 }
 
-.icon-dengji:before {
+.icon-supplier:before {
   content: "\e615";
 }
 
-.icon-hugongguanli:before {
+.icon-carer:before {
   content: "\e609";
 }
 
-.icon-capsule-fill:before {
+.icon-register:before {
   content: "\e807";
 }
 
@@ -145,7 +161,7 @@
   content: "\e60b";
 }
 
-.icon-user:before {
+.icon-purchase:before {
   content: "\e602";
 }
 
@@ -161,7 +177,7 @@
   content: "\e678";
 }
 
-.icon-icon-zhanghao:before {
+.icon-zhanghao:before {
   content: "\e617";
 }
 
@@ -173,7 +189,7 @@
   content: "\e840";
 }
 
-.icon-crossed-knife-and-fork:before {
+.icon-shicai:before {
   content: "\e603";
 }
 
@@ -185,15 +201,15 @@
   content: "\e650";
 }
 
-.icon-xiangqing:before {
+.icon-meals:before {
   content: "\e633";
 }
 
-.icon-shezhi:before {
+.icon-set:before {
   content: "\e696";
 }
 
-.icon-icon-role:before {
+.icon-staff:before {
   content: "\ea3c";
 }
 
@@ -201,7 +217,7 @@
   content: "\e60a";
 }
 
-.icon-fenlei:before {
+.icon-fenjigoulist:before {
   content: "\e61b";
 }
 
@@ -237,7 +253,7 @@
   content: "\e634";
 }
 
-.icon-laoren:before {
+.icon-oldy:before {
   content: "\100dd";
 }
 
@@ -277,7 +293,7 @@
   content: "\e619";
 }
 
-.icon-chuangwei:before {
+.icon-bed:before {
   content: "\e739";
 }
 

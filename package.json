@@ -11,7 +11,9 @@
   "dependencies": {
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
+    "@amap/amap-jsapi-loader": "^1.0.1",
     "axios": "^1.13.2",
+    "build": "^0.1.4",
     "echarts": "^6.0.0",
     "element-plus": "^2.13.0",
     "less": "^4.5.1",
@@ -24,12 +26,13 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@types/node": "^25.0.8",
+    "@types/node": "^25.0.9",
     "@types/sm-crypto": "^0.3.4",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
     "vite": "^7.0.4",
-    "vue-tsc": "^2.2.12"
+    "vue-tsc": "^2.2.12",
+    "vue-wxlogin": "^1.0.5"
   }
 }

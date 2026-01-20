@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { CaptchaData, LoginPayload, LoginResponse, MenuList } from '../index/indexType'
+import type { CaptchaData, LoginPayload, LoginResponse, MenuList, UpdatePwd } from '../index/indexType'
 
 /**
  * 获取图形验证码
@@ -24,4 +24,10 @@ export const login = (data: LoginPayload) => http.post<LoginResponse>('/auth/log
  * 
  */
 export const menu = () => http.get<MenuList>('/menu/list')
+
+/**
+ * 修改密码
+ * 
+ */
+export const updatePwd = (data: UpdatePwd) => http.put('/account/updatePwd', data)
 

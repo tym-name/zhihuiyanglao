@@ -48,7 +48,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, type FormRules, type ElForm } from 'element-plus';
 import type { ElderlyOutingItem, GoOutInfo } from '../../api/goout/gooutType';
 import Relation from '../../components/form/Relation.vue'
-import { goOutadd, goOutUpdate } from '../../api/goout/goout';
+import { goOutGetElderly, goOutUpdate } from '../../api/goout/goout';
 
 // 路由实例
 const route = useRoute();
@@ -126,7 +126,7 @@ const rules = reactive<FormRules<GoOutInfo>>({
     startTime: [
         { required: true, message: '请选择外出时间', trigger: 'change' },
         {
-            validator: (rule, value, callback) => {
+            validator: (_rule, _value, callback) => {
                 if (!ruleForm.startTime || !ruleForm.endTime) {
                     callback(new Error('请完整选择开始和结束时间'));
                 } else if (new Date(ruleForm.startTime) > new Date(ruleForm.endTime)) {
@@ -236,7 +236,7 @@ const sub = async () => {
             }
         } else {
             // 新增模式：调用添加接口
-            const res = await goOutadd(submitData);
+            const res = await goOutGetElderly(submitData);
             console.log('添加外出登记信息', res);
 
             if (res.code === 10000) {

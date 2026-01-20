@@ -10,7 +10,7 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
-const keepAlivePages = ["company"];
+const keepAlivePages = ["company"]
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,6 +20,16 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     },
     component: () => import("../views/login/Login.vue"),
+  },
+  {
+    path: "/worldmap",
+    name: "WorldMap",
+    component: () => import("../components/form/WorldMap.vue"),
+  },
+  {
+    path: "/baidumap",
+    name: "BaiduMap",
+    component: () => import("../components/form/BaiduMap.vue"),
   },
   {
     path: "/",
@@ -124,6 +134,52 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/diet/PurchaseDetail.vue"),
       },
       {
+        path: "/discharge",
+        name: "discharge",
+        meta: {
+          title: "出院管理",
+        },
+        props: true,
+        component: () => import("../views/market/Discharge.vue"),
+      },
+      // 
+      {
+        path: "position-edit/:id",
+        name: "position-edit/:id",
+        meta: {
+          title: "修改岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/position-add",
+        name: "AddPost",
+        meta: {
+          title: "新增岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/staff-add",
+        name: "staff-ad",
+        meta: {
+          title: "新增护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
+        path: "/staff-edit/:id",
+        name: "AddStaff",
+        meta: {
+          title: "编辑护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
         path: "/elderly-records",
         name: "ElderlyRecords",
         component: () => import("../views/market/ElderlyRecords.vue"),
@@ -133,7 +189,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "ElderlyWork",
         component: () => import("../views/market/ElderlyWork.vue"),
       },
-            {
+      {
         path: "GoOut",
         name: "GoOut",
         meta: {
@@ -167,7 +223,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/dist'),
   routes,
 });
 
@@ -194,54 +250,65 @@ router.beforeEach(async (to, from) => {
   // 核心优化1：判断是否已添加动态路由，避免重复添加
   if (!hasAddedDynamicRoutes) {
     try {
-    //  获取权限列表
-    const res = await authStore.getMenu();
-    console.log("权限列表", res);
-   
-    // 动态添加路由
-    res.forEach((item) => {
-      item.children.forEach((child) => {
-        if (child.pathName) {
-          const component =
-            modules[`../views/${item.url}/${child.pathName}.vue`];
-          if (!component) return; // 避免组件不存在导致报错
-          console.log(
-            `${child.name}../views/${item.url}/${child.pathName}.vue`,
-            `${item.url}/${child.url}`
-          );
-          router.addRoute("Home", {
-            path: `/${item.url}/${child.url}`,
-            name: child.url + child.id,
-            meta: {
-              menuColor: "#4080FF",
-              path: item.children[0].url,
-              name: item.name,
-              childrenName: child.name,
-              pathBtn: child.url,
-              menusFath: item.url,
-              keepAlive: keepAlivePages.includes(item.url),
-              parent: {
+      //  获取权限列表
+      const res = await authStore.getMenu();
+      console.log("权限列表", res);
+
+      // 动态添加路由
+      res.forEach((item) => {
+        item.children.forEach((child) => {
+          if (child.pathName) {
+            const component =
+              modules[`../views/${item.url}/${child.pathName}.vue`];
+            if (!component) return; // 避免组件不存在导致报错
+            console.log(
+              `${child.name}../views/${item.url}/${child.pathName}.vue`,
+              `${item.url}/${child.url}`
+            );
+            router.addRoute("Home", {
+              path: `/${item.url}/${child.url}`,
+              name: child.url + child.id,
+              meta: {
+                menuColor: "#4080FF",
+                path: item.children[0].url,
                 name: item.name,
-                url: "/care/" + `${item.url}/${child.url}`,
-              }, // 修复parent.url中parent未定义的问题
-              current: {
-                name: child.name,
-                url: "/care/" + `${item.url}/${child.url}`,
+                childrenName: child.name,
+                pathBtn: child.url,
+                menusFath: item.url,
+                keepAlive: keepAlivePages.includes(item.url),
+                parent: {
+                  name: item.name,
+                  childrenName: child.name,
+                  pathBtn: child.url,
+                  menusFath: item.url,
+                  keepAlive: keepAlivePages.includes(item.url),
+                  parent: {
+                    name: item.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  }, // 修复parent.url中parent未定义的问题
+                  current: {
+                    name: child.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  },
+                  url: "/care/" + `${item.url}/${child.url}`,
+                }, // 修复parent.url中parent未定义的问题
+                current: {
+                  name: child.name,
+                  url: "/care/" + `${item.url}/${child.url}`,
+                },
               },
-            },
-            component: component,
-          });
-        }
+              component: component,
+            });
+          }
+        });
       });
-    });
+      // 标记动态路由已添加，防止重复执行
+      hasAddedDynamicRoutes = true;
+      console.log("路由列表", router.getRoutes());
 
-    // 标记动态路由已添加，防止重复执行
-    hasAddedDynamicRoutes = true;
-    console.log("路由列表", router.getRoutes());
+      let path = to.redirectedFrom?.fullPath || to.fullPath;
 
-    let path = to.redirectedFrom?.fullPath || to.fullPath;
-    
-    return path;
+      return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);
       // 异常时清除token并跳转登录

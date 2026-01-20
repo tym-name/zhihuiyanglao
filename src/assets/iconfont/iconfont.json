@@ -6,9 +6,44 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3161597",
+      "name": "管理员_角色管理",
+      "font_class": "role",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "17074624",
+      "name": "follow",
+      "font_class": "nursingservice",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "10577584",
+      "name": "人事行政管理",
+      "font_class": "personnel",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "20521814",
+      "name": "外出登记",
+      "font_class": "goout",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "25537528",
+      "name": "全屏",
+      "font_class": "quanping",
+      "unicode": "e7cf",
+      "unicode_decimal": 59343
+    },
+    {
       "icon_id": "1306",
       "name": "购物车空",
-      "font_class": "gouwuchekong",
+      "font_class": "market",
       "unicode": "e604",
       "unicode_decimal": 58884
     },
@@ -22,21 +57,21 @@
     {
       "icon_id": "236934",
       "name": "家电_体温计",
-      "font_class": "jiadiantiwenji",
+      "font_class": "temperature",
       "unicode": "e9ba",
       "unicode_decimal": 59834
     },
     {
       "icon_id": "441286",
       "name": "房型管理",
-      "font_class": "fangxingguanli",
+      "font_class": "housetype",
       "unicode": "e606",
       "unicode_decimal": 58886
     },
     {
       "icon_id": "643280",
       "name": "血糖",
-      "font_class": "iconxt",
+      "font_class": "sugar",
       "unicode": "e60e",
       "unicode_decimal": 58894
     },
@@ -50,7 +85,7 @@
     {
       "icon_id": "1240500",
       "name": "聊天",
-      "font_class": "liaotian",
+      "font_class": "comfort",
       "unicode": "e60f",
       "unicode_decimal": 58895
     },
@@ -71,56 +106,49 @@
     {
       "icon_id": "4734160",
       "name": "已预定",
-      "font_class": "ic_reserve",
+      "font_class": "reserve",
       "unicode": "e611",
       "unicode_decimal": 58897
     },
     {
       "icon_id": "5121532",
       "name": "部门",
-      "font_class": "bumen",
+      "font_class": "department",
       "unicode": "e64e",
       "unicode_decimal": 58958
     },
     {
       "icon_id": "5191688",
       "name": "轮椅",
-      "font_class": "lunyi",
+      "font_class": "nurse",
       "unicode": "e610",
       "unicode_decimal": 58896
     },
     {
-      "icon_id": "6263345",
-      "name": "全屏",
-      "font_class": "quanping",
-      "unicode": "e66a",
-      "unicode_decimal": 58986
-    },
-    {
       "icon_id": "6607826",
       "name": "ico_医院管家_办理入院",
-      "font_class": "ico_yiyuanguanjia_banliruyuan",
+      "font_class": "hospitalized",
       "unicode": "e93e",
       "unicode_decimal": 59710
     },
     {
       "icon_id": "6607866",
       "name": "ico_运营管理_取消出院",
-      "font_class": "ico_yunyingguanli_quxiaochuyuan",
+      "font_class": "discharge",
       "unicode": "e954",
       "unicode_decimal": 59732
     },
     {
       "icon_id": "9759222",
       "name": "客户",
-      "font_class": "kehu",
+      "font_class": "client",
       "unicode": "e625",
       "unicode_decimal": 58917
     },
     {
       "icon_id": "10056205",
       "name": "血压",
-      "font_class": "xieya",
+      "font_class": "blood",
       "unicode": "e6f2",
       "unicode_decimal": 59122
     },
@@ -134,21 +162,21 @@
     {
       "icon_id": "10652685",
       "name": "咨询",
-      "font_class": "zixun",
+      "font_class": "zxdj",
       "unicode": "e636",
       "unicode_decimal": 58934
     },
     {
       "icon_id": "11493813",
       "name": "查看",
-      "font_class": "chakan",
+      "font_class": "doctor",
       "unicode": "e620",
       "unicode_decimal": 58912
     },
     {
       "icon_id": "13483324",
       "name": "房间维护",
-      "font_class": "fangjianweihu",
+      "font_class": "house",
       "unicode": "e659",
       "unicode_decimal": 58969
     },
@@ -162,70 +190,70 @@
     {
       "icon_id": "18386489",
       "name": "地址本",
-      "font_class": "dizhiben",
+      "font_class": "address",
       "unicode": "e65a",
       "unicode_decimal": 58970
     },
     {
       "icon_id": "18530022",
       "name": "sp-差异化运维管理-夜巡",
-      "font_class": "sp-chayihuayunweiguanli-yexun",
+      "font_class": "nightwatch",
       "unicode": "e8ce",
       "unicode_decimal": 59598
     },
     {
       "icon_id": "20853332",
       "name": "岗位管理",
-      "font_class": "gangweiguanli",
+      "font_class": "post",
       "unicode": "e6a4",
       "unicode_decimal": 59044
     },
     {
       "icon_id": "21105239",
       "name": "楼房",
-      "font_class": "loufang",
+      "font_class": "building",
       "unicode": "e614",
       "unicode_decimal": 58900
     },
     {
       "icon_id": "21530549",
       "name": "更多",
-      "font_class": "gengduo",
+      "font_class": "config",
       "unicode": "e69a",
       "unicode_decimal": 59034
     },
     {
       "icon_id": "23034146",
       "name": "洗衣机",
-      "font_class": "xiyiji",
+      "font_class": "laundry",
       "unicode": "e8c8",
       "unicode_decimal": 59592
     },
     {
       "icon_id": "27066737",
       "name": "医疗_急诊箱_医疗箱_药品_箱子",
-      "font_class": "yiliao_jizhenxiang_yiliaoxiang_yaopin_xiangzi",
+      "font_class": "medicalcare",
       "unicode": "e850",
       "unicode_decimal": 59472
     },
     {
       "icon_id": "31358514",
       "name": "登记",
-      "font_class": "dengji",
+      "font_class": "supplier",
       "unicode": "e615",
       "unicode_decimal": 58901
     },
     {
       "icon_id": "36949982",
       "name": "护工管理",
-      "font_class": "hugongguanli",
+      "font_class": "carer",
       "unicode": "e609",
       "unicode_decimal": 58889
     },
     {
       "icon_id": "42230724",
       "name": "capsule-fill",
-      "font_class": "capsule-fill",
+      "font_class": "register",
       "unicode": "e807",
       "unicode_decimal": 59399
     },
@@ -239,7 +267,7 @@
     {
       "icon_id": "412050",
       "name": "user",
-      "font_class": "user",
+      "font_class": "purchase",
       "unicode": "e602",
       "unicode_decimal": 58882
     },
@@ -267,7 +295,7 @@
     {
       "icon_id": "7135509",
       "name": "user",
-      "font_class": "icon-zhanghao",
+      "font_class": "zhanghao",
       "unicode": "e617",
       "unicode_decimal": 58903
     },
@@ -288,7 +316,7 @@
     {
       "icon_id": "8931465",
       "name": "crossed-knife-and-fork",
-      "font_class": "crossed-knife-and-fork",
+      "font_class": "shicai",
       "unicode": "e603",
       "unicode_decimal": 58883
     },
@@ -309,21 +337,21 @@
     {
       "icon_id": "17735191",
       "name": "详情",
-      "font_class": "xiangqing",
+      "font_class": "meals",
       "unicode": "e633",
       "unicode_decimal": 58931
     },
     {
       "icon_id": "18379488",
       "name": "设 置",
-      "font_class": "shezhi",
+      "font_class": "set",
       "unicode": "e696",
       "unicode_decimal": 59030
     },
     {
       "icon_id": "24342653",
       "name": "user set-line",
-      "font_class": "icon-role",
+      "font_class": "staff",
       "unicode": "ea3c",
       "unicode_decimal": 59964
     },
@@ -337,7 +365,7 @@
     {
       "icon_id": "37293559",
       "name": "分类",
-      "font_class": "fenlei",
+      "font_class": "fenjigoulist",
       "unicode": "e61b",
       "unicode_decimal": 58907
     },
@@ -400,7 +428,7 @@
     {
       "icon_id": "31239755",
       "name": "老人",
-      "font_class": "laoren",
+      "font_class": "oldy",
       "unicode": "100dd",
       "unicode_decimal": 65757
     },
@@ -470,7 +498,7 @@
     {
       "icon_id": "12786366",
       "name": "床位",
-      "font_class": "chuangwei",
+      "font_class": "bed",
       "unicode": "e739",
       "unicode_decimal": 59193
     },
