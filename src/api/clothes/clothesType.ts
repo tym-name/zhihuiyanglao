@@ -42,3 +42,13 @@ export interface ClothesQueryParams {
     endTime?: string
 }
 
+// 
+export interface uploadAddData {
+    url: string;
+};
+
+export interface uploadAddResult {
+    code: number;
+    msg: string;
+    data: uploadAddData;
+};

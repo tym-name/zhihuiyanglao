@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { clothesData, ClothesList } from './clothesType';
+import type { clothesData, ClothesList, uploadAddData, uploadAddResult } from './clothesType';
 
 /**
  * 洗衣错衣
@@ -19,3 +19,5 @@ export const clothesDelete = (id: number) => http.delete(`/api/clothes/delete/${
 export const clothesDeleteAll = (ids: number[]) => http.post('/api/clothes/deleteAll', ids);
 // 编辑
 export const clothesUpdate = (params: ClothesList) => http.put<clothesData>('/api/clothes/update', params);
+// 图片
+export const uploadAdd = (params: uploadAddData) => http.post('/api/upload/add', params);
