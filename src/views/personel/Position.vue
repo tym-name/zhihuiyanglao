@@ -21,7 +21,6 @@ import { ref } from 'vue';
 import type { roleList } from '../../api/position/positionType';
 import router from '../../router';
 
-
 // 表格
 const columns: TableColumn[] = [
     {

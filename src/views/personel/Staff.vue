@@ -59,7 +59,7 @@
     </Table>
     <!-- 重置密码 -->
     <el-dialog v-model="dialogFormVisible" title="重置密码">
-        <el-form :model="ruleForm" ref="ruleFormRef">
+        <el-form :model="ruleForm" ref="ruleFormRef" label-width="auto">
             <el-form-item label="用户">
                 {{ selectedStaff?.name }}
             </el-form-item>
@@ -73,7 +73,7 @@
             </el-form-item>
         </el-form>
         <template #footer>
-            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button @click="resetForm(ruleFormRef)">取消</el-button>
             <el-button type="primary" @click="submitForm(ruleFormRef)">
                 确定
             </el-button>
@@ -347,11 +347,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 ElMessage.success('密码重置成功')
                 dialogFormVisible.value = false
                 formEl.resetFields()
+                tableRef.value?.refresh()
             } catch (error) {
-                console.error('重置密码失败：', error)
                 ElMessage.error('密码重置失败，请重试')
             }
         }
     })
+}
+const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+    dialogFormVisible.value = false
 }
 </script>

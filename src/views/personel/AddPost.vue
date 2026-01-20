@@ -11,7 +11,7 @@
         </el-form>
         <el-button @click="resetForm(ruleFormRef)">取消</el-button>
         <el-button type="primary" @click="submitForm(ruleFormRef)">
-            {{ id > 0 ? '更新' : '确定' }}
+            确定
         </el-button>
     </el-card>
 </template>
@@ -170,7 +170,7 @@ const buildTree = (list: getListForUserList[]): any[] => {
 }
 
 // 处理树节点选中
-const handleTreeCheck = (checkedNode: any, checkedInfo: any) => {
+const handleTreeCheck = (checkedInfo: any) => {
     // 现在能正确获取选中状态信息
     const { checkedKeys, halfCheckedKeys } = checkedInfo
     // 合并选中的和半选的节点（保持你原有的业务逻辑）
@@ -186,8 +186,6 @@ const handleTreeCheck = (checkedNode: any, checkedInfo: any) => {
 // 获取岗位详情（编辑模式） - 使用列表接口获取单个岗位
 const getRoleDetail = async () => {
     try {
-        console.log('开始获取岗位详情，ID:', id)
-
         const params = {
             id: id,
             name: '',
@@ -209,13 +207,11 @@ const getRoleDetail = async () => {
                 // 填充表单基础数据（保持不变）
                 forms.id = roleData.id
                 forms.name = roleData.name
-                forms.companyId = roleData.companyId || 0
-                forms.addAccountId = roleData.addAccountId || 0
-                forms.addAccountName = roleData.addAccountName || null
-                forms.addTime = roleData.addTime || ''
-                forms.accountCounts = roleData.accountCounts || 0
-
-                console.log('找到岗位数据:', forms)
+                forms.companyId = roleData.companyId
+                forms.addAccountId = roleData.addAccountId
+                forms.addAccountName = roleData.addAccountName
+                forms.addTime = roleData.addTime
+                forms.accountCounts = roleData.accountCounts
 
                 // 处理 menuIds（保持不变）
                 let menuIdsArray: number[] = []
@@ -238,18 +234,15 @@ const getRoleDetail = async () => {
                 if (menuIdsArray.length > 0 && treeData.value.length > 0) {
                     // 双重等待：先等 DOM 更新，再等组件内部初始化
                     await nextTick()
-                    // 可选：增加极短延迟，应对复杂树形结构的渲染延迟
-                    setTimeout(() => {
-                        if (treeRef.value) {
-                            console.log('设置树形控件选中状态:', menuIdsArray)
-                            // 调用官方 API 设置选中（node-key 必须与 menuIds 中的 id 对应，此处已满足）
-                            treeRef.value.setCheckedKeys(menuIdsArray)
-                            // 验证是否设置成功（用于调试）
-                            const currentChecked = treeRef.value.getCheckedKeys()
-                            console.log('当前实际选中的 keys:', currentChecked)
-                            console.log('树形控件选中状态已设置')
-                        }
-                    }, 50)
+
+                    if (treeRef.value) {
+                        console.log('设置树形控件选中状态:', menuIdsArray)
+                        // 调用官方 API 设置选中（node-key 必须与 menuIds 中的 id 对应，此处已满足）
+                        treeRef.value.setCheckedKeys(menuIdsArray)
+                        // 验证是否设置成功（用于调试）
+                        treeRef.value.getCheckedKeys()
+                    }
+
                 }
             }
         }
@@ -281,13 +274,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 } else {
                     ElMessage.success('添加成功')
                 }
-
-                // 返回上一页
-                setTimeout(() => {
-                    router.back()
-                }, 1000)
+                router.back()
             } catch (error) {
-                console.error('提交失败:', error)
+
                 ElMessage.error('提交失败')
             }
         }
@@ -313,7 +302,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
     forms.addTime = ''
     forms.accountCounts = 0
     forms.menuIds = []
-
     router.back()
 }
 
