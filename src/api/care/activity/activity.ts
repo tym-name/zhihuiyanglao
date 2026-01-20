@@ -1,7 +1,11 @@
 import http from "../../../utils/request";
 import type {
   ActivityTypePageData,
+  AddPlayParams,
+  AddPlayResponse,
   ElderlyDetailsData,
+  ElderlyListParams,
+  ElderlyListResponse,
   playListParams,
   playListResponse,
 } from "./activityType";
@@ -32,5 +36,22 @@ export const delPlay = (id: number) => http.delete(`/play/delete/${id}`);
 /**
  * 批量删除
  */
-export const delAllPlay = (ids: number[]) =>
-  http.post("/api/play/deleteAll", ids);
+export const delAllPlay = (ids: number[]) => http.post("/play/deleteAll", ids);
+
+/**
+ * 获取老人列表
+ */
+export const getElderlyList = (params: ElderlyListParams) =>
+  http.get<ElderlyListResponse>("/elderly/list", params);
+
+/**
+ * 添加院内活动
+ */
+export const addPlay = (data: AddPlayParams) =>
+  http.post<AddPlayResponse>("/play/add", data);
+
+/**
+ * 修改院内活动
+ */
+export const updatePlay = (data: AddPlayParams) =>
+  http.put<AddPlayResponse>("/play/update", data);

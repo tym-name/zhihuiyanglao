@@ -11,4 +11,4 @@ export const getPurchaseList = (params: purchaseParams) =>
  * 删除
  */
 export const delPurChase = (id: number) =>
-  http.delete(`/api/purchase/delete/${id}`);
+  http.delete(`/purchase/delete/${id}`);

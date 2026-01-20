@@ -37,7 +37,7 @@
                     <i class="iconfont icon-xiangqing"></i>
                     详情
                 </el-button>
-                <el-button link type="primary">
+                <el-button link type="primary" @click="updatePlay(row.id)">
                     <i class="iconfont icon-bianji"></i>
                     编辑
                 </el-button>
@@ -61,7 +61,9 @@
         <ViewDetails :drawer="detailsIsShow" :id="activityId" :typeList="playTypeOptions" :close="closeViewDetails">
         </ViewDetails>
 
-        <PlayAddOrUpdate :open="addOrUpdateIshow" :close="closeDialog"></PlayAddOrUpdate>
+        <PlayAddOrUpdate :open="addOrUpdateIshow" :close="closeDialog" :options="playTypeOptions"
+            :palyDate="onePlayDate" :id="iddd" :Refresh="Refresh">
+        </PlayAddOrUpdate>
 
     </div>
 </template>
@@ -69,8 +71,8 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
-import { delAllPlay, delPlay, getPlayList, getPlayTypeList } from '../../api/care/activity/activity';
-import type { ActivityTypeItem, playListItem, playListParams } from '../../api/care/activity/activityType';
+import { delAllPlay, delPlay, getPlayList, getPlayTypeList, playget } from '../../api/care/activity/activity';
+import type { ActivityTypeItem, ElderlyDetailsData, playListItem, playListParams } from '../../api/care/activity/activityType';
 import ViewDetails from '../../components/care/ViewDetails.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import PlayAddOrUpdate from '../../components/care/PlayAddOrUpdate.vue';
@@ -126,6 +128,19 @@ const openDialog = () => {
 }
 const closeDialog = () => {
     addOrUpdateIshow.value = false
+    onePlayDate.value = ({
+        id: 0,
+        companyId: 0,
+        title: '',
+        addTime: '',
+        type: 0,
+        typeName: '',
+        content: '',
+        addAccountId: 0,
+        addAccountName: '',
+        elderly: [],
+        pictures: []
+    })
 }
 
 const searchForm = ref<playListParams>({
@@ -228,6 +243,30 @@ const delAll = async () => {
             })
         })
 }
+
+const onePlayDate = ref<ElderlyDetailsData>({
+    id: 0,
+    companyId: 0,
+    title: '',
+    addTime: '',
+    type: 0,
+    typeName: '',
+    content: '',
+    addAccountId: 0,
+    addAccountName: '',
+    elderly: [],
+    pictures: []
+})
+const iddd = ref<number>(0)
+//修改
+const updatePlay = async (id: number) => {
+    addOrUpdateIshow.value = !addOrUpdateIshow.value
+    let res = await playget(id)
+    console.log(res);
+    onePlayDate.value = res.data
+    iddd.value = id
+}
+
 
 
 

@@ -42,6 +42,7 @@ const props = defineProps<{
     id: number
     typeList: ActivityTypeItem[]
     close: () => void
+    
 }>()
 
 
