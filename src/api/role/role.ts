@@ -31,9 +31,3 @@ export const menuList = () => http.get<MenuPermissionList>('/menu/list')
  * 获取单个角色信息
  */
 export const roleGet = (id:number) => http.get<ItemList>(`/role/get/${id}`)
-
-
-
-
-
-

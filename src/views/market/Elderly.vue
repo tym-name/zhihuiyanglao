@@ -18,8 +18,12 @@
                     <el-input placeholder="请输入身份证号" v-model="params.idCard" clearable />
                 </el-form-item>
                 <el-form-item label="床位:">
+<<<<<<< HEAD
                     <el-cascader v-model="params.begId" :options="cascaderOptions" placeholder="请选择床位" clearable
                         style="width: 200px" />
+=======
+                    <CascaderBeg v-model="params.begId" @bedChange="bedChange" :type="'bed'" />
+>>>>>>> faba1291873781602f2deee1773d1a79a1b5e5a7
                 </el-form-item>
                 <el-form-item label="入住状况:">
                     <el-select placeholder="请选择入住状况" v-model="params.state" style="width: 200px">
@@ -45,11 +49,12 @@
 
 <script setup lang='ts'>
 import Table, { type TableColumn } from "../../components/table.vue";
-import { buildingList, elderlyDelete, elderlyDeleteAll, getCaptcha } from "../../api/market/elderly";
+import { elderlyDelete, elderlyDeleteAll, getCaptcha } from "../../api/market/elderly";
 import router from "../../router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ref } from "vue";
-import type { BuildingItem, BuildingType, ElderlyType, PersonInfo } from "../../api/market/elderlyType";
+import type { ElderlyType, PersonInfo } from "../../api/market/elderlyType";
+import CascaderBeg from '@/components/form/CascaderBeg.vue'
 
 const tableRef = ref<any>(null)
 const isBatchDelDisabled = ref(true)
@@ -62,6 +67,7 @@ const params = ref<ElderlyType>({
     state: null
 })
 
+<<<<<<< HEAD
 // 床位列表
 const elderlyList = ref<BuildingItem[]>([])
 
@@ -156,6 +162,11 @@ const formatCascaderData = (flatList: BuildingItem[]) => {
 
     return treeData;
 };
+=======
+let bedChange = (idArr: number[]) => {
+    params.value.begId = idArr[idArr.length - 1]
+}
+>>>>>>> faba1291873781602f2deee1773d1a79a1b5e5a7
 
 // 搜索
 const search = () => {

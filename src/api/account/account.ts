@@ -1,4 +1,4 @@
-import http from '../../utils/request';
+import http from '@/utils/request';
 import type { AccountType, AccountData, role, accountAddData, AccountResult } from './accountType';
 
 /**

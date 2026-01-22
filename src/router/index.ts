@@ -10,7 +10,7 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
-const keepAlivePages = ["company"];
+const keepAlivePages = ["company"]
 
 const routes: Array<RouteRecordRaw> = [
   // base:'./',
@@ -29,6 +29,17 @@ const routes: Array<RouteRecordRaw> = [
       title: "高德地图",
     },
     component: () => import("../views/Amap/Amap.vue"),
+    
+  },
+  {
+    path: "/worldmap",
+    name: "WorldMap",
+    component: () => import("../components/form/WorldMap.vue"),
+  },
+  {
+    path: "/baidumap",
+    name: "BaiduMap",
+    component: () => import("../components/form/BaiduMap.vue"),
   },
   {
     path: "/",
@@ -133,6 +144,52 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/diet/PurchaseDetail.vue"),
       },
       {
+        path: "/discharge",
+        name: "discharge",
+        meta: {
+          title: "出院管理",
+        },
+        props: true,
+        component: () => import("../views/market/Discharge.vue"),
+      },
+      // 
+      {
+        path: "position-edit/:id",
+        name: "position-edit/:id",
+        meta: {
+          title: "修改岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/position-add",
+        name: "AddPost",
+        meta: {
+          title: "新增岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/staff-add",
+        name: "staff-ad",
+        meta: {
+          title: "新增护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
+        path: "/staff-edit/:id",
+        name: "AddStaff",
+        meta: {
+          title: "编辑护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
         path: "/elderly-records",
         name: "ElderlyRecords",
         component: () => import("../views/market/ElderlyRecords.vue"),
@@ -142,33 +199,24 @@ const routes: Array<RouteRecordRaw> = [
         name: "ElderlyWork",
         component: () => import("../views/market/ElderlyWork.vue"),
       },
-      // {
-      //   path: "GoOut",
-      //   name: "GoOut",
-      //   meta: {
-      //     title: "外出登记",
-      //   },
-      //   props: true,
-      //   component: () => import("../views/care/GoOut.vue"),
-      // },
-      // {
-      //   path: "addGoOut",
-      //   name: "addGoOut",
-      //   meta: {
-      //     title: "新增外出登记",
-      //   },
-      //   props: true,
-      //   component: () => import("../views/care/addGoOut.vue"),
-      // },
-      //  {
-      //   path: "GoOutUpd",
-      //   name: "GoOutUpd",
-      //   meta: {
-      //     title: "编辑外出登记",
-      //   },
-      //   props: true,
-      //   component: () => import("../views/care/GoOutUpd.vue"),
-      // },
+      {
+        path: "GoOut",
+        name: "GoOut",
+        meta: {
+          title: "外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/GoOut.vue"),
+      },
+      {
+        path: "addGoOut",
+        name: "addGoOut",
+        meta: {
+          title: "新增外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/addGoOut.vue"),
+      },
       {
         path: "/priceanalysis",
         name: "PriceAnalysis",
@@ -281,7 +329,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/dist'),
   routes,
 });
 
@@ -336,6 +384,18 @@ router.beforeEach(async (to, from) => {
                 keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
+                  childrenName: child.name,
+                  pathBtn: child.url,
+                  menusFath: item.url,
+                  keepAlive: keepAlivePages.includes(item.url),
+                  parent: {
+                    name: item.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  }, // 修复parent.url中parent未定义的问题
+                  current: {
+                    name: child.name,
+                    url: "/care/" + `${item.url}/${child.url}`,
+                  },
                   url: "/care/" + `${item.url}/${child.url}`,
                 }, // 修复parent.url中parent未定义的问题
                 current: {
@@ -348,7 +408,6 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
-
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());

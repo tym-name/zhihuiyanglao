@@ -7,7 +7,7 @@
                 <el-button type="danger">批量删除</el-button>
             </template>
 
-            <template #operate="{ row }">
+            <template #operate="{  }">
                 <el-button link type="primary">
                     <i class="iconfont icon-bianji"></i>
                     修改
@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
 import Table, { type TableColumn } from '.././components/table.vue';
 import { getRoleList } from '../api/exam/exam';
 

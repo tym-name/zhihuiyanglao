@@ -22,10 +22,9 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import type { FoodPriceListItem } from '../../../api/diet/food/foodType';
 import { FoodPriceList } from '../../../api/diet/food/food';
-import { number } from 'echarts';
 import Priceupdate from './priceupdate.vue';
 
 const FoodPriceListData = ref<FoodPriceListItem[]>([]);

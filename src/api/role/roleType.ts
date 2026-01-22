@@ -58,3 +58,9 @@ export interface MenuItem {
   /** 是否为按钮：1=是，0=否 */
   isButton: 0 | 1;
 }
+
+export interface RolePermission{
+    id: number,
+  name: string,
+  menuIds: number[]
+}

@@ -18,7 +18,7 @@
 
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormRules } from 'element-plus'
 import { MenuList } from '../api/exam/exam';
 import type { PermissionItem, TreePermissionNode } from '../api/exam/examType';
 
@@ -27,7 +27,6 @@ interface RuleForm {
     menuIds: number[]
 }
 
-const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
     name: '',
     menuIds: []
@@ -47,21 +46,7 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
-}
 
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
-}
 
 const treeData = ref<TreePermissionNode[]>([]);
 const getMenuList = async () => {

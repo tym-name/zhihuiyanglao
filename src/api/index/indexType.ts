@@ -17,9 +17,11 @@ export interface LoginPayload {
   verifyCodeId: string
 }
 
+
 export interface LoginResponse {
   refreshToken: string;
-  token: string
+  token: string;
+  model?: any; // 登录接口返回的model数据
 }
 
 export interface MenuList{
@@ -36,4 +38,10 @@ export interface MenuItem {
   type: number;        // 类型标识
   isButton: number;    // 是否为按钮权限（1是，0否）
   children:MenuItem[]
+}
+
+export interface UpdatePwd { 
+  pwd:string
+  newPwd:string
+  confirmPwd:string
 }

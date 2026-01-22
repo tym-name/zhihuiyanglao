@@ -1,0 +1,1 @@
+import{t as n}from"./index-D6YPj1KB.js";const i=e=>n.get("/nursingService/list",e),r=e=>n.post("/nursingService/add",e),t=e=>n.put("/nursingService/update",e),c=e=>n.delete(`/nursingService/delete/${e}`),u=e=>n.post("/nursingService/deleteAll",e);export{r as a,i as b,c,u as d,t as n};

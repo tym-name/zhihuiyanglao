@@ -7,5 +7,5 @@
 </template>
 
 <style scoped>
-@import url('./assets/iconfont/iconfont.css');
+@import url('./assets/icon/iconfont.css');
 </style>

@@ -260,3 +260,9 @@ export interface FileItemDetail {
   id: number; // 项ID
   name: string; // 项目名称（如“老人体检表”）
 }
+
+export interface RuleForm {
+  id: number
+  name: string
+  pid: number
+}

@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive, watch } from 'vue';
-import type { ActivityTypeItem, Elderly, ElderlyDetailsData } from '../../api/care/activity/activityType';
+import { ref, watch } from 'vue';
+import type { ActivityTypeItem, ElderlyDetailsData } from '../../api/care/activity/activityType';
 import { playget } from '../../api/care/activity/activity';
 
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
@@ -42,6 +42,7 @@ const props = defineProps<{
     id: number
     typeList: ActivityTypeItem[]
     close: () => void
+    
 }>()
 
 
