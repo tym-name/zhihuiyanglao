@@ -13,7 +13,7 @@
                         {{ purchaseData?.counts }}
                     </el-form-item>
                     <el-form-item label="实际采购成本:">
-                        {{ purchaseData?.purchasePrice }}
+                        {{ actualPurchaseCost }}
                     </el-form-item>
                 </el-form>
 
@@ -42,7 +42,7 @@
             </div>
         </el-card>
         <div class="bts">
-            
+            <el-button @click="() => { $router.push('/logistic/Purchase') }">返回</el-button>
         </div>
     </div>
 </template>
@@ -50,7 +50,7 @@
 <script setup lang='ts'>
 import { getPurchaseById, getPurchaseFoods } from '@/api/logistics/purchase/purchase';
 import type { PurchaseFoodListItem, purchaseGetResponse } from '@/api/logistics/purchase/purchaseType';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
@@ -77,6 +77,13 @@ const getPurchaseFoodsList = async () => {
 };
 getPurchaseFoodsList()
 
+//计算实际采购成本
+const actualPurchaseCost = computed(() => {
+    return purchaseFoodsData.value.reduce((total, item) => {
+        return total + (item.purchasePrice || 0) * (item.receiveCounts || 0);
+    }, 0);
+});
+
 
 </script>
 
@@ -91,5 +98,11 @@ getPurchaseFoodsList()
         font-size: 24px;
         font-weight: bold;
     }
+}
+
+.bts {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 </style>

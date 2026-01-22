@@ -237,6 +237,21 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import("../views/logistics/details.vue"),
       },
+      {
+        path: "/medicalcareAdd",
+        name: "medicalcareAdd",
+        component: () => import("../views/medicalcare/MedicalcareAddOld.vue"),
+      },
+      {
+        path: "/medicalcaredetails",
+        name: "medicalcaredetails",
+        component: () => import("../views/medicalcare/MedicalcareDetails.vue"),
+      },
+      {
+        path: "/medicalcarePlanset",
+        name: "medicalcarePlanset",
+        component: () => import("../views/medicalcare/MedicalcarePlanset.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面

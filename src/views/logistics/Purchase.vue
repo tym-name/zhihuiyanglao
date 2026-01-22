@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref} from 'vue';
 import Table from '../../components/table.vue';
 import type { TableColumn } from '../../components/table.vue';
 import { delPurChase, getPurchaseList } from '../../api/logistics/purchase/purchase';
