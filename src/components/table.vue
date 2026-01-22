@@ -124,7 +124,7 @@ const props = withDefaults(defineProps<TableProps>(), {
 
 const emits = defineEmits<TableEmits>();
 
-// ========== 响应式数据 ==========
+// 响应式数据
 /** 表格实例 */
 const tableRef = ref<InstanceType<typeof import('element-plus')['ElTable']>>();
 /** 加载状态 */
@@ -138,6 +138,8 @@ const pagination = reactive<Pagination>({
   currentPage: 1,
   pageSize: props.pageSizes[0] // 默认取第一个分页尺寸
 });
+/** 动态查询参数 */
+const dynamicParams = ref<Record<string, any>>({});
 
 // 计算属性
 /** 表格宽度（统一处理） */
@@ -149,7 +151,8 @@ const tableWidth = computed(() => {
 const requestParams = computed(() => ({
   page: pagination.currentPage,
   pageSize: pagination.pageSize,
-  ...props.initParams
+  ...props.initParams,
+  ...dynamicParams.value
 }));
 
 // ========== 工具方法 ==========
@@ -210,7 +213,13 @@ const getData = async (resetPage = false) => {
 };
 
 /** 刷新数据（重置页码） */
-const refresh = () => getData(true);
+const refresh = (params?: Record<string, any>) => {
+  // 更新动态查询参数
+  if (params) {
+    dynamicParams.value = params;
+  }
+  getData(true);
+};
 
 /** 清空选择项 */
 const clearSelection = () => {
