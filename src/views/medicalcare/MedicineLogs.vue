@@ -1,5 +1,4 @@
 <template>
-    <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="getDrugsList" :init-params="searchForm">
             <template #search>
                 <el-form :inline="true" class="demo-form-inline">
@@ -32,11 +31,10 @@
                 </el-button>
             </template>
         </Table>
-    </div>
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import { getDrugsList } from '../../api/medicalcare/medicineLogs/medicineLogs';
 import type { drugsListParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';

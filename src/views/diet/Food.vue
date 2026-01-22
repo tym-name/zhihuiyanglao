@@ -2,8 +2,8 @@
     <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="foodList" @selection-change="handleSelectionChange">
             <template #buttons>
-                <el-button type="success" @click="addfood">添加</el-button>
-                <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled">批量删除</el-button>
+                <el-button type="success" @click="addfood"><i class="iconfont icon-jia"></i>添加</el-button>
+                <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
@@ -238,6 +238,6 @@ const goToPriceAnalysis = (row: FoodItem) => {
 <style scoped lang='less'>
 .iconfont {
     font-size: 13px;
-    margin-right: 2px;
+    margin-right: 5px;
 }
 </style>

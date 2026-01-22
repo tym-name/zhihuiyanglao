@@ -1,5 +1,4 @@
 <template>
-    <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="getPurchaseList">
             <template #buttons>
                 <el-button type='success'>创建采购申请</el-button>
@@ -20,11 +19,10 @@
                 </el-button> -->
             </template>
         </Table>
-    </div>
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import Table from '../../components/table.vue';
 import type { TableColumn } from '../../components/table.vue';
 import { delPurChase, getPurchaseList } from '../../api/logistics/purchase/purchase';

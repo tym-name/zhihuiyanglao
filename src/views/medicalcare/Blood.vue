@@ -1,5 +1,4 @@
 <template>
-    <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="getBloodList" :init-params="searchForm"
             @selection-change="handleSelectionChange">
             <template #search>
@@ -37,11 +36,10 @@
                 </el-button>
             </template>
         </Table>
-    </div>
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import { delBloodById, deleteAllByIds, getBloodList, getBuildingList } from '../../api/medicalcare/blood/blood';
 import type { bloodItem, bloodListParams, buildingListItem, CascaderTreeNode } from '../../api/medicalcare/blood/bloodType';

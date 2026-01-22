@@ -1,5 +1,5 @@
 import http from "../../utils/request";
-import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse, PersonInfo, BuildingType, BuildingResponse, FormListResponse, FileItemDetail } from "./elderlyType";
+import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse, PersonInfo, BuildingType, BuildingResponse, FormListResponse, FileItemDetail, nursingService, CompanyDataList, CycleTaskData, CycleTask } from "./elderlyType";
 
 
 /**
@@ -73,3 +73,27 @@ export const fileitemsList=()=>http.get<FormListResponse>("/fileitems/list");
  */
 
 export const elderlyFilesAdd=(data:FileItemDetail)=>http.post<FormListResponse>("/elderlyFiles/add",data);
+
+/**
+ * 任务列表
+ */
+
+export const nursingServiceList=(params:nursingService)=>http.get<CompanyDataList>("/nursingService/list",params);
+
+/**
+ * 任务添加
+ */
+
+export const elderlyTaskAdd=(data:CycleTask)=>http.post<CycleTaskData>("/elderlyTask/add",data);
+
+/**
+ * 任务删除
+ */
+
+export const elderlyTaskDelete=(id:number)=>http.delete(`/elderlyTask/delete/${id}`);
+
+/**
+ * 任务删除
+ */
+
+export const elderlyTaskGetTask=(id:number)=>http.get<any>(`/elderlyTask/getTask/${id}`);

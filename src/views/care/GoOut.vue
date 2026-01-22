@@ -1,5 +1,4 @@
 <template>
-   <div>
       <Etabs v-bind="tableListData">
          <template #Delete="{ row, delListOne }">
             <el-button type="primary" link @click="GoOutDetails(row)"><el-icon>
@@ -53,7 +52,6 @@
       v-model="dialogVisible"
       @confirm="handleConfirm"
     />
-   </div>
 </template>
 
 <script setup lang="ts">

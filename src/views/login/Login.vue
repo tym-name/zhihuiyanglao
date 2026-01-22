@@ -18,6 +18,6 @@ import Footer from '../../components/login/footer.vue';
 import Main from '../../components/login/main.vue';
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 @import url('../../assets/less/login/login.less');
 </style>

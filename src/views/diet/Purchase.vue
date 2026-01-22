@@ -23,7 +23,7 @@
         </el-form>
         </template>
         <template #operate="{ row }">
-            <el-button link type="primary" @click="goToDetail(row.id)">查看详情</el-button>
+            <el-button link type="primary" @click="goToDetail(row.id)"><i class="iconfont icon-meals"></i>查看详情</el-button>
         </template>
     </Table>
 </template>
@@ -139,5 +139,8 @@ const goToDetail = (id: string | number) => {
 <style scoped lang='less'>
 .search- {
     margin-bottom: 20px;
+}
+.iconfont{
+    margin-right: 5px;
 }
 </style>

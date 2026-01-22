@@ -1,5 +1,5 @@
 <template>
-    <div>
+  
         <el-card>
             <!-- 动态标题：区分新增/修改 -->
             <div style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">
@@ -39,7 +39,7 @@
             </el-button>
             <el-button size="small" @click="cancel">取消</el-button>
         </el-card>
-    </div>
+  
 </template>
 
 <script setup lang='ts'>

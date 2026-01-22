@@ -33,8 +33,8 @@
         <template #operate="{ row }">
             <el-button link type="primary" @click="edit(row)"><i class="iconfont icon-bianji"></i>编辑</el-button>
             <el-button link type="primary" @click="records(row)"><i class="iconfont icon-file"></i>档案管理</el-button>
-            <el-button link type="primary" @click="work(row)"><i class="iconfont icon-zixun"></i>排班管理</el-button>
-            <el-button link type="primary"><i class="iconfont icon-xiangqing"></i>计划任务</el-button>
+            <el-button link type="primary" @click="work(row)"><i class="iconfont icon-zxdj"></i>排班管理</el-button>
+            <el-button link type="primary" @click="schedule(row)"><i class="iconfont icon-wenben"></i>计划任务</el-button>
             <el-button link type="danger" @click="deleteCompany(row.id)"><i
                     class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
@@ -146,6 +146,10 @@ const records = (row: PersonInfo) => {
 
 const work = (row: PersonInfo) => {
     router.push(`/elderly-work?id=${row.id}`)
+};
+
+const schedule = (row: PersonInfo) => {
+    router.push(`/elderly-schedule?id=${row.id}`)
 };
 
 // 单个删除
