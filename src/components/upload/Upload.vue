@@ -97,6 +97,7 @@ const beforeUpload = (rawFile: File) => {
   flex-direction: column;
   align-items: flex-start;
 }
+
 .avatar-uploader {
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;

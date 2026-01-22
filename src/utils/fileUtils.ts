@@ -43,11 +43,7 @@ export function uploadBase64(base64Data:string) {
   const formData = new FormData();
   formData.append('file', file); // 字段名根据后端接口调整
 
- return request.post<UploadResponse>('/api/upload/add', formData,{
-    headers: {
-           'Content-Type': 'multipart/form-data'
-        }
-  }) 
+ return request.post<UploadResponse>('/api/upload/add', formData)
 
  
 }

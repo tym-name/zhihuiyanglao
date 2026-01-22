@@ -23,7 +23,7 @@
                 {{ form.content }}
             </el-form-item>
             <el-form-item label="图片：" v-model="form.pictures">
-                
+
             </el-form-item>
         </el-form>
         <template #footer>

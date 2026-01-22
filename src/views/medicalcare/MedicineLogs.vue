@@ -1,5 +1,6 @@
 <template>
-        <Table ref="tableRef" :columns="columns" :fetch-data="getDrugsList" :init-params="searchForm">
+        <Table ref="tableRef" :columns="columns" :fetch-data="getDrugsList" :init-params="searchForm"
+            @selection-change="handleSelectionChange">
             <template #search>
                 <el-form :inline="true" class="demo-form-inline">
                     <el-form-item label="老人:">
@@ -17,10 +18,10 @@
             </template>
             <template #buttons>
                 <el-button type="success">用药登记</el-button>
-                <el-button type="danger">批量删除</el-button>
+                <el-button type="danger" @click="delAll">批量删除</el-button>
             </template>
 
-            <template #operate="{ row }">
+            <template #operate="">
                 <el-button link type="primary">
                     <i class="iconfont icon-xiangqing"></i>
                     查看详情
@@ -36,8 +37,9 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
-import { getDrugsList } from '../../api/medicalcare/medicineLogs/medicineLogs';
-import type { drugsListParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';
+import { delDrugsAllByIds, getDrugsList } from '../../api/medicalcare/medicineLogs/medicineLogs';
+import type { drugsListItem, drugsListParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 //表格
 const tableRef = ref<any>(null);
@@ -62,7 +64,7 @@ const columns: TableColumn[] = [
     {
         label: "用药品种类",
         prop
-        : "counts",
+            : "counts",
     },
     {
         label: "登记人",
@@ -97,6 +99,44 @@ const handleReset = () => {
         beginDate: '',
     }
     refresh()
+}
+
+//批量删除
+const isBatchDelDisabled = ref(true)
+const selectionData = ref<drugsListItem[]>([])
+const ids = ref<number[]>([])
+const handleSelectionChange = (rows: drugsListItem[]) => {
+    selectionData.value = rows;
+    ids.value = rows.map(row => row.id);
+    isBatchDelDisabled.value = rows.length === 0;//判断是否禁用
+}
+
+const delAll = async () => {
+    ElMessageBox.confirm(
+        '是否删除多条记录？',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            let res = await delDrugsAllByIds(ids.value)
+            console.log(res);
+            if (res.code === 10000) {
+                ElMessage({
+                    type: 'success',
+                    message: '删除成功',
+                })
+                refresh()
+            }
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消删除',
+            })
+        })
 }
 </script>
 

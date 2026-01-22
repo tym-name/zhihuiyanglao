@@ -273,7 +273,9 @@ class Http {
    * POST请求封装
    */
   public post<T, P = Record<string, any>>(
-url: string, data?: P | FormData, _p0?: { headers: { 'Content-Type': string; }; }  ): Promise<ApiResponse<T>> {
+    url: string,
+    data?: P | FormData
+  ): Promise<ApiResponse<T>> {
     const config: AxiosRequestConfig = {
       method: HttpMethodEnum.POST,
       url,

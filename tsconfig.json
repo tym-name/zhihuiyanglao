@@ -3,5 +3,10 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "module": "ES2020",
+    "target": "ES2020",
+    "moduleResolution": "node"
+  }
 }

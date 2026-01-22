@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "@amap/amap-jsapi-loader": "^1.0.1",
     "axios": "^1.13.2",
     "build": "^0.1.4",

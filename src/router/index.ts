@@ -11,9 +11,10 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login","/wechat-login"];
 
-const keepAlivePages = ["company"];
+const keepAlivePages = ["company"]
 
 const routes: Array<RouteRecordRaw> = [
+  // base:'./',
   {
     path: "/login",
     name: "Login",
@@ -21,6 +22,15 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     },
     component: () => import("../views/login/Login.vue"),
+  },
+  {
+    path: "/Amap",
+    name: "Amap",
+    meta: {
+      title: "高德地图",
+    },
+    component: () => import("../views/Amap/Amap.vue"),
+    
   },
   {
     path: "/worldmap",
@@ -148,6 +158,52 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/diet/PurchaseDetail.vue"),
       },
       {
+        path: "/discharge",
+        name: "discharge",
+        meta: {
+          title: "出院管理",
+        },
+        props: true,
+        component: () => import("../views/market/Discharge.vue"),
+      },
+      // 
+      {
+        path: "position-edit/:id",
+        name: "position-edit/:id",
+        meta: {
+          title: "修改岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/position-add",
+        name: "AddPost",
+        meta: {
+          title: "新增岗位",
+        },
+        props: true,
+        component: () => import("../views/personel/AddPost.vue"),
+      },
+      {
+        path: "/staff-add",
+        name: "staff-ad",
+        meta: {
+          title: "新增护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
+        path: "/staff-edit/:id",
+        name: "AddStaff",
+        meta: {
+          title: "编辑护工",
+        },
+        props: true,
+        component: () => import("../views/personel/AddStaff.vue"),
+      },
+      {
         path: "/elderly-records",
         name: "ElderlyRecords",
         component: () => import("../views/market/ElderlyRecords.vue"),
@@ -186,6 +242,102 @@ const routes: Array<RouteRecordRaw> = [
         name: "ElderlySchedule",
         props: true,
         component: () => import("../views/market/ElderlySchedule.vue"),
+      },
+      {
+         path: "/Customer-add",
+        name: "CustomerAdd",
+        props: true,
+        component: () => import("../views/market/CustomerAdd.vue"),
+      },
+      {
+        path: "/CustomerUpd",
+        name: "CustomerUpd",
+        props: true,
+        component: () => import("../views/market/CustomerUpd.vue"),
+      },
+      {
+        path: "/Customer",
+        name: "Customer",
+        props: true,
+        component: () => import("../views/market/Customer.vue"),
+      },
+      {
+        path: "/Reserve",
+        name: "Reserve",
+        props: true,
+        component: () => import("../views/market/Reserve.vue"),
+      },
+      {
+        path: "/ReserveAdd",
+        name: "ReserveAdd",
+        props: true,
+        component: () => import("../views/market/ReserveAdd.vue"),
+      },
+      {
+        path: "/AddReserve",
+        name: "AddReserve",
+        props: true,
+        component: () => import("../views/market/AddReserve.vue"),
+      },
+      {
+        path: "/ReserveUpd",
+        name: "ReserveUpd",
+        props: true,
+        component: () => import("../views/market/ReserveUpd.vue"),
+      },
+      {
+        path: "/Question",
+        name: "Question",
+        props: true,
+        component: () => import("../views/market/Question.vue"),
+      },
+      {
+        path: "/Hospitalized",
+        name: "Hospitalized",
+        props: true,
+        component: () => import("../views/market/Hospitalized.vue"),
+      },
+      {
+        path: "/CustomerParticulars",
+        name: "CustomerParticulars",
+        props: true,
+        component: () => import("../views/market/CustomerParticulars.vue"),
+      },
+      {
+        path: "/ReserveParticulars",
+        name: "ReserveParticulars",
+        props: true,
+        component: () => import("../views/market/ReserveParticulars.vue"),
+      },
+      {
+        path: "/addHospitalized",
+        name: "addHospitalized",
+        props: true,
+        component: () => import("../views/market/addHospitalized.vue"),
+      },
+      {
+        path: "/AddOutings",
+        name: "AddOutings",
+        props: true,
+        component: () => import("../views/care/AddOutings.vue"),
+      },
+      {
+        path: "/details",
+        name: "Details",
+        props: true,
+        component: () => import("../views/care/details.vue"),
+      },
+      {
+        path: "/details",
+        name: "details",
+        props: true,
+        component: () => import("../views/care/details.vue"),
+      },
+      {
+        path: "/payAReturnVisit",
+        name: "payAReturnVisit",
+        props: true,
+        component: () => import("../views/market/payAReturnVisit.vue"),
       },
     ],
   },

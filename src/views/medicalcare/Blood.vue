@@ -7,10 +7,10 @@
                         <el-input placeholder="请输入老人姓名" clearable v-model="searchForm.name" />
                     </el-form-item>
                     <el-form-item label="床位:">
-                        <!-- //:options="options" -->
+
                         <el-cascader v-model="selectedValue" :options="cascaderOptions" clearable placeholder="请选择床位" />
                     </el-form-item>
-                    <el-form-item label="登记时间:">
+                    <el-form-item label="巡检时间:">
                         <el-date-picker type="daterange" range-separator="-" start-placeholder="开始日期"
                             end-placeholder="结束日期" style="width: 240px;" />
                     </el-form-item>
@@ -21,12 +21,12 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success">用药登记</el-button>
+                <el-button type="success" @click="OpenOrClose">增加</el-button>
                 <el-button type="danger" @click="delAll">批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
-                <el-button link type="primary">
+                <el-button link type="primary" @click="getBlood(row.id)">
                     <i class="iconfont icon-bianji"></i>
                     编辑
                 </el-button>
@@ -36,22 +36,54 @@
                 </el-button>
             </template>
         </Table>
+        <AddOrUpdateBlood :isShow="isShow" :OpenOrClose="OpenOrClose" :oneBloodData="oneBloodData" :refresh="Refresh">
+        </AddOrUpdateBlood>
 </template>
 
 <script setup lang='ts'>
 import { ref, watch } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
-import { delBloodById, deleteAllByIds, getBloodList, getBuildingList } from '../../api/medicalcare/blood/blood';
+import { delBloodById, deleteAllByIds, getBloodById, getBloodList, getBuildingList } from '../../api/medicalcare/blood/blood';
 import type { bloodItem, bloodListParams, buildingListItem, CascaderTreeNode } from '../../api/medicalcare/blood/bloodType';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { convertFlatToCascaderTree } from '../../utils/checkBed';
-//表格
+import AddOrUpdateBlood from '../../components/medicalcare/blood/addOrUpdateBlood.vue';
+
 const tableRef = ref<any>(null);
 
 //刷新页面
 const Refresh = () => {
     tableRef.value.refresh()
 }
+//给子组件传值
+const isShow = ref(false)
+const OpenOrClose = () => {
+    isShow.value = !isShow.value
+    oneBloodData.value = ({
+        id: 0,
+        addTime: '',
+        addAccountName: '',
+        elderlyName: '',
+        begName: '',
+        bloodPressure: '',
+        pulse: '',
+        companyId: 0,
+        elderlyId: 0,
+        addAccountId: 0,
+        begId: 0,
+        idCard: '',
+        addAccountPhoto: null,
+        elderlyPhoto: '',
+        elderlyGender: '',
+        elderlyIdCard: '',
+        houseName: null,
+        buildingName: '',
+        staffId: 0,
+        staffName: '',
+        staffPhoto: ''
+    })
+}
+
 
 //根据Id删除
 const delOnlyOne = (id: number) => {
@@ -84,7 +116,6 @@ const handleSelectionChange = (rows: bloodItem[]) => {
     ids.value = rows.map(row => row.id);
     isBatchDelDisabled.value = rows.length === 0;//判断是否禁用
 }
-
 const delAll = async () => {
     ElMessageBox.confirm(
         '是否删除多条记录？',
@@ -115,10 +146,8 @@ const delAll = async () => {
 
 
 
-//刷新页面
-const refresh = () => {
-    tableRef.value.refresh()
-}
+
+//表格
 const columns: TableColumn[] = [
     {
         type: "selection",
@@ -169,7 +198,7 @@ const searchForm = ref<bloodListParams>({
 })
 //搜索
 const handleSearch = () => {
-    refresh()
+    Refresh()
 }
 //重置
 const handleReset = () => {
@@ -181,15 +210,45 @@ const handleReset = () => {
     }
     selectedValue.value = []
 }
+//获取单条数据
+const oneBloodData = ref<bloodItem>({
+    id: 0,
+    addTime: '',
+    addAccountName: '',
+    elderlyName: '',
+    begName: '',
+    bloodPressure: '',
+    pulse: '',
+    companyId: 0,
+    elderlyId: 0,
+    addAccountId: 0,
+    begId: 0,
+    idCard: '',
+    addAccountPhoto: null,
+    elderlyPhoto: '',
+    elderlyGender: '',
+    elderlyIdCard: '',
+    houseName: null,
+    buildingName: '',
+    staffId: 0,
+    staffName: '',
+    staffPhoto: ''
+})
+
+const getBlood = async (id: number) => {
+    OpenOrClose()
+    let res = await getBloodById(id)
+    console.log('获取单条数据', res);
+    if (res && res.data) {
+        oneBloodData.value = res.data
+    }
+}
 
 const selectedValue = ref<number[]>([])
 watch(() => selectedValue.value, (newValue) => {
     searchForm.value.begId = newValue[newValue.length - 1]
 })
-
-
-
-
+//选择床位
 const cascaderOptions = ref<CascaderTreeNode[]>([])
 // 获取楼栋/床位数据并转换（核心简化：调用封装方法）
 const buildingList = async () => {
@@ -206,6 +265,7 @@ const buildingList = async () => {
     }
 }
 buildingList()
+
 
 </script>
 

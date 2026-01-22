@@ -1,5 +1,6 @@
 <template>
-    <Table ref="tableRef" @selection-change="handleSelectionChange" :init-params="params" :columns="columns" :fetch-data="getCaptcha">
+    <Table ref="tableRef" @selection-change="handleSelectionChange" :init-params="params" :columns="columns"
+        :fetch-data="getCaptcha">
         <template #buttons>
             <el-button type="primary" @click="handleAdd">新增老人</el-button>
             <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i
@@ -55,10 +56,10 @@ const isBatchDelDisabled = ref(true)
 
 // 查询参数
 const params = ref<ElderlyType>({
-  name: '',
-  idCard: '',
-  begId: 0,
-  state:null
+    name: '',
+    idCard: '',
+    begId: 0,
+    state: null
 })
 
 let bedChange = (idArr: number[]) => {
@@ -67,7 +68,7 @@ let bedChange = (idArr: number[]) => {
 
 // 搜索
 const search = () => {
-  tableRef.value?.refresh();
+    tableRef.value?.refresh();
 }
 
 

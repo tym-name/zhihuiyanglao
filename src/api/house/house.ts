@@ -21,7 +21,6 @@ export const houseDeleteAll=(id:number[])=>http.post(`/house/deleteAll`,id);
 /**
  * 房型管理添加
  */
-
 export const housetypeAdd=(data:BuildingInfo)=>http.post<RoomInfo>("/house/add",data);
 
 /**
