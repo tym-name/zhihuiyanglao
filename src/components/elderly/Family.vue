@@ -66,12 +66,24 @@
 </template>
 
 <script setup lang='ts'>
-import { inject, reactive, ref, nextTick } from 'vue';
+import { inject, reactive, ref, nextTick ,watch} from 'vue';
 import type { FamilyMember } from '../../api/market/elderlyType';
 import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import Relation from '../form/Relation.vue'
 
+let porp = defineProps({
+    familylist: {
+        type: Object,
+        default: () => { }
+    }
+})
+
+watch(() => porp.familylist, (newval) => {
+   if (!newval) return
+   data.value=newval
+   console.log(fromData.value);
+})
 // 1. 初始化数据，兜底空数组避免undefined
 const data = ref<FamilyMember[]>(inject<FamilyMember[]>('familyData') || []);
 const loading = ref(false); // 加载状态
@@ -80,7 +92,7 @@ const isEdit = ref(false); // 标记是否为编辑状态
 const ruleFormRef = ref<FormInstance>(); // 表单ref
 
 // 2. 表单初始数据（新增默认值）
-const initFormData: FamilyMember = {
+const initFormData: FamilyMember = reactive({
    id: 0,
    elderlyId: 0, // 可根据实际业务赋值（比如老人ID）
    name: '',
@@ -89,7 +101,7 @@ const initFormData: FamilyMember = {
    relation: '',
    gender: 1, // 1-男，2-女
    address: ''
-};
+});
 const fromData = ref<FamilyMember>({ ...initFormData });
 
 // 3. 表单校验规则

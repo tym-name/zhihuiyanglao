@@ -40,7 +40,7 @@
             <KeepAlive>
               <component v-if="$route.meta.keepAlive" :is="Component"></component>
             </KeepAlive>
-            <component v-if="!$route.meta.keepAlive":is="Component"></component>
+            <component v-if="!$route.meta.keepAlive" :is="Component"></component>
           </router-view>
         </el-main>
       </el-container>

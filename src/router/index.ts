@@ -13,6 +13,7 @@ const whiteUrl = ["/login"];
 const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
+  // base:'./',
   {
     path: "/login",
     name: "Login",
@@ -20,6 +21,14 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     },
     component: () => import("../views/login/Login.vue"),
+  },
+  {
+    path: "/Amap",
+    name: "Amap",
+    meta: {
+      title: "高德地图",
+    },
+    component: () => import("../views/Amap/Amap.vue"),
   },
   {
     path: "/",
@@ -133,29 +142,134 @@ const routes: Array<RouteRecordRaw> = [
         name: "ElderlyWork",
         component: () => import("../views/market/ElderlyWork.vue"),
       },
-            {
-        path: "GoOut",
-        name: "GoOut",
-        meta: {
-          title: "外出登记",
-        },
-        props: true,
-        component: () => import("../views/care/GoOut.vue"),
-      },
-      {
-        path: "addGoOut",
-        name: "addGoOut",
-        meta: {
-          title: "新增外出登记",
-        },
-        props: true,
-        component: () => import("../views/care/addGoOut.vue"),
-      },
+      // {
+      //   path: "GoOut",
+      //   name: "GoOut",
+      //   meta: {
+      //     title: "外出登记",
+      //   },
+      //   props: true,
+      //   component: () => import("../views/care/GoOut.vue"),
+      // },
+      // {
+      //   path: "addGoOut",
+      //   name: "addGoOut",
+      //   meta: {
+      //     title: "新增外出登记",
+      //   },
+      //   props: true,
+      //   component: () => import("../views/care/addGoOut.vue"),
+      // },
+      //  {
+      //   path: "GoOutUpd",
+      //   name: "GoOutUpd",
+      //   meta: {
+      //     title: "编辑外出登记",
+      //   },
+      //   props: true,
+      //   component: () => import("../views/care/GoOutUpd.vue"),
+      // },
       {
         path: "/priceanalysis",
         name: "PriceAnalysis",
         props: true,
         component: () => import("../views/diet/PriceAnalysis.vue"),
+      },
+      {
+        path: "/Customer-add",
+        name: "CustomerAdd",
+        props: true,
+        component: () => import("../views/market/CustomerAdd.vue"),
+      },
+      {
+        path: "/CustomerUpd",
+        name: "CustomerUpd",
+        props: true,
+        component: () => import("../views/market/CustomerUpd.vue"),
+      },
+      {
+        path: "/Customer",
+        name: "Customer",
+        props: true,
+        component: () => import("../views/market/Customer.vue"),
+      },
+      {
+        path: "/Reserve",
+        name: "Reserve",
+        props: true,
+        component: () => import("../views/market/Reserve.vue"),
+      },
+      {
+        path: "/ReserveAdd",
+        name: "ReserveAdd",
+        props: true,
+        component: () => import("../views/market/ReserveAdd.vue"),
+      },
+      {
+        path: "/AddReserve",
+        name: "AddReserve",
+        props: true,
+        component: () => import("../views/market/AddReserve.vue"),
+      },
+      {
+        path: "/ReserveUpd",
+        name: "ReserveUpd",
+        props: true,
+        component: () => import("../views/market/ReserveUpd.vue"),
+      },
+      {
+        path: "/Question",
+        name: "Question",
+        props: true,
+        component: () => import("../views/market/Question.vue"),
+      },
+      {
+        path: "/Hospitalized",
+        name: "Hospitalized",
+        props: true,
+        component: () => import("../views/market/Hospitalized.vue"),
+      },
+      {
+        path: "/CustomerParticulars",
+        name: "CustomerParticulars",
+        props: true,
+        component: () => import("../views/market/CustomerParticulars.vue"),
+      },
+      {
+        path: "/ReserveParticulars",
+        name: "ReserveParticulars",
+        props: true,
+        component: () => import("../views/market/ReserveParticulars.vue"),
+      },
+      {
+        path: "/addHospitalized",
+        name: "addHospitalized",
+        props: true,
+        component: () => import("../views/market/addHospitalized.vue"),
+      },
+      {
+        path: "/AddOutings",
+        name: "AddOutings",
+        props: true,
+        component: () => import("../views/care/AddOutings.vue"),
+      },
+      {
+        path: "/details",
+        name: "Details",
+        props: true,
+        component: () => import("../views/care/details.vue"),
+      },
+      {
+        path: "/details",
+        name: "details",
+        props: true,
+        component: () => import("../views/care/details.vue"),
+      },
+      {
+        path: "/payAReturnVisit",
+        name: "payAReturnVisit",
+        props: true,
+        component: () => import("../views/market/payAReturnVisit.vue"),
       },
     ],
   },
@@ -194,54 +308,54 @@ router.beforeEach(async (to, from) => {
   // 核心优化1：判断是否已添加动态路由，避免重复添加
   if (!hasAddedDynamicRoutes) {
     try {
-    //  获取权限列表
-    const res = await authStore.getMenu();
-    console.log("权限列表", res);
-   
-    // 动态添加路由
-    res.forEach((item) => {
-      item.children.forEach((child) => {
-        if (child.pathName) {
-          const component =
-            modules[`../views/${item.url}/${child.pathName}.vue`];
-          if (!component) return; // 避免组件不存在导致报错
-          console.log(
-            `${child.name}../views/${item.url}/${child.pathName}.vue`,
-            `${item.url}/${child.url}`
-          );
-          router.addRoute("Home", {
-            path: `/${item.url}/${child.url}`,
-            name: child.url + child.id,
-            meta: {
-              menuColor: "#4080FF",
-              path: item.children[0].url,
-              name: item.name,
-              childrenName: child.name,
-              pathBtn: child.url,
-              menusFath: item.url,
-              keepAlive: keepAlivePages.includes(item.url),
-              parent: {
+      //  获取权限列表
+      const res = await authStore.getMenu();
+      console.log("权限列表", res);
+
+      // 动态添加路由
+      res.forEach((item) => {
+        item.children.forEach((child) => {
+          if (child.pathName) {
+            const component =
+              modules[`../views/${item.url}/${child.pathName}.vue`];
+            if (!component) return; // 避免组件不存在导致报错
+            console.log(
+              `${child.name}../views/${item.url}/${child.pathName}.vue`,
+              `${item.url}/${child.url}`
+            );
+            router.addRoute("Home", {
+              path: `/${item.url}/${child.url}`,
+              name: child.url + child.id,
+              meta: {
+                menuColor: "#4080FF",
+                path: item.children[0].url,
                 name: item.name,
-                url: "/care/" + `${item.url}/${child.url}`,
-              }, // 修复parent.url中parent未定义的问题
-              current: {
-                name: child.name,
-                url: "/care/" + `${item.url}/${child.url}`,
+                childrenName: child.name,
+                pathBtn: child.url,
+                menusFath: item.url,
+                keepAlive: keepAlivePages.includes(item.url),
+                parent: {
+                  name: item.name,
+                  url: "/care/" + `${item.url}/${child.url}`,
+                }, // 修复parent.url中parent未定义的问题
+                current: {
+                  name: child.name,
+                  url: "/care/" + `${item.url}/${child.url}`,
+                },
               },
-            },
-            component: component,
-          });
-        }
+              component: component,
+            });
+          }
+        });
       });
-    });
 
-    // 标记动态路由已添加，防止重复执行
-    hasAddedDynamicRoutes = true;
-    console.log("路由列表", router.getRoutes());
+      // 标记动态路由已添加，防止重复执行
+      hasAddedDynamicRoutes = true;
+      console.log("路由列表", router.getRoutes());
 
-    let path = to.redirectedFrom?.fullPath || to.fullPath;
-    
-    return path;
+      let path = to.redirectedFrom?.fullPath || to.fullPath;
+
+      return path;
     } catch (error) {
       console.error("获取权限列表或添加动态路由失败：", error);
       // 异常时清除token并跳转登录

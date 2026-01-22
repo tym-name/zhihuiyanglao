@@ -25,8 +25,8 @@
           <el-table-column prop="name" label="姓名" />
           <el-table-column label="头像">
             <template #default="{ row }">
-              <img :src="API_BASE_URL + row?.photo" alt="头像" class="avatar-img" />
-              <!-- {{ row.photo }} -->
+              <img v-if="row?.photo" :src="API_BASE_URL + row.photo" alt="头像" class="avatar-img" />
+              <div v-else class="avatar-placeholder">暂无头像</div>
             </template>
           </el-table-column>
           <el-table-column prop="gender" label="性别">
@@ -57,15 +57,21 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { goOutGetElderly } from '../api/goout/goout'
-import type { HomeType } from '../api/company/companyType'
-const API_BASE_URL = "http://123.57.237.81:8080/caresystem/";
+import { goOutGetElderly } from '../api/OutboundRegistration/Outbound'
+import { ElMessage } from 'element-plus'
+// 声明环境变量
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://123.57.237.81:8080/caresystem/";
 // 组件属性
 interface Props {
   modelValue?: boolean
   onConfirm?: (data: any) => void
 }
-const dataType = ref<HomeType>({
+// 分页参数类型
+interface PaginationParams {
+  page: number;
+  pageSize: number;
+}
+const dataType = ref<PaginationParams>({
   page: 1,
   pageSize: 10
 })
@@ -99,9 +105,22 @@ watch(() => props.modelValue, (val) => {
 
 // 打开对话框时触发
 const onOpen = async () => {
-  // 这里可以添加初始化逻辑
-  let res = await goOutGetElderly(dataType.value)
-  tableData.value = res.data.list.filter((item: any) => item.state == 3)
+  try {
+    // 这里可以添加初始化逻辑
+    let res = await goOutGetElderly(dataType.value)
+    if (res && res.data && res.data.list) {
+      tableData.value = res.data.list.filter((item: any) => item.state == 3)
+      total.value = res.data.total || 0
+    } else {
+      tableData.value = []
+      total.value = 0
+    }
+  } catch (error) {
+    console.error('获取老人列表失败:', error)
+    ElMessage.error('获取老人列表失败，请稍后重试')
+    tableData.value = []
+    total.value = 0
+  }
 }
 
 // 关闭对话框

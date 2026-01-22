@@ -2,24 +2,18 @@
   min-height: 100vh;
   min-width: 100%;
 }
+
 .el-header {
   height: 100px;
   box-shadow: 0 6px 8px -4px rgba(0, 0, 0, 0.1);
 }
+
 .el-footer {
   box-shadow: 0 -6px 8px -4px rgba(0, 0, 0, 0.1);
   height: 80px;
   padding-top: 18px;
 }
-.el-main {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 1190px;
-  min-height: 480px;
-}
+
 #Main {
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);

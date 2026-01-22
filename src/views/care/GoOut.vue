@@ -1,209 +1,309 @@
 <template>
-   <div>
-      <Etabs v-bind="tableListData">
-         <template #Delete="{ row, delListOne }">
-            <el-button type="primary" link @click="GoOutDetails(row)"><el-icon>
-                  <Tickets />
-               </el-icon>查看详情</el-button>
-            <el-button type="primary" link @click="edit(row)"><el-icon>
-                  <Edit />
-               </el-icon>编辑</el-button>
-            <el-button type="danger" link @click="delListOne(row.id)"><el-icon>
-                  <Delete />
-               </el-icon>删除</el-button>
-         </template>
-         <template #delCard="{ delAll, checkLength }">
-            <div style="margin-bottom:20px">
-               <el-button type="success" @click="openSelectDialog"><el-icon>
-                     <Plus />
-                  </el-icon>新增</el-button>
-               <el-button type="danger" :disabled="checkLength === 0" @click="delAll"><el-icon>
-                     <Delete />
-                  </el-icon>批量删除</el-button>
-            </div>
+    <div>
+        <!-- 添加模态框 -->
+        <el-dialog v-model="dialogVisible" title="添加" width="50%" :before-close="handleClose">
 
-         </template>
-         <template #searchCard="{ Params, search }">
-            <el-form :inline="true" class="demo-form-inline">
-               <el-form-item label="老人姓名:">
-                  <el-input v-model="Params.name" placeholder="请输入老人姓名" clearable style="width: 195px" />
-               </el-form-item>
-               <el-form-item label="审批状态:">
-                  <el-select v-model="Params.state" placeholder="请选择审批状态" style="width: 240px">
-                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-                  </el-select>
-               </el-form-item>
-               <el-form-item label="外出时间:">
-                  <el-date-picker v-model="Params.date" type="daterange" value-format="YYYY-MM-DD" range-separator="-"
-                     start-placeholder="开始日期" end-placeholder="结束日期" style="width: 250px;" size="default"
-                     @change="(val: string[]) => dateChange(val, Params)" />
-               </el-form-item>
-               <el-form-item>
-                  <el-button type="primary" @click="search"><el-icon>
-                        <Search />
-                     </el-icon>查询</el-button>
-                  <el-button @click="reset(search, Params)"><el-icon>
-                        <Refresh />
-                     </el-icon>重置</el-button>
-               </el-form-item>
-            </el-form>
-         </template>
-      </Etabs>
-       <ElderSelectDialog
-      v-model="dialogVisible"
-      @confirm="handleConfirm"
-    />
-   </div>
+            <Table :columns="oldman" :fetch-data="getCaptcha" ref="checkRef" :initParams="checkModel">
+
+                <template #search>
+                    <el-form :inline="true">
+                        <el-form-item label="姓名:">
+                            <el-input placeholder="请输入姓名" clearable style="width: 200px;" v-model="checkModel.name" />
+                        </el-form-item>
+                        <el-form-item label="身份证号:">
+                            <el-input placeholder="请输入身份证号" clearable style="width: 200px;"
+                                v-model="checkModel.idCard" />
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button @click="check" type="primary">查询</el-button>
+                            <el-button @click="chong">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </template>
+
+                <template #button="scoped">
+                    <el-button type="primary" @click="choice(scoped.row)">选择</el-button>
+                </template>
+            </Table>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button @click="dialogVisible = false">关闭</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">
+                        确定
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
+
+        <Table ref="tableRef" :columns="columns" :fetch-data="getElderlyList" :initParams="params"
+            @selection-change="handleSelectionChange">
+
+            <template #search>
+                <el-form :inline="true" class="demo-form-inline">
+                    <!-- 老人姓名 -->
+                    <el-form-item label="老人姓名:">
+                        <el-input placeholder="请输入老人姓名" clearable style="width: 200px;" v-model="params.name" />
+                    </el-form-item>
+                    <el-form-item label="审批状态">
+                        <el-select placeholder="请选择状态" v-model="params.state" clearable style="width: 220px;">
+                            <el-option label="已返回" value="0" />
+                            <el-option label="未返回" value="1" />
+                            <el-option label="逾期未返回" value="2" />
+                        </el-select>
+                    </el-form-item>
+
+                    <!-- 外出时间 -->
+                    <el-form-item label="上报时间:">
+                        <el-date-picker type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期"
+                            format="YYYY-MM-DD HH:mm:ss" date-format="YYYY/MM/DD ddd" style="width: 250px;"
+                            v-model="params.beginDate" @change="handleDate" />
+                    </el-form-item>
+                    <!-- 按钮 -->
+                    <el-form-item>
+                        <el-button @click="query" type="primary">查询</el-button>
+                        <el-button @click="reset">重置</el-button>
+                    </el-form-item>
+
+                    <div class="button">
+                        <el-button type="success" @click="dialogVisible = true">+新增外出</el-button>
+                        <el-button type="danger" :disabled="multipleSelection.length === 0"
+                            @click="delAll">-批量删除</el-button>
+                    </div>
+
+
+                </el-form>
+            </template>
+
+
+
+            <template #operate="{ row }">
+                <el-button @click="goout" type="primary" link size="small"
+                    style="width: 20px; font-size: 13px !important;margin-right: 8px;">
+                    <el-icon>
+                        <View />
+                    </el-icon>查看详情
+                </el-button>
+
+                <el-button @click="Update(row)" type="primary" link size="small"
+                    style="width: 60px; font-size: 13px !important;margin-right: 8px;">
+                    <el-icon>
+                        <EditPen />
+                    </el-icon>编辑
+                </el-button>
+
+                <el-button type="danger" link size="small" style="width: 10px; font-size: 13px !important; "
+                    @click="getDel(row.id)">
+                    <el-icon>
+                        <Delete />
+                    </el-icon>删除
+                </el-button>
+
+            </template>
+        </Table>
+    </div>
 </template>
-
 <script setup lang="ts">
-import Etabs from '../../utils/Etabs.vue';
-import { ref, reactive } from 'vue';
-import type { propDataType } from '../../utils/Etabs.vue';
-import { goOutDelete,  goOutlist } from '../../api/goout/goout';
-import { Delete, Search, Refresh } from '@element-plus/icons-vue';
-import { Plus, Tickets, Edit } from '@element-plus/icons-vue'
-import ElderSelectDialog from '../../components/ElderSelectDialog.vue'
+import { ref, reactive, onMounted } from 'vue'
+import Table from '../../components/Table/Table.vue';
+import { columns } from './Outbound';
+import { getDel1, getElderlyList, getAllDel, getOldManList } from '../../api/OutboundRegistration/Outbound';
+import type { ElderlyOutRecordItem } from '../../api/OutboundRegistration/type';
+import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
+import { View, EditPen, Delete } from '@element-plus/icons-vue';
 import router from '../../router';
+import { oldman } from './oldManList';
+import type { ApifoxModel } from '../../api/OutboundRegistration/oldManList';
+import { getCaptcha } from '../../api/market/elderly';
 
-// 定义插槽数据类型
-interface SlotData {
-  row: any;
-  delListOne: (id: number | string) => void;
-}
 
-interface DelCardSlotData {
-  delAll: () => void;
-  checkLength: number;
-}
 
-interface SearchCardSlotData {
-  Params: any;
-  search: () => void;
-}
 
 const dialogVisible = ref(false)
 
-// 使用泛型或扩展类型来解决类型问题
-let tableListData: propDataType & {
-  slots?: {
-    Delete?: SlotData;
-    delCard?: DelCardSlotData;
-    searchCard?: SearchCardSlotData;
-  }
-} = reactive({
-   column: [
-      {
-         label: "序号",
-         prop: "id"
-      },
-      {
-         label: "老人姓名",
-         prop: "elderlyName"
-      },
-      {
-         label: "床位号",
-         prop: "begName"
-      },
-      {
-         label: "陪同人员姓名",
-         prop: "name"
-      },
-      {
-         label: "陪同人员手机号",
-         prop: "mobile",
-         width: "155"
-      },
-      {
-         label: "外出时间",
-         prop: "startTime",
-         width: "155"
-      },
-
-      {
-         label: "上报人",
-         prop: "addAccountName"
-      },
-      {
-         label: "上报时间",
-         prop: "addTime",
-         width: "155"
-      },
-      {
-         label: "审批状态",
-         prop: "stateName",
-
-      },
-      {
-         label: "操作",
-         prop: 'Delete',
-         slot: true,
-         width: "240"
-      }
-   ],
-   getList: goOutlist,
-   delListOne: goOutDelete,
-
-   isPage: true
-})
-
-// 搜索选择器结果
-const options = [
-   {
-      value: '0',
-      label: '未返回',
-   },
-   {
-      value: '1',
-      label: '已返回',
-   },
-   {
-      value: '2',
-      label: '逾期未返回',
-   },
-]
-
-const reset = (search: Function, Params: any) => {
-   Params.name = ''
-   Params.state = ''
-
-   search()
+const handleClose = () => {
+    dialogVisible.value = false
 }
 
-const dateChange = (val: string[], Params: any) => {
-   if (!Params.date) Params.date = [];
-   Params.date[0] = val[0]
-   Params.date[1] = val[1]
-   Params.startTime = val[0];
-   Params.beginDate = val[0];
-   Params.endDate = val[1];
+
+const elderlyList = ref<any[]>([]);
+const total = ref(0);
+const pageSize = ref(10);
+const currentPage = ref(1);
+
+const searchParams = reactive({
+    name: '',
+    idCard: ''
+});
+
+const fetchElderlyList = async () => {
+    const params = {
+        page: currentPage.value,
+        pageSize: pageSize.value,
+        ...searchParams
+    };
+    const res = await getElderlyList(params);
+    if (res.code === 10000) {
+        elderlyList.value = res.data.list;
+        total.value = res.data.counts;
+    }
 };
 
-const GoOutDetails = (row: any) => {
-   router.push({ path: `/care/care/details/${row.id}` })
 
-}
+// 日期处理 // 时间处理
+const handleDate = (e: any) => {
+    if (e && e.length > 1) {
+        params.beginDate = e[0] ? dayjs(e[0]).format('YYYY-MM-DD HH-mm') : "";
+        params.endDate = e[1] ? dayjs(e[1]).format('YYYY-MM-DD HH-mm') : "";
+    } else {
+        params.beginDate = "";
+        params.endDate = "";
+    }
+};
 
-const edit = (row: any) => {
-   router.push({ path: `/care/care/edit/${row.id}` })
+onMounted(() => {
+    fetchElderlyList();
+});
+// 定义tableRef
+const tableRef = ref();
 
-}
-
-const openSelectDialog = () => {
-  dialogVisible.value = true 
-}
-
-const handleConfirm = (data: any) => {
-   console.log(data,"2222");
-   console.log(data.name);
-   
-router.push({ 
-  path: '/care/care/add',
-  query: { 
-    oldId: encodeURIComponent(data.id), 
-  } 
+// 搜索参数
+const params = reactive<ElderlyOutRecordItem>({
+    name: "",
+    state: undefined,
+    beginDate: ""
 })
-}
-</script>
 
-<style scoped lang='less'></style>
+// 选中的行
+const multipleSelection = ref<ElderlyOutRecordItem[]>([]);
+
+// 查询点击事件
+const query = () => {
+    // 调用Table组件的refresh方法刷新数据
+    tableRef.value?.refresh();
+}
+
+// 重置搜索条件
+const reset = () => {
+    // 重置搜索参数
+    params.name = "";
+    params.startTime = "";
+    params.endTime = "";
+    params.beginDate = ""
+
+    // 调用Table组件的refresh方法刷新数据
+    tableRef.value?.refresh();
+}
+
+// 处理表格多选
+const handleSelectionChange = (val: ElderlyOutRecordItem[]) => {
+    multipleSelection.value = val;
+}
+
+// 添加搜索参数
+const checkModel = reactive<ApifoxModel>({
+    name: "",
+    idCard: "",
+})
+
+const checkRef = ref()
+
+// 添加里面的搜索
+const check = () => {
+    // 调用Table组件的refresh方法刷新数据
+    checkRef.value?.refresh();
+}
+
+// 重置搜索条件
+const chong = () => {
+    // 重置搜索参数
+    checkModel.name = "";
+    checkModel.idCard = "";
+
+    // 调用Table组件的refresh方法刷新数据
+    checkRef.value?.refresh();
+}
+
+// 添加选择功能
+const choice = (row: any) => {
+    let id = row.id;
+    router.push('/AddOutings?id=' + id)
+}
+
+// 查看详情功能
+const goout = () => {
+
+    router.push({
+        path: "/details",
+    });
+}
+
+// 修改外出功能
+const Update = (row: ElderlyOutRecordItem) => {
+    router.push({
+        path: "/edit",
+        query: {
+            row: encodeURIComponent(JSON.stringify(row)) // 序列化对象并编码
+        }
+    });
+}
+// 批量删除
+const delAll = async () => {
+    if (!multipleSelection.value.length) return ElMessage.error('请选择要删除的数据')
+    const confirm = await ElMessageBox.confirm(
+        '确定要删除选中的数据吗？',
+        '提示', {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+    }
+    ).catch(() => undefined)
+    if (!confirm) return ElMessage.info('已取消删除');
+
+    const ids: number[] = multipleSelection.value.map(item => item.id!)
+    // console.log(ids)
+    await getAllDel(ids).catch(() => undefined)
+
+    ElMessage.success('删除成功')
+    tableRef.value?.refresh();
+}
+
+
+
+// 删除功能
+const getDel = async (id: number) => {
+    console.log(id);
+
+    ElMessageBox.confirm(
+        '此删除操作将无法恢复，请确认是否删除?',
+        '删除',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            await getDel1(id)
+            ElMessage({
+                type: 'success',
+                message: '删除成功',
+            })
+            // 删除成功后刷新表格数据
+            tableRef.value?.refresh();
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消删除',
+            })
+        })
+
+}
+
+
+</script>
+<style scoped lang="less">
+.dialog-footer {
+    text-align: right;
+}
+</style>
