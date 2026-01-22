@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div> -->
     <Table ref="tableRef" @selection-change="handleSelectionChange" :columns="columns" :fetch-data="addressList">
       <template #buttons>
         <el-button type="success" @click="add"><i class="iconfont icon-jia"></i>新增地址</el-button>
@@ -16,7 +16,7 @@
     </Table>
     <AddressAdd v-if="roleDialogVisible" v-model="roleDialogVisible" :edit-row="currentEditRow"
       @save-success="handleSaveSuccess"></AddressAdd>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script setup lang='ts'>

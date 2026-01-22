@@ -9,9 +9,8 @@
     </div>
 </template>
 <script setup lang='ts'>
-import { computed, reactive, ref, shallowRef, watch, watchEffect } from 'vue';
+import { shallowRef } from 'vue';
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { Editor, Toolbar, InsertFnType } from '@wangeditor/editor-for-vue'  // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 
 const toolbarConfig = {}
@@ -49,7 +48,7 @@ const editorConfig = {
                     'Content-Type': 'multipart/form-data'
                 }
             },
-            customInsert(res: any, insertFn: InsertFnType) {
+            customInsert(res: any, insertFn: any) {
                 // console.log(res,"图片文件")
                 if (res.errCode === 10000) {
                     const url = `${import.meta.env.VITE_IMG_URL}${res.data}`;

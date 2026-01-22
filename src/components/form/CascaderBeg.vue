@@ -25,12 +25,6 @@ const optionsList={
 let getBuildingListApi = async () => {
     let res = await buildingList()
     let resHouse = await housetypeList(optionsList)
-    // if (props.type != "bed") {
-    //     let resBeds = await getBedsList()
-    //     resBeds.data.list.forEach(item => {
-    //         res.data.list.push(item as any)
-    //     });
-    // }
 
     resHouse.data.list.forEach(item => {
         res.data.list.push(item as any)

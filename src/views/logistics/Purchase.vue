@@ -1,5 +1,4 @@
 <template>
-    <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="getPurchaseList">
             <template #buttons>
                 <el-button type='success' @click="goToAdd()">创建采购申请</el-button>
@@ -20,7 +19,6 @@
                 </el-button>
             </template>
         </Table>
-    </div>
 </template>
 
 <script setup lang='ts'>

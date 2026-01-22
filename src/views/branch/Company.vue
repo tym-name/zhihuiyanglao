@@ -22,12 +22,19 @@
                 </el-form>
             </template>
             <template #operate="{ row }">
-                <el-button link type="primary">重置密码</el-button>
-                <el-button link type="primary" @click="updCompany(row.id)">修改</el-button>
-                <el-button link type="danger" @click="deleteCompany(row.id)">删除</el-button>
+                <el-button link type="primary" @click="handleResetPassword(row)"><i class="iconfont icon-shuaxin"></i>重置密码</el-button>
+                <el-button link type="primary" @click="updCompany(row.id)"><i class="iconfont icon-bianji"></i>修改</el-button>
+                <el-button link type="danger" @click="deleteCompany(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
             </template>
         </Table>
         <SupplierEdit :is-add="isAdd" :editData="editData" :handleSuccess="handleSuccess" v-model="dialogForm" />
+        <ResetPasswordDialog  
+      v-model:visible="resetPasswordVisible"
+      :account-id="currentAccountId"
+      :name="currentCompanyName"
+      @reset-success="handleResetSuccess"
+      @reset-fail="handleResetFail" 
+    />
     </div>
 </template>
 
@@ -38,6 +45,7 @@ import Table, { type TableColumn } from "../../components/table.vue";
 import type { HomeType, InstitutionItem } from "../../api/company/companyType";
 import { ElMessage, ElMessageBox } from "element-plus";
 import SupplierEdit from "./CompanyEdit.vue";
+import ResetPasswordDialog from '../../components/form/ResetPasswordDialog.vue'
 
 onMounted(() => {
     console.log('机构列表', companyList);
@@ -55,6 +63,29 @@ const params = ref<HomeType>({
 
 const tableRef = ref<any>(null)
 const isBatchDelDisabled = ref(true)
+// 重置密码弹窗相关
+const resetPasswordVisible = ref(false);
+const currentAccountId = ref(0);
+const currentCompanyName = ref(""); // 新增：存储当前行的机构名称
+// 重置密码：接收完整行数据，提取id和name
+const handleResetPassword = (row: InstitutionItem) => {
+  currentAccountId.value = row.id;        // 账号ID
+  currentCompanyName.value = row.name;    // 核心：赋值机构名称
+  resetPasswordVisible.value = true;      // 打开弹窗
+  console.log("传递给弹窗的机构名称：", currentCompanyName.value);
+};
+// 处理密码重置成功
+const handleResetSuccess = () => {
+  resetPasswordVisible.value = false;
+  // 可选：刷新表格数据
+  tableRef.value?.refresh();
+};
+
+// 处理密码重置失败
+const handleResetFail = (error: any) => {
+  ElMessage.error(`密码重置失败：${error.msg || '未知错误'}`);
+  console.error('重置密码失败:', error);
+};
 
 const dialogForm = ref(false)
 // 添加编辑数据的响应式变量
@@ -206,7 +237,7 @@ const columns: TableColumn[] = [
     {
         label: "操作",
         slot: "operate",
-        width: 180,
+        width: 320,
         fixed: "right",
     }
 ];
@@ -216,5 +247,7 @@ const columns: TableColumn[] = [
 .demo-form-inline {
     height: 35px;
 }
-
+.iconfont{
+    margin: 5px;
+}
 </style>

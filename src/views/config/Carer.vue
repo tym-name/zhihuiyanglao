@@ -13,8 +13,8 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">查询</el-button>
-                <el-button>重置</el-button>
+                <el-button type="primary" @click="handleSearch">查询</el-button>
+                <el-button @click="handleReset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -54,35 +54,10 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 const VITE_IMG_URL = 'http://123.57.237.81:8080/caresystem/'
 
 // 表单
-const form = reactive<staffList>({
-    id: 0,
-    companyId: 0,
-    photo: '',
+const form = reactive({
     name: '',
     mobile: '',
-    isCarer: 0,
-    departmentId: 0,
-    addAccountId: 0,
-    addAccountName: '',
-    addTime: '',
-    departmentName: '',
-    roles: [
-        {
-            id: 0,
-            name: '',
-            companyId: 0,
-            addAccountId: 0,
-            addAccountName: null,
-            addTime: '',
-            accountCounts: 0,
-            menuIds: null,
-        }
-    ],
-    adminId: 0,
-    adminUserName: '',
-    adminPwd: '',
-    enable: '',
-    idCard: '',
+    roles: '',
 })
 // 表格
 const columns: TableColumn[] = [
@@ -129,7 +104,7 @@ const formss = reactive<roleList>({
     addAccountName: '',
     addTime: '',
     accountCounts: 0,
-    menuIds: [],
+    menuIds: null,
 })
 const getstaffListFun = async () => {
     const res = await roleListFun(formss)
@@ -189,6 +164,32 @@ const delAll = async () => {
     tableRef.value?.refresh();
 
     ElMessage.success('删除成功')
+}
+
+// 查询
+const handleSearch = () => {
+    // 处理查询参数，只传递有值的字段
+    const params: any = {
+        ...form
+    }
+    // 移除空值
+    for (const key in params) {
+        if (params[key] === '' || params[key] === null || params[key] === undefined) {
+            delete params[key]
+        }
+    }
+    // 调用表格的refresh方法，传入查询参数
+    tableRef.value?.refresh(params)
+}
+
+// 重置
+const handleReset = () => {
+    // 重置表单数据
+    form.name = ''
+    form.mobile = ''
+    form.roles = ''
+    // 调用查询方法，刷新表格
+    handleSearch()
 }
 
 </script>

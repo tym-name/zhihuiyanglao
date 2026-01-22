@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { CaptchaData, LoginPayload, LoginResponse, MenuList, UpdatePwd } from '../index/indexType'
+import type { CaptchaData, LoginPayload, LoginResponse, LoginWeChat, MenuList, UpdatePwd, wechatInfo, WeChatLoginResponse, WechatUserInfo } from '../index/indexType'
 
 /**
  * 获取图形验证码
@@ -31,3 +31,14 @@ export const menu = () => http.get<MenuList>('/menu/list')
  */
 export const updatePwd = (data: UpdatePwd) => http.put('/account/updatePwd', data)
 
+/**
+ * 微信扫一扫登录
+ * 
+ */
+export const wechatLogin = (params: wechatInfo) => http.get<WeChatLoginResponse | WechatUserInfo>('/auth/wechat',params)
+
+/**
+ * 用户登录并绑定微信
+ * 
+ */
+export const loginBindWeChat = (data: LoginWeChat) => http.post<any>('/auth/loginBindWeChat', data);

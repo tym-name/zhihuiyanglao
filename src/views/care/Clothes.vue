@@ -1,5 +1,5 @@
 <template>
-    <el-card style="margin-bottom: 10px;">
+        <el-card style="margin-bottom: 10px;">
         <el-form :model="form" label-width="auto" inline>
             <el-form-item label="发布人">
                 <el-input v-model="form.elderlyName" clearable placeholder="请输入姓名" style="width: 180px" />
@@ -19,13 +19,14 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @clcik="query">查询</el-button>
+                <el-button type="primary" @click="query">查询</el-button>
                 <el-button @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
 
-    <Table ref="tableRef" :columns="columns" :fetch-data="clothesList" @selection-change="handleSelectionChange">
+    <Table ref="tableRef" :columns="columns" :fetch-data="fetchData" :init-params="form"
+        @selection-change="handleSelectionChange">
         <template #buttons>
             <el-button type="success" @click="showDialog">添加</el-button>
             <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
@@ -46,9 +47,8 @@
             <el-button link type="danger" @click="clothesdel(row.id)">删除</el-button>
         </template>
     </Table>
-    <ClothesDialog v-model="dialogFormVisible" :detail-data="currentDetail"></ClothesDialog>
-    <AddEditClothes v-model="addeditclothes" :detail-data="currentDetail" @success="handleSuccess">
-    </AddEditClothes>
+    <ClothesDialog v-model="dialogFormVisible" :detail-data="currentDetail" />
+    <AddEditClothes v-model="addeditclothes" :detail-data="currentDetail" @success="handleSuccess" />
 </template>
 
 <script setup lang='ts'>
@@ -206,6 +206,18 @@ const delAll = async () => {
 
     ElMessage.success('删除成功')
 }
+// 自定义查询方法
+const fetchData = async (params: any) => {
+    // 处理日期范围
+    const queryParams = { ...params };
+    if (queryParams.addTime && Array.isArray(queryParams.addTime) && queryParams.addTime.length === 2) {
+        queryParams.startTime = queryParams.addTime[0];
+        queryParams.endTime = queryParams.addTime[1];
+        delete queryParams.addTime;
+    }
+    return await clothesList(queryParams);
+};
+
 // 查询
 const query = () => {
     tableRef.value?.refresh();

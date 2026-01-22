@@ -21,7 +21,11 @@
                 <el-input type="textarea" v-model="ruleForm.content" placeholder="请输入内容" />
             </el-form-item>
             <el-form-item label="图片" prop="pictures">
-                <el-button type="primary">选择照片</el-button>
+                <el-upload v-model:file-list="fileList" class="upload-demo"
+                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :on-preview="handlePreview"
+                    :on-remove="handleRemove" list-type="picture">
+                    <el-button type="primary">选择照片</el-button>
+                </el-upload>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -35,7 +39,7 @@
 
 <script setup lang='ts'>
 import { computed, reactive, ref, watch } from 'vue'
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules, type UploadProps, type UploadUserFile } from 'element-plus'
 import type { ClothesList } from '../../api/clothes/clothesType'
 import { clothesUpdate } from '../../api/clothes/clothes'
 // 
@@ -113,9 +117,7 @@ watch(() => props.modelValue, (val) => {
 
 const submitForm = async () => {
     if (!ruleFormRef.value) return
-
     await ruleFormRef.value.validate()
-
     if (isEdit.value) {
         // 编辑模式
         await clothesUpdate(ruleForm)
@@ -149,6 +151,25 @@ const resetForm = () => {
             (ruleForm[key as keyof ClothesList] as any) = null
         }
     })
+}
+// 上传图片
+const fileList = ref<UploadUserFile[]>([
+    {
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+    },
+    {
+        name: 'food2.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+    },
+])
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+    console.log(uploadFile, uploadFiles)
+}
+
+const handlePreview: UploadProps['onPreview'] = (file) => {
+    console.log(file)
 }
 
 // 关闭对话框

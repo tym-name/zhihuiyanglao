@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <!-- <div> -->
         <Table ref="tableRef" @selection-change="handleSelectionChange" :columns="columns" :init-params="params" :fetch-data="patrolList">
             <template #buttons>
                 <el-button type="success" @click="add"><i class="iconfont icon-jia"></i>添加</el-button>
@@ -39,7 +39,7 @@
             </template>
         </Table>
         <NightWatchAdd @save-success="handleSaveSuccess" v-if="roleDialogVisible" v-model="roleDialogVisible"></NightWatchAdd>
-    </div>
+    <!-- </div> -->
 </template>
 
 <script setup lang='ts'>

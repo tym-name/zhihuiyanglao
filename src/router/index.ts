@@ -1,6 +1,8 @@
 import {
   createRouter,
   createWebHashHistory,
+  // createWebHashHistory,
+  createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
 
@@ -8,11 +10,12 @@ import { useAuthStore } from "../stores/auth";
 
 const modules = import.meta.glob("../views/**/**.vue");
 
-const whiteUrl = ["/login"];
+const whiteUrl = ["/login","/wechat-login"];
 
 const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
+  // base:'./',
   {
     path: "/login",
     name: "Login",
@@ -20,6 +23,15 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     },
     component: () => import("../views/login/Login.vue"),
+  },
+  {
+    path: "/Amap",
+    name: "Amap",
+    meta: {
+      title: "高德地图",
+    },
+    component: () => import("../views/Amap/Amap.vue"),
+    
   },
   {
     path: "/worldmap",
@@ -32,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../components/form/BaiduMap.vue"),
   },
   {
+    path: "/wechat-login",
+    name: "WechatLogin",
+    component: () => import("../views/login/WechatLogin.vue"),
+  },
+  {
     path: "/",
     name: "Home",
     component: () => import("../views/home/Home.vue"),
@@ -39,6 +56,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/home",
         name: "home",
+        meta: {
+          title: "首页",
+        },
+        component: () => import("../views/home/HomeView.vue"),
+      },
+      {
+        path: "/",
+        name: "HomeView",
         meta: {
           title: "首页",
         },
@@ -213,45 +238,6 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/diet/PriceAnalysis.vue"),
       },
-      {
-        path: "/AddPurchase",
-        name: "AddPurchase",
-        meta: {
-          title: "新增采购申请",
-        },
-        component: () => import("../components/logistics/AddPurchase.vue"),
-      },
-      {
-        path: "/check/:id",
-        name: "check",
-        meta: {
-          title: "收获验收",
-        },
-        component: () => import("../views/logistics/check.vue"),
-      },
-      {
-        path: "/details/:id",
-        name: "details",
-        meta: {
-          title: "查看详情",
-        },
-        component: () => import("../views/logistics/details.vue"),
-      },
-      {
-        path: "/medicalcareAdd",
-        name: "medicalcareAdd",
-        component: () => import("../views/medicalcare/MedicalcareAddOld.vue"),
-      },
-      {
-        path: "/medicalcaredetails",
-        name: "medicalcaredetails",
-        component: () => import("../views/medicalcare/MedicalcareDetails.vue"),
-      },
-      {
-        path: "/medicalcarePlanset",
-        name: "medicalcarePlanset",
-        component: () => import("../views/medicalcare/MedicalcarePlanset.vue"),
-      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -262,7 +248,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory("/dist"),
+  history: createWebHashHistory('/dist'),
   routes,
 });
 
@@ -317,18 +303,6 @@ router.beforeEach(async (to, from) => {
                 keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
-                  childrenName: child.name,
-                  pathBtn: child.url,
-                  menusFath: item.url,
-                  keepAlive: keepAlivePages.includes(item.url),
-                  parent: {
-                    name: item.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  }, // 修复parent.url中parent未定义的问题
-                  current: {
-                    name: child.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  },
                   url: "/care/" + `${item.url}/${child.url}`,
                 }, // 修复parent.url中parent未定义的问题
                 current: {
@@ -341,6 +315,7 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
+
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());
