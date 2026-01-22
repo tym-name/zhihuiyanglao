@@ -10,7 +10,7 @@ const modules = import.meta.glob("../views/**/**.vue");
 
 const whiteUrl = ["/login"];
 
-const keepAlivePages = ["company"]
+const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -69,20 +69,20 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/Elderly.vue"),
       },
       {
-        path: '/Role-edit',
-        name: 'RoleEdit',
+        path: "/Role-edit",
+        name: "RoleEdit",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/RoleEdit.vue')
+        component: () => import("../views/system/RoleEdit.vue"),
       },
       {
-        path: '/Role',
-        name: 'Role',
+        path: "/Role",
+        name: "Role",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/Role.vue')
+        component: () => import("../views/system/Role.vue"),
       },
       {
         path: "/accountList",
@@ -142,7 +142,7 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/market/Discharge.vue"),
       },
-      // 
+      //
       {
         path: "position-edit/:id",
         name: "position-edit/:id",
@@ -213,6 +213,30 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/diet/PriceAnalysis.vue"),
       },
+      {
+        path: "/AddPurchase",
+        name: "AddPurchase",
+        meta: {
+          title: "新增采购申请",
+        },
+        component: () => import("../components/logistics/AddPurchase.vue"),
+      },
+      {
+        path: "/check/:id",
+        name: "check",
+        meta: {
+          title: "收获验收",
+        },
+        component: () => import("../views/logistics/check.vue"),
+      },
+      {
+        path: "/details/:id",
+        name: "details",
+        meta: {
+          title: "查看详情",
+        },
+        component: () => import("../views/logistics/details.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -223,7 +247,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory('/dist'),
+  history: createWebHashHistory("/dist"),
   routes,
 });
 
@@ -263,7 +287,7 @@ router.beforeEach(async (to, from) => {
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,
-              `${item.url}/${child.url}`
+              `${item.url}/${child.url}`,
             );
             router.addRoute("Home", {
               path: `/${item.url}/${child.url}`,
