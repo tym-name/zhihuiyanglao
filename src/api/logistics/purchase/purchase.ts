@@ -9,4 +9,5 @@ export const getPurchaseList = (params: purchaseParams) => http.get<purchasListR
 /**
  * 删除
  */
-export const delPurChase = (id: number) => http.delete(`/api/purchase/delete/${id}`);
+export const delPurChase = (id: number) =>
+  http.delete(`/purchase/delete/${id}`);
