@@ -29,6 +29,15 @@
                 <el-select v-model="ruleForm.roleId" placeholder="请选择岗位" clearable style="width: 308px">
                     <el-option v-for="item in roleItem" :key="item" :label="item.name" :value="item.id" />
                 </el-select>
+
+                <el-select-v2 v-model="ruleForm.roleId" :options="roleItem" placeholder="请选择岗位" style="width: 308px"
+                    clearable multiple>
+                    <template #label="{ label, value }">
+                        <span>{{ label }}: </span>
+                        <span style="font-weight: bold">{{ value }}</span>
+                    </template>
+                </el-select-v2>
+
             </el-form-item>
             <el-form-item label="账号" prop="adminUserName">
                 <el-input v-model="ruleForm.adminUserName" style="width: 308px;" />
@@ -60,7 +69,7 @@ import type { departmentList } from '../../api/personel/personelType'
 import { roleListFun } from '../../api/position/position'
 import router from '../../router'
 import { useRoute } from 'vue-router'
-import { staffGet } from '../../api/staff/staff'
+import { staffGet, staffUpdate } from '../../api/staff/staff'
 
 const route = useRoute()
 const id = route.params.id ? Number(route.params.id) : 0
@@ -116,7 +125,6 @@ const rules = reactive<FormRules<staffUpdateData>>({
     roleId: { required: true, message: '请选择岗位', trigger: 'change' },
     adminUserName: { required: true, message: '请输入账号', trigger: 'blur' },
     enable: { required: true, message: '请选择', trigger: 'blur' },
-
 })
 // 所属部门
 const forms = reactive<departmentList>({
@@ -156,7 +164,6 @@ getstaffListFun()
 const getStaffDetail = async () => {
     if (id === 0) return
     const res = await staffGet(id)
-    console.log('完整的接口响应:', res)
     const detailData = res.data
     ruleForm.photo = detailData.photo;
     ruleForm.name = detailData.name;
@@ -171,9 +178,12 @@ getStaffDetail()
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
 
-    await formEl.validate((valid) => {
+    await formEl.validate(async (valid) => {
         if (valid) {
-            console.log('表单验证通过，提交数据:', ruleForm)
+            await staffUpdate(ruleForm)
+            ElMessage.success('修改成功')
+            formEl.resetFields()
+            router.back()
         }
     })
 

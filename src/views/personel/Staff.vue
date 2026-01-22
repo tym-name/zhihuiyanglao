@@ -26,8 +26,8 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">查询</el-button>
-                <el-button>重置</el-button>
+                <el-button type="primary" @click="handleSearch">查询</el-button>
+                <el-button @click="handleReset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -358,5 +358,36 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
     dialogFormVisible.value = false
+}
+
+// 查询
+const handleSearch = () => {
+    // 准备查询参数
+    const searchParams = {
+        name: form.name,
+        mobile: form.mobile,
+        idCard: form.idCard,
+        departmentId: form.departmentName,
+        enable: form.enable === '未解决' ? 0 : form.enable === '已解决' ? 1 : '',
+        // 处理角色参数
+        roleIds: form.roles ? [form.roles] : []
+    }
+    // 调用表格的refresh方法，传入查询参数
+    tableRef.value?.refresh(searchParams)
+}
+
+// 重置
+const handleReset = () => {
+    // 重置表单
+    Object.assign(form, {
+        name: '',
+        mobile: '',
+        idCard: '',
+        departmentName: '',
+        enable: '',
+        roles: []
+    })
+    // 调用查询方法，获取全部数据
+    handleSearch()
 }
 </script>

@@ -8,13 +8,14 @@
                 <el-input v-model="form.elderlyIdCard" clearable placeholder="请输入身份证号码" style="width: 180px" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="query">查询</el-button>
+                <el-button type="primary" @click="handleSearch">查询</el-button>
                 <el-button @click="resetForm">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
 
-    <Table ref="tableRef" :columns="columns" :fetch-data="dischargeListFunc" @selection-change="handleSelectionChange">
+    <Table ref="tableRef" :columns="columns" :fetch-data="dischargeListFunc" @selection-change="handleSelectionChange"
+        :show-selection-column="true">
         <template #buttons>
             <el-button type="success" @click="dischargeeAdd">新增</el-button>
             <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
@@ -65,10 +66,6 @@ const form = reactive<dischargeList>({
 })
 // 表格
 const columns: TableColumn[] = [
-    {
-        type: "selection",
-        width: "50",
-    },
     {
         label: "序号",
         prop: "id",
@@ -196,13 +193,14 @@ const resetForm = () => {
     selectedIds.value = []
 }
 // 查询
-const query = () => {
+const handleSearch = () => {
+    // 调用表格的refresh方法，传递查询参数
     if (tableRef.value) {
-        // 调用表格的刷新方法，并传递查询参数
         tableRef.value.refresh({
-            elderlyName: form.elderlyName.trim(),
-            elderlyIdCard: form.elderlyIdCard.trim()
+            elderlyName: form.elderlyName,
+            elderlyIdCard: form.elderlyIdCard
         })
     }
 }
+
 </script>
