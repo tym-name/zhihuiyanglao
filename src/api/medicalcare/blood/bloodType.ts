@@ -65,6 +65,7 @@ export interface CascaderTreeNode {
  * 添加血压记录
  */
 export interface bloodAddOrUpdateParams {
+  id?: number | null;
   // 老年人ID，数字类型
   elderlyId: number | null;
   // 血压值，字符串类型（包含单位 mmHg）

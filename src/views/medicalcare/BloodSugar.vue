@@ -22,12 +22,12 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success">增加</el-button>
+                <el-button type="success" @click="OpenOrClose">增加</el-button>
                 <el-button type="danger" @click="delAll">批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
-                <el-button link type="primary">
+                <el-button link type="primary" @click="getBloodSugar(row.id)">
                     <i class="iconfont icon-bianji"></i>
                     编辑
                 </el-button>
@@ -37,6 +37,9 @@
                 </el-button>
             </template>
         </Table>
+        <AddOrUpdateBloodSugar :isShow="isShow" :OpenOrClose="OpenOrClose" :oneBloodSugarData="oneBloodSugarData"
+            :refresh="Refresh">
+        </AddOrUpdateBloodSugar>
     </div>
 </template>
 
@@ -48,13 +51,41 @@ import type { buildingListItem, CascaderTreeNode } from '../../api/medicalcare/b
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { convertFlatToCascaderTree } from '../../utils/checkBed';
 import type { bloodSugarListItem, bloodSugarListParams } from '../../api/medicalcare/bloodsugar/bloodsugarType';
-import { delBloodSugarAllByIds, delBloodSugarById, getBloodSugarList } from '../../api/medicalcare/bloodsugar/bloodsugar';
+import { delBloodSugarAllByIds, delBloodSugarById, getBloodSugarById, getBloodSugarList } from '../../api/medicalcare/bloodsugar/bloodsugar';
+import AddOrUpdateBloodSugar from '@/components/medicalcare/bloodfugar/addOrUpdateBloodSugar.vue';
 //表格
 const tableRef = ref<any>(null);
 
 //刷新页面
 const Refresh = () => {
     tableRef.value.refresh()
+}
+//给子组件传值
+const isShow = ref(false)
+const OpenOrClose = () => {
+    isShow.value = !isShow.value
+    oneBloodSugarData.value = ({
+        id: 0,
+        companyId: 0,
+        elderlyId: 0,
+        addTime: '',
+        addAccountId: 0,
+        val: '',
+        begId: 0,
+        begName: null,
+        idCard: null,
+        addAccountName: '',
+        addAccountPhoto: null,
+        elderlyName: '',
+        elderlyPhoto: null,
+        elderlyGender: null,
+        elderlyIdCard: null,
+        houseName: null,
+        buildingName: '',
+        staffId: 0,
+        staffName: null,
+        staffPhoto: null,
+    })
 }
 
 //根据Id删除
@@ -182,6 +213,39 @@ watch(() => selectedValue.value, (newValue) => {
     searchForm.value.begId = newValue[newValue.length - 1]
 })
 
+
+//获取单条数据 
+const oneBloodSugarData = ref<bloodSugarListItem>({
+    id: 0,
+    companyId: 0,
+    elderlyId: 0,
+    addTime: '',
+    addAccountId: 0,
+    val: '',
+    begId: 0,
+    begName: null,
+    idCard: null,
+    addAccountName: '',
+    addAccountPhoto: null,
+    elderlyName: '',
+    elderlyPhoto: null,
+    elderlyGender: null,
+    elderlyIdCard: null,
+    houseName: null,
+    buildingName: '',
+    staffId: 0,
+    staffName: null,
+    staffPhoto: null,
+})
+
+const getBloodSugar = async (id: number) => {
+    OpenOrClose()
+    let res = await getBloodSugarById(id)
+    console.log('获取单条数据', res);
+    if (res && res.data) {
+        oneBloodSugarData.value = res.data
+    }
+}
 
 
 

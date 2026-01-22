@@ -22,12 +22,12 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success">增加</el-button>
+                <el-button type="success" @click="OpenOrClose">增加</el-button>
                 <el-button type="danger" @click="delAll">批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
-                <el-button link type="primary">
+                <el-button link type="primary" @click="getBlood(row.id)">
                     <i class="iconfont icon-bianji"></i>
                     编辑
                 </el-button>
@@ -37,18 +37,64 @@
                 </el-button>
             </template>
         </Table>
+        <AddOrUpdateCheckRoom :refresh="Refresh" :OpenOrClose="OpenOrClose" :isShow="isShow"
+            :oneCheckRoomData="oneCheckRoomData"></AddOrUpdateCheckRoom>
     </div>
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import { getBuildingList } from '../../api/medicalcare/blood/blood';
 import type { buildingListItem, CascaderTreeNode } from '../../api/medicalcare/blood/bloodType';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { convertFlatToCascaderTree } from '../../utils/checkBed';
-import { delCheckroomAllByIds, delCheckroomById, getCheckroomList } from '../../api/medicalcare/checkroom/checkroom';
+import { delCheckroomAllByIds, delCheckroomById, getCheckroomById, getCheckroomList } from '../../api/medicalcare/checkroom/checkroom';
 import type { checkRoomListItem, checkRoomListParams } from '../../api/medicalcare/checkroom/checkroomType';
+import AddOrUpdateCheckRoom from '@/components/medicalcare/checkroom/AddOrUpdateCheckRoom.vue';
+
+//弹框
+const isShow = ref(false)
+const OpenOrClose = () => {
+    isShow.value = !isShow.value
+    oneCheckRoomData.value = ({
+        id: 0,
+        companyId: null,
+        elderlyId: null,
+        addTime: '',
+        addAccountId: 0,
+        spirit: '',
+        diet: '',
+        sleep: '',
+        shit: '',
+        urinate: '',
+        communicate: '',
+        memory: '',
+        temperature: '',
+        pulse: '',
+        breathe: '',
+        blood: '',
+        description: null,
+        suggest: null,
+        begId: 0,
+        begName: null,
+        idCard: null,
+        addAccountName: '',
+        addAccountPhoto: null,
+        elderlyName: '',
+        elderlyPhoto: null,
+        elderlyGender: null,
+        elderlyIdCard: null,
+        houseName: null,
+        buildingName: '',
+        staffId: 0,
+        staffName: '',
+        staffPhoto: '',
+
+    })
+}
+
+
 //表格
 const tableRef = ref<any>(null);
 
@@ -178,6 +224,53 @@ const selectedValue = ref<number[]>([])
 watch(() => selectedValue.value, (newValue) => {
     searchForm.value.begId = newValue[newValue.length - 1]
 })
+
+
+//获取单条数据
+const oneCheckRoomData = ref<checkRoomListItem>({
+    id: 0,
+    companyId: null,
+    elderlyId: null,
+    addTime: '',
+    addAccountId: 0,
+    spirit: '',
+    diet: '',
+    sleep: '',
+    shit: '',
+    urinate: '',
+    communicate: '',
+    memory: '',
+    temperature: '',
+    pulse: '',
+    breathe: '',
+    blood: '',
+    description: null,
+    suggest: null,
+    begId: 0,
+    begName: null,
+    idCard: null,
+    addAccountName: '',
+    addAccountPhoto: null,
+    elderlyName: '',
+    elderlyPhoto: null,
+    elderlyGender: null,
+    elderlyIdCard: null,
+    houseName: null,
+    buildingName: '',
+    staffId: 0,
+    staffName: '',
+    staffPhoto: '',
+
+})
+
+const getBlood = async (id: number) => {
+    OpenOrClose()
+    let res = await getCheckroomById(id)
+    console.log('获取单条数据', res);
+    if (res && res.data) {
+        oneCheckRoomData.value = res.data
+    }
+}
 
 
 

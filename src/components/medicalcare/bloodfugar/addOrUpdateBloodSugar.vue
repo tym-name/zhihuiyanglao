@@ -7,11 +7,8 @@
                     }}</span>
                     <el-button v-else type="primary" @click="openElderly">选择老人</el-button>
                 </el-form-item>
-                <el-form-item label="血压" prop="bloodPressure">
-                    <el-input v-model="ruleForm.bloodPressure" placeholder="请输入血压" />
-                </el-form-item>
-                <el-form-item label="脉搏" prop="pulse">
-                    <el-input v-model="ruleForm.pulse" placeholder="请输入脉搏" />
+                <el-form-item label="血糖" prop="val">
+                    <el-input v-model="ruleForm.val" placeholder="请输入血糖" />
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -32,10 +29,10 @@
 import { ref, reactive, watch, computed } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { bloodAddOrUpdateParams, bloodItem } from '../../../api/medicalcare/blood/bloodType';
 import type { ElderlyListItem } from '../../../api/care/activity/activityType';
 import ChoseOneElderly from '../../choseelderly/ChoseOneElderly.vue';
-import { addBlood, updateBlood } from '@/api/medicalcare/blood/blood';
+import type { addOUpdateBloodSugarParams, bloodSugarListItem } from '@/api/medicalcare/bloodsugar/bloodsugarType';
+import { addBloodSugar, updateBloodSugar } from '@/api/medicalcare/bloodsugar/bloodsugar';
 
 
 
@@ -43,7 +40,7 @@ import { addBlood, updateBlood } from '@/api/medicalcare/blood/blood';
 const props = defineProps<{
     isShow: boolean;
     OpenOrClose: () => void;
-    oneBloodData: bloodItem;
+    oneBloodSugarData: bloodSugarListItem;
     refresh: () => void;
 }>();
 
@@ -53,30 +50,27 @@ const elderlyDialogVisible = ref(false);
 const name = ref('');
 
 // 表单数据
-const ruleForm = ref<bloodAddOrUpdateParams>({
+const ruleForm = ref<addOUpdateBloodSugarParams>({
     id: 0,
-    elderlyId: null,
-    bloodPressure: '',
-    pulse: '',
+    elderlyId: 0,
+    val: '',
 });
 
 
 
 // 表单验证规则
-const rules = reactive<FormRules<bloodAddOrUpdateParams>>({
+const rules = reactive<FormRules<addOUpdateBloodSugarParams>>({
     elderlyId: [
         { required: true, message: '请选择老人姓名', trigger: ['change', 'blur'] },
+        { type: 'number', min: 1, message: '请选择老人姓名', trigger: ['change', 'blur'] },
     ],
-    bloodPressure: [
-        { required: true, message: '请输入血压', trigger: ['change', 'blur'] },
-    ],
-    pulse: [
-        { required: true, message: '请输入脉搏', trigger: ['change', 'blur'] },
-    ],
+    val: [
+        { required: true, message: '请输入血糖', trigger: ['change', 'blur'] },
+    ]
 });
 
 // 对话框标题
-const title = computed(() => ruleForm.value.id ? '修改血压记录' : '添加血压记录');
+const title = computed(() => ruleForm.value.id ? '修改血糖记录' : '添加血糖记录');
 
 // 关闭对话框处理
 const handleClose = (done: () => void) => {
@@ -108,14 +102,13 @@ const onElderlySelected = (elderly: ElderlyListItem) => {
 
 
 // 监听oneBloodData变化，初始化表单
-watch(() => props.oneBloodData, (newValue) => {
+watch(() => props.oneBloodSugarData, (newValue) => {
     // 只有当对话框显示且oneBloodData.id大于0时才更新表单数据，避免添加时触发验证
     if (props.isShow && newValue.id > 0) {
         name.value = newValue.elderlyName;
         ruleForm.value.id = newValue.id;
         ruleForm.value.elderlyId = newValue.elderlyId;
-        ruleForm.value.bloodPressure = newValue.bloodPressure;
-        ruleForm.value.pulse = newValue.pulse;
+        ruleForm.value.val = newValue.val;
     }
 }, { immediate: true, deep: true }); // 增加deep:true，确保对象属性变化能被监听到
 
@@ -127,11 +120,11 @@ const submit = async () => {
         if (valid) {
             //根据id来判断是添加还是修改
             if (ruleForm.value.id) {
-                const res = await updateBlood(ruleForm.value)
+                const res = await updateBloodSugar(ruleForm.value)
                 if (!res) return
                 ElMessage.success("修改成功")
             } else {
-                const res = await addBlood(ruleForm.value)
+                const res = await addBloodSugar(ruleForm.value)
                 if (!res) return
                 ElMessage.success("添加成功")
             }
@@ -151,9 +144,8 @@ const resetForm = () => {
     // 重置表单数据到初始状态
     ruleForm.value = {
         id: 0,
-        elderlyId: null,
-        bloodPressure: '',
-        pulse: ''
+        elderlyId: 0,
+        val: '',
     }
 }
 

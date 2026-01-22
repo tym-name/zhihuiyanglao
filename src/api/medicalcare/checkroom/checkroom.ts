@@ -1,5 +1,8 @@
 import http from "../../../utils/request";
 import type {
+  AddOrUpdateCheckRoomParams,
+  AddOrUpdateCheckRoomResponse,
+  checkRoomListItem,
   checkRoomListParams,
   checkRoomListResponse,
 } from "./checkroomType";
@@ -22,3 +25,21 @@ export const delCheckroomById = (id: number) =>
  */
 export const delCheckroomAllByIds = (data: number[]) =>
   http.post("/checkRoom/deleteAll", data);
+
+/**
+ * 添加
+ */
+export const addCheckroom = (data: AddOrUpdateCheckRoomParams) =>
+  http.post<AddOrUpdateCheckRoomResponse>("/checkRoom/add", data);
+
+/**
+ * 修改
+ */
+export const updateCheckroom = (data: AddOrUpdateCheckRoomParams) =>
+  http.put<AddOrUpdateCheckRoomResponse>("/checkRoom/update", data);
+
+/**
+ * 根据id获取单条查房记录
+ */
+export const getCheckroomById = (id: number) =>
+  http.get<checkRoomListItem>(`/checkRoom/get/${id}`);
