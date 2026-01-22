@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog v-model="props.isShow" title="选择老人" width="750" :before-close="props.OpenOrClose">
+        <el-dialog v-model="props.isShow" title="选择老人" width="750" :before-close="props.closeElderly">
             <el-form :inline="true" :model="params" class="demo-form-inline">
                 <el-form-item label="姓名" style="width: 200px;">
                     <el-input v-model="params.name" placeholder="请输入姓名" clearable />
@@ -48,7 +48,8 @@ import type { ElderlyListItem, ElderlyListParams } from '../../api/care/activity
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
 const props = defineProps<{
     isShow: boolean;
-    OpenOrClose: () => void
+    openElderly: () => void
+    closeElderly: () => void
 }>()
 const total = ref(0);
 //表格绑定的表单
@@ -98,7 +99,7 @@ const emit = defineEmits<{
 }>()
 const handleSelect = (row: ElderlyListItem) => {
     emit('select-elderly', row);
-    props.OpenOrClose()
+    props.closeElderly()
 }
 </script>
 

@@ -38,14 +38,13 @@
                 </el-button>
             </template>
         </Table>
-        <AddOrUpdateBlood :isShow="isShow" :dataId="dataId" :OpenOrClose="OpenOrClose" :oneBloodData="oneBloodData"
-            @refresh="refresh">
+        <AddOrUpdateBlood :isShow="isShow" :OpenOrClose="OpenOrClose" :oneBloodData="oneBloodData" :refresh="Refresh">
         </AddOrUpdateBlood>
     </div>
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref, watch } from 'vue';
+import { provide, ref, watch } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import { delBloodById, deleteAllByIds, getBloodById, getBloodList, getBuildingList } from '../../api/medicalcare/blood/blood';
 import type { bloodItem, bloodListParams, buildingListItem, CascaderTreeNode } from '../../api/medicalcare/blood/bloodType';
@@ -54,8 +53,7 @@ import { convertFlatToCascaderTree } from '../../utils/checkBed';
 import AddOrUpdateBlood from '../../components/medicalcare/blood/addOrUpdateBlood.vue';
 
 const tableRef = ref<any>(null);
-    
-const dataId = ref(0)
+
 //刷新页面
 const Refresh = () => {
     tableRef.value.refresh()
@@ -151,10 +149,7 @@ const delAll = async () => {
 
 
 
-//刷新页面
-const refresh = () => {
-    tableRef.value.refresh()
-}
+
 //表格
 const columns: TableColumn[] = [
     {
@@ -206,7 +201,7 @@ const searchForm = ref<bloodListParams>({
 })
 //搜索
 const handleSearch = () => {
-    refresh()
+    Refresh()
 }
 //重置
 const handleReset = () => {
@@ -245,7 +240,6 @@ const oneBloodData = ref<bloodItem>({
 
 const getBlood = async (id: number) => {
     OpenOrClose()
-    dataId.value = id
     let res = await getBloodById(id)
     console.log('获取单条数据', res);
     if (res && res.data) {
@@ -274,6 +268,7 @@ const buildingList = async () => {
     }
 }
 buildingList()
+
 
 </script>
 
