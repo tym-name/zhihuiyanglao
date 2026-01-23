@@ -107,7 +107,7 @@ const formss = reactive<roleList>({
     addAccountName: '',
     addTime: '',
     accountCounts: 0,
-    menuIds: undefined,
+    menuIds: [],
 })
 const getstaffListFun = async () => {
     const res = await roleListFun(formss)

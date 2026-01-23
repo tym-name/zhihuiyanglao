@@ -84,7 +84,7 @@
 <script setup lang='ts'>
 import Table from '../../components/table.vue'
 import { type TableColumn } from '../../components/table.vue';
-import { staffListFun, staffGet } from '../../api/staff/staff';
+import { staffListFun } from '../../api/staff/staff';
 import type { staffList } from '../../api/staff/staffType';
 import { reactive, ref } from 'vue';
 import { accountResetPwd, departmentDelete, departmentDeleteAll, departmentListFun } from '../../api/personel/personel';
@@ -300,7 +300,7 @@ const ruleForm = reactive({
 const selectedStaff = ref<staffList | null>(null)
 
 // 密码验证规则
-const validateNewPassword = (rule: any, value: string, callback: Function) => {
+const validateNewPassword = (_rule: any, value: string, callback: Function) => {
     if (!value) {
         callback(new Error('请输入新密码'))
     } else if (value.length < 6) {
@@ -314,7 +314,7 @@ const validateNewPassword = (rule: any, value: string, callback: Function) => {
     }
 }
 
-const validateConfirmPassword = (rule: any, value: string, callback: Function) => {
+const validateConfirmPassword = (_rule: any, value: string, callback: Function) => {
     if (!value) {
         callback(new Error('请再次输入新密码'))
     } else if (value !== ruleForm.newPwd) {

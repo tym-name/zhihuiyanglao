@@ -46,14 +46,8 @@
             </div>
             <!-- 核心修改：开业时间添加value-format，指定输出格式为YYYY-MM-DD HH:mm -->
             <el-form-item label="开业时间" prop="startTime">
-                <el-date-picker 
-                    style="width: 428px;" 
-                    v-model="formData.startTime" 
-                    type="datetime" 
-                    placeholder="请选择"
-                    format="YYYY-MM-DD HH:mm" 
-                    value-format="YYYY-MM-DD HH:mm"
-                />
+                <el-date-picker style="width: 428px;" v-model="formData.startTime" type="datetime" placeholder="请选择"
+                    format="YYYY-MM-DD HH:mm" value-format="YYYY-MM-DD HH:mm" />
             </el-form-item>
         </el-form>
         <div class="Nowiln">
@@ -106,7 +100,8 @@
                     <uploads v-model="formData.picture" :baseUrl="VITE_IMG_URL" :uploadUrl="imageUrl"></uploads>
                 </el-form-item>
                 <el-form-item class="FormWraps" label="上传图片">
-                    <uploads v-model="formData.certificate" :baseUrl="VITE_IMG_URL" :uploadUrl="imageUrl" :isText="true">
+                    <uploads v-model="formData.certificate" :baseUrl="VITE_IMG_URL" :uploadUrl="imageUrl"
+                        :isText="true">
                         <template #upload-text>
                             <el-button type="primary">上传图片</el-button>
                         </template>
@@ -160,11 +155,11 @@ const data = defineModel<CompanyInfo & {
 });
 
 const props = defineProps({
-  id: {
-    type: [Number], // 兼容数字/字符串类型的id
-    required: false,
-    default: 0 // 默认值改为0，更符合id的常规取值
-  }
+    id: {
+        type: [Number], // 兼容数字/字符串类型的id
+        required: false,
+        default: 0 // 默认值改为0，更符合id的常规取值
+    }
 });
 
 const { id } = props;
@@ -266,7 +261,7 @@ const submitForm = async () => {
         await ruleFormRef.value?.validate();
         // 校验经营信息表单
         await ruleFormRef2.value?.validate();
-        
+
         // 提交逻辑：formData.value 包含所有表单数据，startTime已为YYYY-MM-DD HH:mm格式
         console.log('表单提交数据：', formData.value);
         return true;
@@ -313,7 +308,8 @@ defineExpose({
 
 /deep/.el-input,
 /deep/.el-cascader,
-/deep/.el-date-editor { // 统一所有输入组件宽度
+/deep/.el-date-editor {
+    // 统一所有输入组件宽度
     width: 428px;
     height: 40px;
 }

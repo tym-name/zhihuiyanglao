@@ -17,22 +17,27 @@
                   <span class="iconfont icon-daxiaoxie"></span>
                   <span class="iconfont icon-wen-A"></span>
                   <span class="iconfont icon-lingdang"></span>
-                  <div class="login" v-on:click="login">
-                    <img src="../../assets//image/login/logo.png" alt="">
-                    <div>admin</div>
-                  </div>
-                  <span class="iconfont icon-shezhi1"></span>
+                  <el-dropdown style="outline: unset;">
+                    <div class="login">
+                      <img :src="VITE_IMG_URL + model.photo" style="margin-right: 5px;border-radius: 50%;" alt="">
+                      <div>{{ model.username }}</div>
+                    </div>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item @click="router.push('system/account-set')">个人中心</el-dropdown-item>
+                        <el-dropdown-item @click="handleLogout">注销登出</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                  <span class="iconfont icon-set"></span>
                 </div>
+
               </div>
             </template>
             <div class="tits">
               <div class="home">首页</div>
               <div class="tits_list"><span class="dian">·</span>机构列表<span class="iconfont icon-cheng cha"></span></div>
             </div>
-            <!-- <div class="center">
-              <div>个人中心</div>
-              <div>注销登录</div>
-            </div> -->
           </el-card>
         </el-header>
         <el-main style="background-color: #f2f3f5;">
@@ -40,7 +45,7 @@
             <KeepAlive>
               <component v-if="$route.meta.keepAlive" :is="Component"></component>
             </KeepAlive>
-            <component v-if="!$route.meta.keepAlive":is="Component"></component>
+            <component v-if="!$route.meta.keepAlive" :is="Component"></component>
           </router-view>
         </el-main>
       </el-container>
@@ -49,12 +54,41 @@
 </template>
 
 <script setup lang='ts'>
+import { useAuthStore } from '@/stores/auth';
 import IeftAside from '../../components/home/leftAside.vue'
+import router from '@/router';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
-const login = () => {
+// 初始化authStore
+const authStore = useAuthStore();
 
-}
+// 退出登录函数
+const handleLogout = () => {
 
+  ElMessageBox.confirm(
+    '确定注销并退出系统吗？',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: "warning"
+    }
+  )
+    .then(() => {
+      ElMessage({
+        type: 'success',
+        message: '退出登录成功',
+      })
+      authStore.logout();
+      router.push('/login').then(() => {
+        // 页面跳转后刷新，确保所有状态重置
+        window.location.reload();
+      });
+      
+    })
+};
+
+const model = authStore.model;
+const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
 </script>
 
 <style scoped lang='less'>
@@ -91,7 +125,6 @@ const login = () => {
     }
 
     .login {
-      width: 80px;
       height: 45px;
       display: flex;
       justify-content: space-between;
@@ -119,9 +152,7 @@ const login = () => {
 
   .icons>span:hover {
     cursor: pointer;
-
   }
-
 }
 
 /deep/.el-aside {
@@ -140,8 +171,6 @@ const login = () => {
   margin-right: 10px;
   color: #000;
 }
-
-
 
 .jigouguanli {
   margin: 0 6px;
@@ -167,7 +196,6 @@ const login = () => {
     font-size: 12px;
     border: 1px solid #999;
     margin-right: 10px;
-    // text-align: center;
     justify-content: center;
     align-items: center;
   }
@@ -177,26 +205,18 @@ const login = () => {
     width: 85px;
     height: 25px;
     font-size: 12px;
-    // text-align: center;
     align-items: center;
     color: #fff;
     background-color: rgba(3, 113, 239, 0.993);
     justify-content: center;
 
-    // position: relative;
     .dian {
       font-size: 12px;
-      // position: absolute;
-      // top: 0;
-      // left: 5;
     }
 
     .cha {
       font-size: 12px;
       margin-left: 5px;
-      // position: absolute;
-      // top: 0;
-      // right: 5;
     }
   }
 }

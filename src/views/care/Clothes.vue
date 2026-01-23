@@ -1,5 +1,5 @@
 <template>
-    <el-card style="margin-bottom: 10px;">
+        <el-card style="margin-bottom: 10px;">
         <el-form :model="form" label-width="auto" inline>
             <el-form-item label="发布人">
                 <el-input v-model="form.elderlyName" clearable placeholder="请输入姓名" style="width: 180px" />

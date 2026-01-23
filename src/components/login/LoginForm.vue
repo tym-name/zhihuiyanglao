@@ -90,12 +90,6 @@ const props = defineProps({
 });
 
 // 定义组件的事件
-const emit = defineEmits([
-    'login-success',
-    'login-fail',
-    'login-loading',
-    'update:show'
-]);
 const checked = ref(true)
 const loading = ref(false)
 
@@ -137,26 +131,19 @@ const handleLogin = async () => {
     loginFormRef.value.validate(async (valid) => {
         if (valid) {
             loading.value = true
-            emit('login-loading', true)
-
             try {
                 let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
-
                 const res = await useAuthStore().userLogin(data)
                 console.log('登录成功', res);
-
                 if (res) {
-                    ElMessage.success('登录成功')
-                    emit('login-success', res)
                     router.push('/')
+                    ElMessage.success('登录成功')
                 }
             } catch (error) {
                 ElMessage.error('登录失败，请检查账号密码')
-                emit('login-fail', error)
                 getCaptchaImage()
             } finally {
                 loading.value = false
-                emit('login-loading', false)
             }
         }
     })
@@ -165,7 +152,8 @@ const handleLogin = async () => {
 
 <style scoped lang='less'>
 @import url('../../assets/less/login/main/main.less');
-.el-form{
+
+.el-form {
     padding: 0 30px;
 }
 </style>

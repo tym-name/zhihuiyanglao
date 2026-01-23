@@ -5,7 +5,7 @@
     <div class="title">乐康智慧养老系统</div>
   </div>
   <div class="text">
-    <div class="titles"><i style="margin-left: -26px;margin-right: 5px;" class="iconfont icon-shouye"></i>首页</div>
+    <div class="titles" @click="router.push('/homeview')"><i style="margin-left: -26px;margin-right: 5px;" class="iconfont icon-shouye"></i>首页</div>
     <!-- 给 el-menu 绑定 select 事件，用于监听菜单点击 -->
     <el-menu default-active="2" class="el-menu-vertical-demo" @select="handleMenuSelect">
       <!-- 1. 直接展示的子菜单（父级被扁平化，无 el-sub-menu 包裹） -->
@@ -152,6 +152,7 @@ const handleMenuSelect = (index: string) => {
 
 .titles {
   font-size: 14px;
+  cursor: pointer;
 }
 
 .el-menu-item {

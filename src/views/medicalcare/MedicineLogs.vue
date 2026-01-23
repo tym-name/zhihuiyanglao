@@ -3,33 +3,43 @@
         <Table ref="tableRef" :columns="columns" :fetch-data="getDrugsList" :init-params="searchForm"
             @selection-change="handleSelectionChange">
             <template #search>
+
                 <el-form :inline="true" class="demo-form-inline">
-                    <el-form-item label="老人:">
-                        <el-input v-model="searchForm.name" placeholder="请输入老人姓名" clearable />
+                    <el-form-item label="名称">
+                        <el-input v-model="params.name" placeholder="请输入老人姓名" clearable />
                     </el-form-item>
-                    <el-form-item label="登记时间:">
-                        <el-date-picker v-model="searchForm.beginDate" type="daterange" range-separator="-"
-                            start-placeholder="开始日期" end-placeholder="结束日期" style="width: 240px;" />
+
+
+                    <el-form-item label="登记时间">
+                        <DateRangePicker v-model:begin-date="params.beginDate" v-model:end-date="params.endDate"
+                            style="width: 220px;"></DateRangePicker>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button @click="query" type="primary" :icon="Search">查询</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="handleSearch">查询</el-button>
-                        <el-button @click="handleReset">重置</el-button>
+                        <el-button :icon="Refresh" @click="reset">重置</el-button>
                     </el-form-item>
                 </el-form>
+
             </template>
+
             <template #buttons>
-                <el-button type="success">用药登记</el-button>
-                <el-button type="danger" @click="delAll">批量删除</el-button>
+                <el-button type="success" @click="add">+ 用药登记</el-button>
+                <el-button type="danger" :disabled="isBatchDeleteDisabled" @click="delAll">批量删除</el-button>
             </template>
+
 
             <template #operate="{ row }">
                 <el-button link type="primary">
                     <i class="iconfont icon-xiangqing"></i>
                     查看详情
                 </el-button>
-                <el-button link type="primary">
-                    <i class="iconfont icon-xiangqing"></i>
-                    用药计划
+                <el-button type="primary" link @click="handlePlanset(row)">
+                    <el-icon>
+                        <Tickets />
+                    </el-icon> 用药计划
                 </el-button>
             </template>
         </Table>
@@ -42,104 +52,167 @@ import Table, { type TableColumn } from '../../components/table.vue'
 import { delDrugsAllByIds, getDrugsList } from '../../api/medicalcare/medicineLogs/medicineLogs';
 import type { drugsListItem, drugsListParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import DateRangePicker from '../../components/from/DateRangePicker.vue'
+import { Refresh, Search } from '@element-plus/icons-vue';
+import router from '../../router';
+import type { QrcodeItem } from '../../api/address/type';
+import type { MedicineLogsParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';
+import type { TableColumn } from '../../components/table.vue';
+import { deleteMedicineLogsAll, getMedicineLogs } from '../../api/medicalcare/medicineLogs/medicineLogs';
 
-//表格
-const tableRef = ref<any>(null);
-//刷新页面
-const refresh = () => {
-    tableRef.value.refresh()
-}
 
+
+
+//列表请求参数
+const params = ref<MedicineLogsParams>({})
+const tableRef = ref<any>(null)
 const columns: TableColumn[] = [
     {
         type: "selection",
-        width: "50",
+        width: "50"
     },
     {
         label: "序号",
         prop: "id",
-    },
-    {
+        width: "70"
+    }, {
         label: "老人姓名",
         prop: "elderlyName",
-    },
-    {
+
+    }, {
         label: "用药品种类",
-        prop
-            : "counts",
-    },
-    {
+        prop: "counts"
+    }, {
         label: "登记人",
-        prop: "addAccountName",
+        prop: "addAccountName"
     },
     {
         label: "最新登记时间",
         prop: "addTime",
+        formatTime: "YYYY-MM-DD HH:mm:ss"
     },
     {
         label: "操作",
-        width: 200,
         slot: "operate",
+        width: 300,
         fixed: "right",
     }
+
 ]
 
-//查询
-const searchForm = ref<drugsListParams>({
-    name: '',
-    beginDate: '',
-})
 
-//搜索
-const handleSearch = () => {
-    refresh()
-}
-//重置
-const handleReset = () => {
-    searchForm.value = {
-        name: '',
-        beginDate: '',
-    }
-    refresh()
-}
+
+
 
 //批量删除
-const isBatchDelDisabled = ref(true)
-const selectionData = ref<drugsListItem[]>([])
-const ids = ref<number[]>([])
-const handleSelectionChange = (rows: drugsListItem[]) => {
-    selectionData.value = rows;
-    ids.value = rows.map(row => row.id);
-    isBatchDelDisabled.value = rows.length === 0;//判断是否禁用
-}
-
 const delAll = async () => {
-    ElMessageBox.confirm(
-        '是否删除多条记录？',
+    // console.log("ids", ids);
+    const comifm = await ElMessageBox.confirm(
+        '是否确认删除选中的数据?',
+        '提示',
         {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+            confirmButtonText: '是',
+            cancelButtonText: '否',
             type: 'warning',
         }
-    )
-        .then(async () => {
-            let res = await delDrugsAllByIds(ids.value)
-            console.log(res);
-            if (res.code === 10000) {
-                ElMessage({
-                    type: 'success',
-                    message: '删除成功',
-                })
-                refresh()
+    ).catch(() => { undefined })
+    if (!comifm) return ElMessage.error("取消删除")
+    //获取批量删除的id
+    let ids: number[] = selectionData.value.map(item => item.id)
+    // console.log("ids", ids);
+    const res = await deleteMedicineLogsAll(ids).catch(() => undefined)
+    if (!res) return;
+    ElMessage.success("删除成功")
+    if (tableRef.value) {
+        // 使用 Table 组件暴露的 refresh 方法
+        tableRef.value.refresh()
+    }
+
+}
+
+// 计算属性：判断是否禁用批量删除按钮
+const isBatchDeleteDisabled = computed(() => {
+    return selectionData.value.length === 0;
+})
+//要删除选中的数据
+const selectionData = ref<QrcodeItem[]>([])
+const handleSelectionChange = (e: QrcodeItem[]) => {
+    // console.log("rows", e);
+    selectionData.value = e;
+}
+
+
+//对话框的显示隐藏
+const dialogVisibleSelectOld = ref(false)
+//添加
+const add = async () => {
+    dialogVisibleSelectOld.value = true
+}
+
+//选中的老人
+const selectOldId = (row: any) => {
+    if (row.id) {
+        //跳转页面 将选择的老人信息传过去
+        router.push({
+            path: '/medicalcareAdd',
+            query: { elderlyId: String(row.id) }
+            // state: {
+            //     elderly: row// 整个老人对象
+            // }
+        })
+    }
+
+}
+
+
+//点击查看详情
+const handleDetails = (row: any) => {
+    if (row) {
+        // 2. 使用 Base64 编码（简单加密）
+        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(row))));
+        router.push({
+            path: '/medicalcaredetails',
+            query: {
+                data: encodedData
             }
         })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '取消删除',
-            })
-        })
+    }
 }
-</script>
 
-<style scoped lang='less'></style>
+//点击查看用用药计划
+const handlePlanset = (row: any) => {
+    if (row) {
+        // 2. 使用 Base64 编码（简单加密）
+        const plansetData = btoa(unescape(encodeURIComponent(JSON.stringify(row))));
+        router.push({
+            path: '/medicalcarePlanset',
+            query: {
+                data: plansetData
+            }
+        })
+    }
+}
+
+//点击查询
+const query = () => {
+    tableRef.value.refresh()
+}
+
+// //点击重置
+const reset = () => {
+    // 清空表单数据 
+    Object.assign(params.value, {
+        name: '',
+        idCard: '',      // 注意字段名
+        beginDate: '',
+        endDate: ''
+    })
+    tableRef.value.refresh()
+}
+
+
+
+
+
+</script>
+<style lang='less' scoped></style>

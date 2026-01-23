@@ -1,6 +1,8 @@
 import {
   createRouter,
   createWebHashHistory,
+  // createWebHashHistory,
+  createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
 
@@ -8,11 +10,12 @@ import { useAuthStore } from "../stores/auth";
 
 const modules = import.meta.glob("../views/**/**.vue");
 
-const whiteUrl = ["/login"];
+const whiteUrl = ["/login","/wechat-login"];
 
-const keepAlivePages = ["company"]
+const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
+  // base:'./',
   {
     path: "/login",
     name: "Login",
@@ -20,6 +23,15 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     },
     component: () => import("../views/login/Login.vue"),
+  },
+  {
+    path: "/Amap",
+    name: "Amap",
+    meta: {
+      title: "高德地图",
+    },
+    component: () => import("../views/Amap/Amap.vue"),
+    
   },
   {
     path: "/worldmap",
@@ -32,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../components/form/BaiduMap.vue"),
   },
   {
+    path: "/wechat-login",
+    name: "WechatLogin",
+    component: () => import("../views/login/WechatLogin.vue"),
+  },
+  {
     path: "/",
     name: "Home",
     component: () => import("../views/home/Home.vue"),
@@ -39,6 +56,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/home",
         name: "home",
+        meta: {
+          title: "首页",
+        },
+        component: () => import("../views/home/HomeView.vue"),
+      },
+      {
+        path: "/",
+        name: "HomeView",
         meta: {
           title: "首页",
         },
@@ -69,20 +94,20 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/Elderly.vue"),
       },
       {
-        path: '/Role-edit',
-        name: 'RoleEdit',
+        path: "/Role-edit",
+        name: "RoleEdit",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/RoleEdit.vue')
+        component: () => import("../views/system/RoleEdit.vue"),
       },
       {
-        path: '/Role',
-        name: 'Role',
+        path: "/Role",
+        name: "Role",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/Role.vue')
+        component: () => import("../views/system/Role.vue"),
       },
       {
         path: "/accountList",
@@ -142,7 +167,7 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/market/Discharge.vue"),
       },
-      // 
+      //
       {
         path: "position-edit/:id",
         name: "position-edit/:id",
@@ -263,7 +288,7 @@ router.beforeEach(async (to, from) => {
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,
-              `${item.url}/${child.url}`
+              `${item.url}/${child.url}`,
             );
             router.addRoute("Home", {
               path: `/${item.url}/${child.url}`,
@@ -278,18 +303,6 @@ router.beforeEach(async (to, from) => {
                 keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
-                  childrenName: child.name,
-                  pathBtn: child.url,
-                  menusFath: item.url,
-                  keepAlive: keepAlivePages.includes(item.url),
-                  parent: {
-                    name: item.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  }, // 修复parent.url中parent未定义的问题
-                  current: {
-                    name: child.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  },
                   url: "/care/" + `${item.url}/${child.url}`,
                 }, // 修复parent.url中parent未定义的问题
                 current: {
@@ -302,6 +315,7 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
+
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());

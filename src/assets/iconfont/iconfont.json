@@ -435,9 +435,16 @@
     {
       "icon_id": "46530698",
       "name": "办公-机构-copy",
-      "font_class": "icon-jigou-copy",
+      "font_class": "jigoulist",
       "unicode": "100de",
       "unicode_decimal": 65758
+    },
+    {
+      "icon_id": "46695807",
+      "name": "办公-机构-copy-copy",
+      "font_class": "jigoulist-copy",
+      "unicode": "100df",
+      "unicode_decimal": 65759
     },
     {
       "icon_id": "5027",

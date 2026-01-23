@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 5100928 */
-  src: url('iconfont.woff2?t=1768821654816') format('woff2'),
-       url('iconfont.woff?t=1768821654816') format('woff'),
-       url('iconfont.ttf?t=1768821654816') format('truetype');
+  src: url('iconfont.woff2?t=1768876346593') format('woff2'),
+       url('iconfont.woff?t=1768876346593') format('woff'),
+       url('iconfont.ttf?t=1768876346593') format('truetype');
 }
 
 .iconfont {
@@ -257,8 +257,12 @@
   content: "\100dd";
 }
 
-.icon-icon-jigou-copy:before {
+.icon-jigoulist:before {
   content: "\100de";
+}
+
+.icon-jigoulist-copy:before {
+  content: "\100df";
 }
 
 .icon-shouji:before {

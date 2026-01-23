@@ -266,3 +266,63 @@ export interface RuleForm {
   name: string
   pid: number
 }
+
+export interface nursingService {
+  page?: number; // 当前页码
+  pageSize?: number; // 每页条数
+}
+
+export interface CompanyData {
+  // 公司ID - 数值类型
+  companyId: number;
+  // 内容 - 字符串类型
+  content: string;
+  // 主键ID - 数值类型
+  id: number;
+  // 名称 - 字符串类型
+  name: string;
+}
+
+export interface CompanyDataList { 
+  list: CompanyData[];
+  counts:number
+  pageSize:number
+}
+
+// 循环任务数据接口
+export interface CycleTaskData {
+  // 公司ID - 数值类型
+  companyId: number;
+  // 日期（日循环专用）- 字符串类型（空字符串/具体日期）
+  day: string;
+  // 老人ID - 数值类型
+  elderlyId: number;
+  // 结束时间（格式：HH:MM）- 字符串类型
+  endTime: string;
+  // 主键ID - 数值类型（0 通常表示新增未保存）
+  id: number;
+  // 服务ID - 数值类型
+  serviceId: number;
+  // 服务名称 - 字符串/空值（null）
+  serviceName: string | null;
+  // 员工ID - 数值类型（0 表示未分配）
+  staffId: number;
+  // 开始时间（格式：HH:MM）- 字符串类型
+  startTime: string;
+  // 状态 - 数值类型（0 通常表示未生效/待执行）
+  state: number;
+  // 循环类型（日循环/周循环/月循环）- 字符串类型
+  type: string;
+  // 周循环标识/任务标识 - 字符串类型
+  week: string;
+}
+
+// 循环任务数据接口
+export interface CycleTask {
+    day: string;
+    elderlyId: number;
+    endTime: string;
+    serviceId: string;
+    startTime: string;
+    time: string[];
+}

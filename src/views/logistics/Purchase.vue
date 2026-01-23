@@ -1,8 +1,7 @@
 <template>
-    <div>
         <Table ref="tableRef" :columns="columns" :fetch-data="getPurchaseList">
             <template #buttons>
-                <el-button type='success'>创建采购申请</el-button>
+                <el-button type='success' @click="goToAdd()">创建采购申请</el-button>
             </template>
 
             <template #operate="{ row }">
@@ -10,25 +9,25 @@
                     <i class="iconfont icon-shanchu"></i>
                     删除
                 </el-button>
-                <el-button link type="primary">
-                    <i class="iconfont icon-xiangqing"></i>
+                <el-button link type="primary" @click="goToDetails(row.id)" v-if="row.state === '已经发货'">
+                    <i class="iconfont icon-doctor"></i>
                     查看详情
                 </el-button>
-                <!-- <el-button link type="primary">
+                <el-button link type="primary" @click="goToCheck(row.id)" v-else>
                     <i class="iconfont icon-bianji"></i>
-                    编辑
-                </el-button> -->
+                    收货验货
+                </el-button>
             </template>
         </Table>
-    </div>
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref} from 'vue';
 import Table from '../../components/table.vue';
 import type { TableColumn } from '../../components/table.vue';
 import { delPurChase, getPurchaseList } from '../../api/logistics/purchase/purchase';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import router from '@/router';
 const tableRef = ref<any>(null);
 const refresh = () => {
     tableRef.value.refresh();
@@ -90,6 +89,18 @@ const delById = (id: number) => {
             })
             refresh()
         })
+}
+
+const goToAdd = () => {
+    router.push('/AddPurchase')
+}
+
+const goToDetails = (id: number) => {
+    router.push(`/details/${id}`)
+}
+
+const goToCheck = (id: number) => {
+    router.push(`/check/${id}`)
 }
 </script>
 

@@ -1,1 +1,0 @@
-import{t}from"./index-D6YPj1KB.js";const o=e=>t.get("/role/list",e),s=e=>t.delete(`/role/delete/${e}`),r=e=>t.post("/role/deleteAll",e),a=e=>t.post("/role/add",e),d=()=>t.get("/menu/list"),n=e=>t.get(`/role/get/${e}`);export{s as a,r as b,n as c,a as d,d as m,o as r};
