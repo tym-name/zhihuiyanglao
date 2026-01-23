@@ -87,7 +87,10 @@ class Http {
       return response;
     }
 
+    console.log('完整响应数据:', response);
     const responseData = response.data as ApiResponse;
+    console.log('处理后的响应数据:', responseData);
+    
     if (!responseData) {
       ElMessage.error("接口返回数据格式异常");
       return Promise.reject(new Error("接口返回数据格式异常"));
@@ -96,7 +99,16 @@ class Http {
     if (responseData.code === ResultEnum.SUCCESS) {
       return responseData;
     } else {
-      const errorMessage = responseData.msg || "请求失败，请稍后重试";
+      // 无论后端返回什么msg值，都显示更具体的错误信息，包含响应码
+      const errorMessage = responseData.msg ? `${responseData.msg} [${responseData.code}]` : `请求失败，响应码: ${responseData.code}`;
+      // 打印详细的错误日志，包含请求URL、方法、响应码和响应数据
+      console.error('API请求失败:', {
+        url: response.config.url,
+        method: response.config.method,
+        code: responseData.code,
+        msg: responseData.msg,
+        response: responseData
+      });
       ElMessage.error(errorMessage);
       return Promise.reject(new Error(errorMessage));
     }
@@ -110,8 +122,10 @@ class Http {
 
     if (!error.response) {
       errorMessage = error.request ? "网络连接异常，请检查网络" : error.message || "请求配置异常";
+      console.log('请求错误，无响应:', error);
     } else {
       const status = error.response.status;
+      console.log('请求错误，状态码:', status, '响应数据:', error.response.data);
       switch (status) {
         case ResultEnum.UN_AUTHORIZED:
           // 修复：返回401处理后的实际响应数据（而非错误字符串）

@@ -1,0 +1,1 @@
+import{D as t}from"./index-DSXWNbz6.js";const a=e=>t.get("/temperature/list",e),p=e=>t.get(`/temperature/get/${e}`),s=e=>t.delete(`/temperature/delete/${e}`),m=e=>t.post("/temperature/add",e),u=e=>t.put("/temperature/update",e);export{s as a,p as b,m as c,u as d,a as t};

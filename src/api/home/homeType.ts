@@ -32,3 +32,19 @@ interface AgeGroupStat {
  */
 
 export type AgeGroupStatList = AgeGroupStat[];
+
+interface Location {
+    count: number;             // 强制指定为数字类型
+    lngLat: string;            // 强制指定为字符串类型
+    name: string;              // 强制指定为字符串类型
+}
+
+export type LocationList = Location[];
+
+export interface Elderly{
+  count:number
+  name:string
+}
+
+export type ElderlyList = Elderly[];
+

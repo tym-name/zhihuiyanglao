@@ -1,0 +1,1 @@
+import{D as e}from"./index-DSXWNbz6.js";const r=async t=>e.get("/goOut/list",{params:t}),l=t=>e.delete(`/goOut/delete/${t}`),o=t=>e.post("/goOut/deleteAll",t),g=t=>e.post("/goOut/add",t),a=t=>e.put("/goOut/update",t),n=t=>e.get(`/elderly/get/${t}`);export{a,g as b,l as c,r as d,o as e,n as g};

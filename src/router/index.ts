@@ -1,6 +1,5 @@
 import {
   createRouter,
-  createWebHashHistory,
   // createWebHashHistory,
   createWebHistory,
   type RouteRecordRaw,
@@ -283,7 +282,8 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory("/dist"),
+  history: createWebHistory("/dist"),
+  // history: createWebHashHistory('/dist'),
   routes,
 });
 

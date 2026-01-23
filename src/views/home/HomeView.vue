@@ -6,10 +6,14 @@
 
         <div class="echarts">
             <el-card class="left">
-                <Institution></Institution>
+                <Institution v-if="model.username==='cpglyzh'"></Institution>
+                <Institution v-if="model.username==='cstext'"></Institution>
+                <getCompanyCount v-if="model.username==='admin'"></getCompanyCount>
             </el-card>
             <el-card class="right">
-                <initPieChart></initPieChart>
+                <initPieChart v-if="model.username==='cpglyzh'"></initPieChart>
+                <initPieChart v-if="model.username==='cstext'"></initPieChart>
+                <getElderlyCount v-if="model.username==='admin'"></getElderlyCount>
             </el-card>
         </div>
     </div>
@@ -19,6 +23,13 @@
 import Summary from '../../components/homeView/summary.vue';
 import Institution from '../../components/homeView/institution.vue';
 import initPieChart from '@/components/homeView/initPieChart.vue';
+import { useAuthStore } from '@/stores/auth';
+import getCompanyCount from '@/components/homeView/getCompanyCount.vue'
+import getElderlyCount from '@/components/homeView/getElderlyCount.vue'
+// 初始化authStore
+const authStore = useAuthStore();
+const model = authStore.model;
+
 </script>
 
 <style scoped lang='less'>

@@ -1,0 +1,1 @@
+function e(o){const i={},n=[];o?.forEach(d=>{i[d.id]={...d,children:[]}});for(const d of o)d.pid!==null&&i[d.pid]||i[d.buildingId]||i[d.houseId]?i[d.pid||d.buildingId||d.houseId].children.push(i[d.id]):n.push(i[d.id]);return n}export{e as c};

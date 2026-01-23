@@ -2,7 +2,7 @@
     <el-dialog v-model="dialogFormVisible" :title="dialogTitle">
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto">
             <el-form-item label="老人" prop="elderlyName">
-                <el-button v-model="ruleForm.elderlyName">
+                <el-button @click="openElderlyDialog">
                     {{ ruleForm.elderlyName ? ruleForm.elderlyName : '选择老人' }}
                 </el-button>
             </el-form-item>
@@ -20,13 +20,18 @@
             </el-button>
         </template>
     </el-dialog>
+    <ChoseOneElderly :is-show="choseElderlyVisible" :open-elderly="openElderlyDialog"
+        :close-elderly="closeElderlyDialog" @select-elderly="handleSelectElderly" />
 </template>
 
 <script setup lang='ts'>
 import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import type { dischargeList } from '../../api/market/dischargeType'
-import { dischargeUpdate } from '../../api/market/discharge'
+import { dischargeUpdate, dischargeAdd } from '../../api/market/discharge'
+import ChoseOneElderly from '../../components/choseelderly/ChoseOneElderly.vue'
+import type { ElderlyListItem } from '../../api/care/activity/activityType'
+import { useAuthStore } from '../../stores/auth'
 
 const props = defineProps<{
     modelValue: boolean
@@ -43,6 +48,9 @@ const dialogFormVisible = computed({
 const dialogTitle = computed(() => {
     return props.editRow?.id ? '编辑出院申请' : '新增出院申请'
 })
+
+// 获取auth store
+const authStore = useAuthStore()
 
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<dischargeList>({
@@ -71,22 +79,61 @@ const rules = reactive<FormRules<dischargeList>>({
     expectDate: { required: true, message: '预计时间不能为空', trigger: 'blur' },
 })
 
+const choseElderlyVisible = ref(false)
+const openElderlyDialog = () => {
+    choseElderlyVisible.value = true
+}
+const closeElderlyDialog = () => {
+    choseElderlyVisible.value = false
+}
+const handleSelectElderly = (elderly: ElderlyListItem) => {
+    ruleForm.elderlyId = elderly.id
+    ruleForm.elderlyName = elderly.name
+    ruleForm.elderlyPhoto = elderly.photo
+    ruleForm.elderlyGender = elderly.gender === 1 ? '男' : '女'
+    ruleForm.elderlyIdCard = elderly.idCard
+}
+
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate(async (valid, fields) => {
+    await formEl.validate(async (valid) => {
         if (valid) {
-            try {
-                await dischargeUpdate(ruleForm)
-                ElMessage.success(props.editRow?.id ? '编辑成功' : '新增成功')
-                // 提交成功后刷新表格并关闭对话框
-                emit('refresh')
-                dialogFormVisible.value = false
-            } catch (error) {
-                console.error('提交失败:', error)
-                ElMessage.error('提交失败')
+            const userModel = authStore.model
+
+            // 添加调试信息
+            console.log('authStore.model:', userModel)
+            console.log('ruleForm before fill:', ruleForm)
+
+            // 填充必填字段
+            if (userModel) {
+                // 从用户信息中获取公司ID、账户ID等
+                ruleForm.companyId = userModel.companyId || 0
+                ruleForm.addAccountId = userModel.id || 0
+                ruleForm.begId = userModel.begId || 0
+                ruleForm.begName = userModel.begName || ''
+                ruleForm.addAccountName = userModel.name || ''
             }
-        } else {
-            console.log('error submit!', fields)
+
+            // 确保必填字段都有值
+            ruleForm.state = ruleForm.state || 0
+
+            // 添加调试信息
+            console.log('ruleForm after fill:', ruleForm)
+
+            try {
+                if (ruleForm.id) {
+                    await dischargeUpdate(ruleForm)
+                    ElMessage.success('编辑成功')
+                } else {
+                    await dischargeAdd(ruleForm)
+                    ElMessage.success('新增成功')
+                }
+                dialogFormVisible.value = false
+                emit('refresh')
+            } catch (error) {
+                // 错误信息已经在request.ts中处理，这里不再重复提示
+                console.error('提交表单失败:', error)
+            }
         }
     })
 }

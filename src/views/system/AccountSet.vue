@@ -110,4 +110,7 @@ const handleChangePassword = () => {
     width: 100%;
     max-width: 300px;
 }
+/deep/.avatar-uploader{
+    border: none;
+}
 </style>

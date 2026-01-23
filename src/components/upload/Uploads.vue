@@ -3,7 +3,7 @@
   <div class="upload-license">
     <el-upload class="avatar-uploader" :action="uploadUrl" :headers="uploadHeaders" :show-file-list="false"
       :on-success="handleSuccess" :before-upload="beforeUpload" :disabled="disabled">
-      <img v-if="modelValue && !isText" :src="displayUrl" class="avatar" style="width: 65px;height: 65px;" />
+      <img v-if="modelValue && !isText" :src="displayUrl" class="avatar" />
 
       <el-icon v-if="!modelValue && !isText" class="avatar-uploader-icon">
         <Plus />
@@ -31,6 +31,7 @@ interface Props {
   disabled?: boolean;   // 是否禁用
   baseUrl?: string; // 基础URL前缀
   isText?: boolean;
+  regex?: RegExp; // 正则表达式验证
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,7 +40,8 @@ const props = withDefaults(defineProps<Props>(), {
   allowedTypes: () => ['image/jpeg', 'image/jpg', 'image/png'],
   disabled: false,
   baseUrl: '',
-  isText: false
+  isText: false,
+  regex: undefined
 });
 
 const emit = defineEmits<{
@@ -86,6 +88,14 @@ const beforeUpload = (rawFile: File) => {
     return false;
   }
 
+  // 正则表达式验证
+  if (props.regex && !props.regex.test(rawFile.name)) {
+    const errorMsg = `文件名不符合要求!`;
+    ElMessage.error(errorMsg);
+    emit('error', errorMsg);
+    return false;
+  }
+
   return true;
 };
 </script>
@@ -104,6 +114,11 @@ const beforeUpload = (rawFile: File) => {
   position: relative;
   overflow: hidden;
   transition: var(--el-transition-duration-fast);
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .avatar-uploader:hover {
@@ -113,15 +128,15 @@ const beforeUpload = (rawFile: File) => {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 65px;
-  height: 65px;
+  width: 100px;
+  height: 100px;
   text-align: center;
 }
 
 .avatar {
   display: block;
-  width: 65px;
-  height: 65px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
 }
 
