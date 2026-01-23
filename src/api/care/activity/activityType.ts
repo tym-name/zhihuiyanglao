@@ -67,10 +67,10 @@ export interface ElderlyDetails {
   id: number;
   playId: number;
   elderlyId: number;
-  elderlyName: null | string; // 实际返回为 null，定义为 null 或 string 兼容后续可能的非 null 场景
-  elderlyPhoto: null | string;
-  begName: null | string;
-  houseName: null | string;
+  elderlyName:  string; // 实际返回为 null，定义为 null 或 string 兼容后续可能的非 null 场景
+  elderlyPhoto: string;
+  begName:  string;
+  houseName:  string;
   buildingName: string;
 }
 
@@ -181,11 +181,11 @@ export interface Playelderly {
   id: number;
   playId: number;
   elderlyId: number;
-  elderlyName: null | string; // 预留string类型，适配后续可能返回的老人姓名
-  elderlyPhoto: null | string; // 预留string类型，适配后续可能返回的老人照片路径
-  begName: null | string; // 预留string类型，适配后续可能返回的床位名称
-  houseName: null | string; // 预留string类型，适配后续可能返回的房间名称
-  buildingName: null | string; // 预留string类型，适配后续可能返回的楼栋名称
+  elderlyName:  string; // 预留string类型，适配后续可能返回的老人姓名
+  elderlyPhoto:string; // 预留string类型，适配后续可能返回的老人照片路径
+  begName:  string; // 预留string类型，适配后续可能返回的床位名称
+  houseName: string; // 预留string类型，适配后续可能返回的房间名称
+  buildingName:  string; // 预留string类型，适配后续可能返回的楼栋名称
 }
 
 export interface PlayPictures {

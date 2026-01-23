@@ -22,6 +22,10 @@ export const clothesDeleteAll = (ids: number[]) => http.post('/clothes/deleteAll
  */
 export const clothesUpdate = (params: ClothesList) => http.put<clothesData>('/clothes/update', params);
 /**
+ * 新增
+ */
+export const clothesAdd = (params: ClothesList) => http.post<clothesData>('/clothes/add', params);
+/**
  * 图片上传
  */
 export const uploadAdd = (params: uploadAddData) => http.post('/upload/add', params);

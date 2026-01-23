@@ -197,13 +197,9 @@ const delAll = async () => {
             type: 'warning',
         }
     )
-    // 传递选中的ID数组给后端
     await clothesDeleteAll(selectedIds.value)
-    // 清空选中的ID
     selectedIds.value = []
-    // 刷新表格数据
     tableRef.value?.refresh();
-
     ElMessage.success('删除成功')
 }
 // 自定义查询方法
@@ -223,6 +219,4 @@ const query = () => {
     tableRef.value?.refresh();
     ElMessage.success('查询成功');
 }
-
-
 </script>

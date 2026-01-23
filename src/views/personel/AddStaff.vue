@@ -1,15 +1,8 @@
 <template>
     <el-card>
-        <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto">
+        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto">
             <el-form-item label="员工头像" prop="photo">
-                <el-upload class="avatar-uploader" :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="ruleForm.photo" :src="VITE_IMG_URL + ruleForm.photo" class="avatar"
-                        style="width: 100px;height: 100px;" />
-                    <el-icon v-else class="avatar-uploader-icon">
-                        <Plus />
-                    </el-icon>
-                </el-upload>
+                <uploads v-model="ruleForm.photo" :baseUrl="VITE_IMG_URL" :uploadUrl="imageUrl" />
             </el-form-item>
             <el-form-item label="员工姓名" prop="name">
                 <el-input v-model="ruleForm.name" style="width: 308px;" />
@@ -22,28 +15,22 @@
             </el-form-item>
             <el-form-item label="所属部门" prop="departmentId">
                 <el-select v-model="ruleForm.departmentId" placeholder="请选择部门" clearable style="width: 308px">
-                    <el-option v-for="item in typeItem" :key="item" :label="item.name" :value="item.id" />
+                    <el-option v-for="item in typeItem" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
             <el-form-item label="所属岗位" prop="roleId">
-                <el-select v-model="ruleForm.roleId" placeholder="请选择岗位" clearable style="width: 308px">
-                    <el-option v-for="item in roleItem" :key="item" :label="item.name" :value="item.id" />
+                <el-select v-model="ruleForm.roleId" placeholder="请选择岗位" clearable style="width: 308px" multiple>
+                    <el-option v-for="item in roleItem" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-
-                <el-select-v2 v-model="ruleForm.roleId" :options="roleItem" placeholder="请选择岗位" style="width: 308px"
-                    clearable multiple>
-                    <template #label="{ label, value }">
-                        <span>{{ label }}: </span>
-                        <span style="font-weight: bold">{{ value }}</span>
-                    </template>
-                </el-select-v2>
-
             </el-form-item>
             <el-form-item label="账号" prop="adminUserName">
                 <el-input v-model="ruleForm.adminUserName" style="width: 308px;" />
             </el-form-item>
-            <el-form-item label="是否是护工" prop="enable">
-                <el-radio-group v-model="ruleForm.enable">
+            <el-form-item label="密码" prop="adminPwd">
+                <el-input v-model="ruleForm.adminPwd" type="password" style="width: 308px;" />
+            </el-form-item>
+            <el-form-item label="是否是护工" prop="isCarer">
+                <el-radio-group v-model="ruleForm.isCarer">
                     <el-radio :value="1">是</el-radio>
                     <el-radio :value="0">否</el-radio>
                 </el-radio-group>
@@ -60,8 +47,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, type FormInstance, type FormRules, type UploadProps } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import type { staffUpdateData } from '../../api/staff/staffType'
 import type { roleList } from '../../api/position/positionType'
 import { departmentListFun } from '../../api/personel/personel'
@@ -69,62 +55,53 @@ import type { departmentList } from '../../api/personel/personelType'
 import { roleListFun } from '../../api/position/position'
 import router from '../../router'
 import { useRoute } from 'vue-router'
-import { staffGet, staffUpdate } from '../../api/staff/staff'
+import { staffGet, staffUpdate, staffAdd } from '../../api/staff/staff'
+import { useAuthStore } from '../../stores/auth'
+import uploads from '../../components/upload/Uploads.vue'
+import { getPublicKey } from '../../api/index'
+import { sm2 } from 'sm-crypto'
+import type { ApiResponse } from '../../utils/request'
 
 const route = useRoute()
 const id = route.params.id ? Number(route.params.id) : 0
-const VITE_IMG_URL = 'http://123.57.237.81:8080/caresystem/'
 const ruleFormRef = ref<FormInstance>()
+
+const authStore = useAuthStore()
+const VITE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
+const imageUrl = VITE_BASE_URL + '/upload/add';
+
 const ruleForm = reactive<staffUpdateData>({
     id: 0,
-    companyId: 0,
+    companyId: authStore.model?.companyId || 0,
     photo: '',
     name: '',
     mobile: '',
     isCarer: 0,
-    addAccountId: 0,
-    addAccountName: '',
+    addAccountId: authStore.model?.id || 0,
+    addAccountName: authStore.model?.name || '',
     addTime: '',
     departmentName: '',
     roles: [],
     adminId: 0,
     adminUserName: '',
     adminPwd: '',
-    enable: '',
+    enable: 1,
     idCard: '',
-    roleId: '',
+    roleId: [],
     departmentId: ''
 })
 
-// 上传图片相关
-const imageUrl = ref('')
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-    uploadFile
-) => {
-    if (uploadFile) {
-        imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-    }
-}
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    if (rawFile.type !== 'image/jpeg') {
-        ElMessage.error('Avatar picture must be JPG format!')
-        return false
-    } else if (rawFile.size / 1024 / 1024 > 2) {
-        ElMessage.error('Avatar picture size can not exceed 2MB!')
-        return false
-    }
-    return true
-}
-
 const rules = reactive<FormRules<staffUpdateData>>({
-    photo: { required: true, message: '请添加图片', trigger: 'blur' },
+    photo: { required: true, message: '请上传员工头像', trigger: 'change' },
     name: { required: true, message: '请输入员工姓名', trigger: 'blur' },
     mobile: { required: true, message: '请输入手机号', trigger: 'blur' },
     idCard: { required: true, message: '请输入身份证号', trigger: 'blur' },
-    departmentId: { required: true, message: '请选择部门', trigger: 'blur' },
+    departmentId: { required: true, message: '请选择部门', trigger: 'change' },
     roleId: { required: true, message: '请选择岗位', trigger: 'change' },
     adminUserName: { required: true, message: '请输入账号', trigger: 'blur' },
-    enable: { required: true, message: '请选择', trigger: 'blur' },
+    adminPwd: { required: true, message: '请输入密码', trigger: 'blur' },
+    isCarer: { required: true, message: '请选择', trigger: 'change' },
 })
 // 所属部门
 const forms = reactive<departmentList>({
@@ -171,7 +148,9 @@ const getStaffDetail = async () => {
     ruleForm.idCard = detailData.idCard;
     ruleForm.departmentId = detailData.departmentId;
     ruleForm.adminUserName = detailData.adminUserName;
+    ruleForm.isCarer = detailData.isCarer;
     ruleForm.enable = detailData.enable;
+    // 密码不在详情中返回，保持为空
 }
 getStaffDetail()
 // 提交
@@ -180,13 +159,42 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     await formEl.validate(async (valid) => {
         if (valid) {
-            await staffUpdate(ruleForm)
-            ElMessage.success('修改成功')
-            formEl.resetFields()
-            router.back()
+                // 设置当前登录用户信息
+                ruleForm.companyId = authStore.model?.companyId || 0
+                ruleForm.addAccountId = authStore.model?.id || 0
+                ruleForm.addAccountName = authStore.model?.name || ''
+
+                // 构建提交数据，深拷贝避免修改原表单
+                const submitData = { ...ruleForm }
+
+                // 新增模式或编辑模式且修改了密码时，需要加密密码
+                if (id === 0 || (id > 0 && submitData.adminPwd)) {
+                    let publicKey: ApiResponse<string>
+                    try {
+                        publicKey = await getPublicKey()
+                        if (!publicKey.data) {
+                            ElMessage.error('获取加密公钥失败，无法提交')
+                            return
+                        }
+                        submitData.adminPwd = sm2.doEncrypt(submitData.adminPwd, publicKey.data, 1)
+                    } catch (encryptError) {
+                        console.error('密码加密失败：', encryptError)
+                        ElMessage.error('密码加密失败，请重试')
+                        return
+                    }
+                }
+
+                if (id === 0) {
+                    await staffAdd(submitData)
+                    ElMessage.success('添加成功')
+                } else {
+                    await staffUpdate(submitData)
+                    ElMessage.success('修改成功')
+                }
+                formEl.resetFields()
+                router.back()
         }
     })
-
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

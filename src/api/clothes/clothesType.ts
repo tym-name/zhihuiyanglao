@@ -16,12 +16,12 @@ export interface ClothesList {
     addTime: string;
     addAccountId: number;
     addAccountName: string;
-    begName: null;
-    elderlyName: null;
-    elderlyPhoto: null;
-    elderlyGender: null;
-    elderlyIdCard: null;
-    houseName: null;
+    begName: null | string;
+    elderlyName: null | string;
+    elderlyPhoto: null | string;
+    elderlyGender: null | number;
+    elderlyIdCard: null | string;
+    houseName: null | string;
     buildingName: string;
     pictures: Array<clothesPictures>;
 };

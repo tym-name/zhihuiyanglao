@@ -62,8 +62,27 @@ export interface staffUpdateData {
     adminId: number;
     adminUserName: string;
     adminPwd: string;
-    enable: string;
+    enable: number;
     idCard: string;
-    roleId: string;
+    roleId: Array<string | number>;
     departmentId: string;
+
+};
+// 
+export interface staffAddRoles {
+    id: number;
+};
+export interface staffAddResult {
+    id: number;
+    photo: string;
+    name: string;
+    mobile: string;
+    isCarer: number;
+    departmentId: number;
+    departmentName: string;
+    roles: Array<staffAddRoles>;
+    adminUserName: string;
+    adminPwd: string;
+    enable: number;
+    idCard: string;
 };
