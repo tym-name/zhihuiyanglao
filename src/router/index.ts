@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "高德地图",
     },
     component: () => import("../views/Amap/Amap.vue"),
-    
+
   },
   {
     path: "/worldmap",
@@ -318,6 +318,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "payAReturnVisit",
         props: true,
         component: () => import("../views/market/payAReturnVisit.vue"),
+      },
+      {
+        path: "/HospitalizedDetails",
+        name: "HospitalizedDetails",
+        props: true,
+        component: () => import("../views/market/HospitalizedDetails.vue"),
       },
     ],
   },

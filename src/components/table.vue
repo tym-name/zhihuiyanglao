@@ -197,7 +197,7 @@ const getData = async (resetPage = false) => {
     // 合并参数：初始参数 + 分页参数
     const res = await props.fetchData({ ...requestParams.value });
     console.log(111,res);
-    
+
     tableData.value = res.data?.list || res.list || [];
     total.value = res.data?.counts || res.counts || 0;
 

@@ -70,24 +70,11 @@ const params = ref<any>({
 
 // 新增弹窗显隐
 const dialogForm = ref(false)
-// 编辑弹窗显隐
-const dialogForm2 = ref(false)
-// 存储要传递给编辑子组件的行数据（核心：编辑回显的数据源）
-const editRowData = ref<any>({})
 
 const tableRefersh = () => {
     tableRef.value?.refresh()
 }
 
-const refreshTable = () => {
-    tableRef.value?.refresh();
-};
-
-// 编辑成功回调
-const handleSuccess2 = () => {
-    dialogForm2.value = false
-    tableRef.value?.refresh()
-}
 
 // 搜索
 const search = () => {
@@ -201,14 +188,18 @@ const handleAdd = () => {
 };
 
 // 编辑咨询：核心-获取详情并传递给子组件
-const updReserve = async (row: any) => {
+const updReserve = (row: any) => {
     router.push({
+        path: '/ReserveUpd',
+      
+    })
+    /* router.push({
         path: '/ReserveUpd',
         query: {
             elderlyId: row.elderlyId,
             id: row.id
         }
-    })
+    }) */
 }
 
 const particulars = async (row: any) => {

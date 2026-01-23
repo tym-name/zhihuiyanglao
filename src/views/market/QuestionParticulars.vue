@@ -76,10 +76,16 @@ import { type FormInstance } from 'element-plus';
 // 1. 接收父组件传递的编辑数据（修复命名+类型）
 const props = defineProps({
     // 编辑数据（对象类型，默认空对象）
-    editData: {
+    editData2: {
         type: Object,
         required: false,
         default: () => ({})
+    },
+    // 成功回调
+    handleSuccess3: {
+        type: Function,
+        required: false,
+        default: () => { }
     }
 });
 
@@ -111,9 +117,10 @@ const ruleForm = reactive<any>({
 
 // 6. 监听父组件传递的编辑数据，实现回显
 watch(
-    () => props.editData,
+    () => props.editData2,
     (newVal) => {
-        if (!newVal || !newVal.id) return;
+        console.log('接收到父组件传递的数据:', newVal);
+        if (!newVal) return;
 
         // 重置表单验证状态（避免回显后残留旧验证提示）
         if (ruleFormRef.value) {
@@ -122,6 +129,7 @@ watch(
 
         // 回显数据（深拷贝，避免修改父组件数据）
         Object.assign(ruleForm, JSON.parse(JSON.stringify(newVal)));
+        console.log('数据回显完成:', ruleForm);
     },
     { immediate: true, deep: true } // 立即执行+深度监听
 );
@@ -133,6 +141,7 @@ const handleDialogClose = () => {
 
 // 15. 重置表单数据
 const resetForm = () => {
+    console.log('重置表单数据');
     // 清空表单
     ruleForm.id = 0;
     ruleForm.customerId = 0;
@@ -144,12 +153,15 @@ const resetForm = () => {
     ruleForm.relation = '';
     ruleForm.visitTime = '';
     ruleForm.content = '';
+    ruleForm.addTime = '';
+    ruleForm.addAccountName = '';
 
     // 重置验证状态
     if (ruleFormRef.value) {
         ruleFormRef.value.clearValidate();
         ruleFormRef.value.resetFields();
     }
+    console.log('表单重置完成');
 };
 </script>
 

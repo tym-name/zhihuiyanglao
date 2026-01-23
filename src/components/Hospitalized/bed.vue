@@ -7,14 +7,13 @@
                 选择床位
             </div>
             <div class="total-fee">
-                床位费合计：<span class="fee-amount">{{ totalFee.toFixed(2) }}</span>
+                床位费合计：<span class="fee-amount">{{sum }}</span>
             </div>
         </div>
-
         <!-- 表单区域 -->
         <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px" style="width: 400px;">
             <el-form-item label="选择床位" prop="begId">
-                <CascaderBeg @bedChange="bedChange" />
+                <CascaderBeg @bedChange="bedChange" v-model="formData.begId" />
             </el-form-item>
 
             <el-form-item label="床位单价" prop="price" style="width: 300px;">
@@ -22,7 +21,7 @@
             </el-form-item>
 
             <el-form-item label="入住天数" prop="days" style="width: 300px;">
-                <el-input-number v-model="formData.days" placeholder="请输入" :min="1" style="width: 100%" />
+                <el-input-number v-model="formData.days" placeholder="请输入" @change="dayslink" :min="1" style="width: 100%" />
             </el-form-item>
 
             <el-form-item label="入住日期" prop="checkInDate">
@@ -40,7 +39,7 @@ import CascaderBeg from '../../components/form/CascaderBeg.vue';
 
 
 // 定义事件
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue','dayslink','daysres']);
 
 // 表单引用
 const formRef = ref<FormInstance>();
@@ -52,6 +51,13 @@ const formData = reactive({
     days: null,
     checkInDate: ''
 });
+const sum =ref(0)
+function dayslink(){
+    emit('dayslink', formData.days);
+    sum.value = Number(formData.price) * Number(formData.days)
+    emit('daysres', sum.value)
+}
+
 
 let bedChange = (idArr: number[]) => {
     formData.begId = idArr[idArr.length - 1]
@@ -59,13 +65,13 @@ let bedChange = (idArr: number[]) => {
 
 // 表单验证规则
 const formRules = reactive({
-    begId: [{ required: true, message: '请选择床位', trigger: 'blur' }],
-    price: [{ required: true, message: '请选择床位单价', trigger: 'blur' }],
-    days: [{ required: true, message: '请输入入住天数', trigger: 'blur' }],
-    checkInDate: [{ required: true, message: '请选择入住日期', trigger: 'blur' }]
+    begId: [{ required: true, message: '请选择床位'}],
+    price: [{ required: true, message: '请选择床位单价'}],
+    days: [{ required: true, message: '请输入入住天数'}],
+    checkInDate: [{ required: true, message: '请选择入住日期'}]
 });
 
-// 计算床位费合计
+/* // 计算床位费合计
 const totalFee = computed(() => {
     if (!formData.price || !formData.days) return 0;
     return formData.price * formData.days;
@@ -81,7 +87,12 @@ watch(
         });
     },
     { deep: true }
-);
+); */
+
+// 暴露表单引用给父组件
+defineExpose({
+    formRef
+});
 </script>
 
 <style scoped lang="less">

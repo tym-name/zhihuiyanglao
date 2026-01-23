@@ -3,14 +3,14 @@
     <div class="service-header">
       <el-button type="primary" @click="handleAddService">添加服务</el-button>
     </div>
-    
+
     <div class="service-table">
       <div class="table-header">
         <div class="header-item">服务名称</div>
         <div class="header-item">服务描述</div>
         <div class="header-item">合计</div>
       </div>
-      
+
       <div class="table-body">
         <template v-if="services.length > 0">
           <div v-for="(service, index) in services" :key="index" class="table-row">
@@ -25,11 +25,13 @@
       </div>
     </div>
   </div>
+  <ServeAdd v-if="dialogForm" v-model="dialogForm" @addServices="handleAddServices"></ServeAdd>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ElButton } from 'element-plus';
+import ServeAdd from './ServeAdd.vue';
 
 interface Service {
   name: string;
@@ -37,11 +39,30 @@ interface Service {
   total: number;
 }
 
+const dialogForm = ref(false)
+
 const services = ref<Service[]>([]);
 
 const handleAddService = () => {
-  // 这里可以添加打开添加服务对话框的逻辑
-  console.log('添加服务');
+
+  dialogForm.value = !dialogForm.value;
+};
+
+// 处理添加服务
+const handleAddServices = (selectedServices: any[]) => {
+  // 将选中的服务数据添加到服务列表中
+  selectedServices.forEach(service => {
+    services.value.push({
+      name: service.name,
+      description: service.content,
+      total: 0 // 默认合计为0，可根据实际情况调整
+    });
+  });
+
+  // 关闭对话框
+  dialogForm.value = false;
+
+  console.log('添加的服务:', selectedServices);
 };
 </script>
 
@@ -85,6 +106,7 @@ const handleAddService = () => {
   display: flex;
   padding: 12px 20px;
   border-bottom: 1px solid #e5e7eb;
+
   &:last-child {
     border-bottom: none;
   }

@@ -7,14 +7,14 @@
         护理服务
       </div>
       <div class="total-fee">
-        护理费合计：<span class="fee-amount">{{ totalFee.toFixed(2) }}</span>
+        护理费合计：<span class="fee-amount">{{props.daysfoodRef * Number(formData.priceNurse)}}</span>
       </div>
     </div>
 
     <!-- 护理费单价选择 -->
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
       <el-form-item label="护理费" prop="price">
-        <el-input-number v-model="formData.price" :min="0" :max="500" :step="1" style="width: 200px" :precision="0"
+        <el-input-number v-model="formData.priceNurse" @change="foodmonkeys" :min="0" :max="500" :step="1" style="width: 200px" :precision="0"
           placeholder="100/天" />
       </el-form-item>
     </el-form>
@@ -22,81 +22,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive} from 'vue';
 import type { FormInstance } from 'element-plus';
+
 
 // 定义组件属性
 const props = defineProps({
-  // 绑定值（父组件可通过v-model获取）
-  modelValue: {
-    type: Number
-  },
-  // 天数（用于计算合计）
-  days: {
+
+  daysfoodRef: {
     type: Number,
     default: 0
   }
 });
 
 // 定义事件
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue','nursemonkey']);
 
 // 表单引用
 const formRef = ref<FormInstance>();
-
+function foodmonkeys(){
+  emit('nursemonkey', props.daysfoodRef * Number(formData.priceNurse))
+}
 // 表单数据
 const formData = reactive({
-  price: props.modelValue || 1
+  priceNurse:null
 });
 
 // 表单验证规则
 const formRules = reactive({
-  price: [
-    {
-      required: true,
-      message: '请输入护理费',
-      trigger: 'blur'
-    },
-    {
-      type: 'number',
-      min: 1,
-      message: '护理费必须大于0',
-      trigger: 'blur'
-    },
-    {
-      validator: (rule: any, value: any, callback: any) => {
-        if (value && !/^\d+$/.test(value.toString())) {
-          callback(new Error('护理费必须是整数'));
-        } else {
-          callback();
-        }
-      },
-      trigger: 'blur'
-    }
+  priceNurse: [{ required: true, message: '请输入护理费', },
+  { type: 'number', min: 1, message: '护理费必须大于0', }
   ]
 });
 
-// 计算护理费合计
-const totalFee = computed(() => {
-  if (!formData.price || !props.days) return 0;
-  return formData.price * props.days;
+
+
+// 暴露表单引用给父组件
+defineExpose({
+  formRef
 });
-
-// 监听价格变化，同步给父组件
-watch(
-  () => formData.price,
-  (newVal) => {
-    emit('update:modelValue', newVal);
-  }
-);
-
-// 监听父组件传入的modelValue变化
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    formData.price = newVal || 1;
-  }
-);
 </script>
 
 <style scoped lang="less">

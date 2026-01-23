@@ -32,28 +32,14 @@ const formData = reactive<KernelSettingForm>({
 // 表单验证规则
 const formRules = reactive({
     cycle: [
-        {
-            required: true,
-            message: '请输入入院费用核定周期',
-            trigger: 'blur'
-        },
-        {
-            type: 'number',
-            min: 1,
-            message: '入院费用核定周期必须大于0',
-            trigger: 'blur'
-        },
-        {
-            validator: (rule: any, value: any, callback: any) => {
-                if (value && !/^\d+$/.test(value.toString())) {
-                    callback(new Error('入院费用核定周期必须是整数'));
-                } else {
-                    callback();
-                }
-            },
-            trigger: 'blur'
-        }
+        { required: true, message: '请输入入院费用核定周期' },
+        { type: 'number', min: 1, message: '入院费用核定周期必须大于0' },
     ]
+});
+
+// 暴露表单引用给父组件
+defineExpose({
+    formRef
 });
 
 </script>
@@ -63,7 +49,7 @@ const formRules = reactive({
     padding: 20px;
     background-color: #fff;
     border-radius: 4px;
-/*     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    /*     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .section-title {

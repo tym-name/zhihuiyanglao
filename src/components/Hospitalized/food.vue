@@ -7,14 +7,14 @@
         餐饮膳食
       </div>
       <div class="total-fee">
-        伙食费合计：<span class="fee-amount">{{ totalFee.toFixed(2) }}</span>
+        伙食费合计：<span class="fee-amount">{{props.daysfoodRef * Number(formData.priceFood)}}</span>
       </div>
     </div>
 
     <!-- 套餐单价选择 -->
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
       <el-form-item label="套餐单价" prop="price">
-        <el-input-number v-model="formData.price" :min="0" :max="100" :step="1" style="width: 200px" :precision="0"
+        <el-input-number v-model="formData.priceFood" @change="foodmonkeys" :min="0" :max="100" :step="1" style="width: 200px" :precision="0"
           placeholder="25/天" />
       </el-form-item>
     </el-form>
@@ -24,79 +24,58 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import type { FormInstance } from 'element-plus';
-
-// 定义组件属性
 const props = defineProps({
-  // 绑定值（父组件可通过v-model获取）
-  modelValue: {
-    type: Number
-  },
-  // 天数（用于计算合计）
-  days: {
+  daysfoodRef: {
     type: Number,
     default: 0
   }
-});
+})
 
 // 定义事件
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue','foodmonkey']);
 
 // 表单引用
 const formRef = ref<FormInstance>();
 
 // 表单数据
 const formData = reactive({
-  price: props.modelValue || 1
+  priceFood:null
 });
+function foodmonkeys(){
+  emit('foodmonkey', props.daysfoodRef * Number(formData.priceFood))
+}
 
 // 表单验证规则
 const formRules = reactive({
-  price: [
+  priceFood: [
     {
       required: true,
       message: '请输入套餐单价',
-      trigger: 'blur'
     },
     {
       type: 'number',
       min: 1,
       message: '套餐单价必须大于0',
-      trigger: 'blur'
-    },
-    {
-      validator: (rule: any, value: any, callback: any) => {
-        if (value && !/^\d+$/.test(value.toString())) {
-          callback(new Error('套餐单价必须是整数'));
-        } else {
-          callback();
-        }
-      },
-      trigger: 'blur'
     }
   ]
 });
 
-// 计算伙食费合计
-const totalFee = computed(() => {
-  if (!formData.price || !props.days) return 0;
-  return formData.price * props.days;
-});
+
 
 // 监听价格变化，同步给父组件
 watch(
-  () => formData.price,
+  () => formData.priceFood,
   (newVal) => {
     emit('update:modelValue', newVal);
   }
 );
 
-// 监听父组件传入的modelValue变化
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    formData.price = newVal || 1;
-  }
-);
+
+
+// 暴露表单引用给父组件
+defineExpose({
+  formRef
+});
 </script>
 
 <style scoped lang="less">

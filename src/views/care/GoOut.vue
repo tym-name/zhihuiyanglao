@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- 添加模态框 -->
-        <el-dialog v-model="dialogVisible" title="添加" width="50%" :before-close="handleClose">
+        <el-dialog v-model="dialogVisible" title="选择老人" width="50%" :before-close="handleClose">
 
             <Table :columns="oldman" :fetch-data="getCaptcha" ref="checkRef" :initParams="checkModel">
 
@@ -77,7 +77,7 @@
 
 
             <template #operate="{ row }">
-                <el-button @click="goout" type="primary" link size="small"
+                <el-button @click="goout(row)" type="primary" link size="small"
                     style="width: 20px; font-size: 13px !important;margin-right: 8px;">
                     <el-icon>
                         <View />
@@ -104,19 +104,16 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import Table from '../../components/Table/Table.vue';
+import Table from '../../components/table.vue';
 import { columns } from './Outbound';
 import { getDel1, getElderlyList, getAllDel, getOldManList } from '../../api/OutboundRegistration/Outbound';
 import type { ElderlyOutRecordItem } from '../../api/OutboundRegistration/type';
 import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 import { View, EditPen, Delete } from '@element-plus/icons-vue';
 import router from '../../router';
-import { oldman } from './oldManList';
+import { oldman } from './OldManList';
 import type { ApifoxModel } from '../../api/OutboundRegistration/oldManList';
 import { getCaptcha } from '../../api/market/elderly';
-
-
-
 
 const dialogVisible = ref(false)
 
@@ -167,10 +164,13 @@ onMounted(() => {
 const tableRef = ref();
 
 // 搜索参数
-const params = reactive<ElderlyOutRecordItem>({
+const params = reactive<any>({
     name: "",
     state: undefined,
-    beginDate: ""
+    beginDate: "",
+    endDate: "",
+    startTime: "",
+    endTime: ""
 })
 
 // 选中的行
@@ -226,23 +226,27 @@ const chong = () => {
 // 添加选择功能
 const choice = (row: any) => {
     let id = row.id;
+    dialogVisible.value = false; // 关闭模态框
     router.push('/AddOutings?id=' + id)
 }
 
 // 查看详情功能
-const goout = () => {
-
+const goout = (row: any) => {
     router.push({
         path: "/details",
+        query: {
+            id: row.id
+        }
     });
 }
 
 // 修改外出功能
 const Update = (row: ElderlyOutRecordItem) => {
     router.push({
-        path: "/edit",
+        path: "/AddOutings",
         query: {
-            row: encodeURIComponent(JSON.stringify(row)) // 序列化对象并编码
+            id: row.id,
+            isEdit: 'true'
         }
     });
 }

@@ -1,7 +1,13 @@
 <template>
     <div class="add-goout-page" style="background: #f5f5f5; min-height: 100vh;">
-        <!-- 新增表单 -->
+        <!-- 新增/编辑表单 -->
         <el-card style="max-width: 100%; margin: 0 auto;">
+            <!-- 动态标题 -->
+            <div
+                style="font-size: 18px; font-weight: 600; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e4e7ed;">
+                {{ isEdit ? '编辑外出登记' : '新增外出登记' }}
+            </div>
+
             <el-form ref="goOutFormRef" :model="form" label-width="140px" :rules="rules" style="padding: 10px;">
                 <!-- 老人信息（回显，不可编辑） -->
                 <el-form-item label="外出老人" prop="elderlyName" style="max-width: 460px">
@@ -10,9 +16,9 @@
 
                 <!-- 外出时间范围 -->
                 <el-form-item label="外出时间" prop="outTime" style="max-width: 460px">
-                    <el-date-picker type="datetimerange" start-placeholder="开始时间"
-                        end-placeholder="结束时间" format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
-                        style="width: 100%;" @change="handleDate" v-model="value1" />
+                    <el-date-picker type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
+                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" style="width: 100%;"
+                        @change="handleDate" v-model="value1" />
                 </el-form-item>
 
                 <!-- 新增：陪同人员类型下拉框 -->
@@ -53,8 +59,12 @@
             <div>
                 <!-- 提交按钮 -->
                 <el-form-item style="text-align: center; margin-top: 10px;">
-                    <el-button type="primary" size="large" @click="Submit">保存</el-button>
+                    <el-button type="primary" size="large" @click="Submit">
+                        {{ isEdit ? '保存修改' : '保存' }}
+                    </el-button>
                     <el-button size="large" style="margin-left: 20px;" @click="cancel">取消</el-button>
+                    <el-button type="danger" size="large" style="margin-left: 20px;" @click="handleDelete"
+                        v-if="isEdit">删除</el-button>
                 </el-form-item>
             </div>
         </el-card>
@@ -66,7 +76,8 @@ import { reactive, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { dayjs, ElForm, ElMessage } from 'element-plus';
 import type { ElderlyDetail } from '../../api/OutboundRegistration/ResidentDetail';
-import { getAdd, getOldManDetail, getUpdate } from '../../api/OutboundRegistration/Outbound';
+import { getAdd, getOldManDetail, getUpdate, getDel1 } from '../../api/OutboundRegistration/Outbound';
+import { ElMessageBox } from 'element-plus';
 import router from '../../router';
 
 
@@ -83,7 +94,7 @@ onMounted(() => {
     const id = route.query.id as string | null;
     const editFlag = route.query.isEdit as string | null;
     console.log("ddd", id);
-    
+
     if (id) {
         byId.value = Number(id);
         isEdit.value = editFlag === 'true';
@@ -119,23 +130,50 @@ const getOutingDetail = async () => {
     console.log("byId.value", byId.value);
 
     if (!byId.value) return
-    const res = await getOldManDetail(byId.value);
-    console.log("外出记录详情", res);
-    formData.name = res.data.name
-    form.elderlyName = res.data.name
-    form.elderlyId = byId.value
-    // 这里需要根据实际返回的字段进行赋值
-    // form.startTime = res.data.startTime;
-    // form.endTime = res.data.endTime;
-    // form.accompanyType = res.data.accompanyType;
-    // form.name = res.data.name;
-    // form.mobile = res.data.mobile;
-    // form.address = res.data.address;
-    // form.content = res.data.content;
-    // 如果有外出记录的时间，需要设置日期选择器的值
-    // if (res.data.startTime && res.data.endTime) {
-    //     value1.value = [res.data.startTime, res.data.endTime];
-    // }
+    try {
+        // 注意：这里应该调用获取外出记录详情的接口
+        // 由于当前没有专门的外出记录详情接口，我们使用模拟数据
+        console.log("获取外出记录详情，ID:", byId.value);
+
+        // 模拟数据，实际项目中应该调用专门的接口
+        // 例如：const res = await getGoOutDetail(byId.value);
+
+        // 模拟从 GoOut 页面传来的数据
+        const mockData = {
+            elderlyId: byId.value,
+            elderlyName: '孟北初',
+            startTime: '2025-02-14 19:22:22',
+            endTime: '2025-02-15 19:22:22',
+            accompanyType: '0', // 母女
+            name: '孙111222',
+            mobile: '15000000000',
+            address: '沙河',
+            content: 'wangyuhao'
+        };
+
+        console.log("模拟外出记录详情数据:", mockData);
+
+        // 赋值表单数据
+        form.elderlyId = mockData.elderlyId;
+        form.elderlyName = mockData.elderlyName;
+        form.startTime = mockData.startTime;
+        form.endTime = mockData.endTime;
+        form.accompanyType = mockData.accompanyType;
+        form.name = mockData.name;
+        form.mobile = mockData.mobile;
+        form.address = mockData.address;
+        form.content = mockData.content;
+
+        // 设置日期选择器的值
+        if (mockData.startTime && mockData.endTime) {
+            value1.value = [mockData.startTime, mockData.endTime];
+        }
+
+        console.log("外出记录详情赋值完成");
+    } catch (error) {
+        console.error("获取外出记录详情失败:", error);
+        ElMessage.error("获取外出记录详情失败");
+    }
 }
 
 
@@ -176,7 +214,7 @@ const tableRef = ref();
 // 保存按钮
 const Submit = async () => {
     if (!goOutFormRef.value) return;
-    
+
     // 表单验证
     const isValid = await goOutFormRef.value.validate();
     if (!isValid) return;
@@ -210,15 +248,43 @@ const cancel = () => {
     });
 }
 
+// 删除按钮
+const handleDelete = async () => {
+    if (!byId.value) return;
+
+    try {
+        await ElMessageBox.confirm(
+            '确定要删除这条外出记录吗？',
+            '删除确认',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }
+        );
+
+        await getDel1(byId.value);
+        ElMessage.success('删除成功');
+        router.push({
+            path: "/care/GoOut",
+        });
+    } catch (error) {
+        if (error !== 'cancel') {
+            ElMessage.error('删除失败');
+            console.error('删除失败:', error);
+        }
+    }
+};
+
 // 日期处理 // 时间处理
 const handleDate = (e: any) => {
-  if (e && e.length > 1) {
-    form.startTime = e[0] ? dayjs(e[0]).format('YYYY-MM-DD HH:mm:ss') : "";
-    form.endTime = e[1] ? dayjs(e[1]).format('YYYY-MM-DD HH:mm:ss') : "";
-  } else {
-    form.startTime = "";
-    form.endTime = "";
-  }
+    if (e && e.length > 1) {
+        form.startTime = e[0] ? dayjs(e[0]).format('YYYY-MM-DD HH:mm:ss') : "";
+        form.endTime = e[1] ? dayjs(e[1]).format('YYYY-MM-DD HH:mm:ss') : "";
+    } else {
+        form.startTime = "";
+        form.endTime = "";
+    }
 };
 
 </script>

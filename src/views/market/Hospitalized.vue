@@ -1,43 +1,45 @@
 <template>
-    <Table ref="tableRef" @selection-change="handleSelectionChange" :init-params="params" :columns="columns"
-        :fetch-data="orderList">
-        <template #buttons>
-            <el-button type="success" @click="handleAdd">+ 新增</el-button>
-            <el-button type="danger" :disabled="isBatchDelDisabled"><i
-                    class="iconfont icon-shanchu"></i>批量删除</el-button>
-        </template>
-        <template #elderlyGender="{ row }">
-            {{ row.elderlyGender === 1 ? '男' : '女' }}
-        </template>
-        <template #state="{ row }">
-            {{ row.state === 1 ? '已入院' : '未入院' }}
-        </template>
-        <template #search>
-            <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
-                <el-form-item label="老人姓名:">
-                    <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />
-                </el-form-item>
-                <el-form-item label="身份证号:">
-                    <el-input placeholder="请输入身份证号" v-model="params.elderlyIdCard" clearable />
-                </el-form-item>
-                <el-form-item label="床位:">
-                    <CascaderBeg @bedChange="bedChange" v-model="params.bed" />
-                </el-form-item>
-                <el-form-item style="width: 200px;">
-                    <el-button type="primary" @click="search">查询</el-button>
-                    <el-button @click="resetSearch">重置</el-button>
-                </el-form-item>
-            </el-form>
-        </template>
-        <template #operate="{ row }">
-            <el-button link type="primary"><i class="iconfont icon-file"></i>详情</el-button>
-            <el-button link type="primary"><i class="iconfont icon-bianji"></i>编辑</el-button>
-            <el-button link type="danger" @click="HospitalizedDel(row.id)"><i
-                    class="iconfont icon-shanchu"></i>删除</el-button>
-        </template>
-    </Table>
-    <HospitalizedAdd v-if="dialogForm" v-model="dialogForm" @tableRefersh="tableRefersh"></HospitalizedAdd>
-
+    <div>
+        <Table ref="tableRef" @selection-change="handleSelectionChange" :init-params="params" :columns="columns"
+            :fetch-data="orderList">
+            <template #buttons>
+                <el-button type="success" @click="handleAdd">+ 新增</el-button>
+                <el-button type="danger" :disabled="isBatchDelDisabled"><i
+                        class="iconfont icon-shanchu"></i>批量删除</el-button>
+            </template>
+            <template #elderlyGender="{ row }">
+                {{ row.elderlyGender === 1 ? '男' : '女' }}
+            </template>
+            <template #state="{ row }">
+                {{ row.state === 1 ? '已入院' : '未入院' }}
+            </template>
+            <template #search>
+                <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
+                    <el-form-item label="老人姓名:">
+                        <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />
+                    </el-form-item>
+                    <el-form-item label="身份证号:">
+                        <el-input placeholder="请输入身份证号" v-model="params.elderlyIdCard" clearable />
+                    </el-form-item>
+                    <el-form-item label="床位:">
+                        <CascaderBeg @bedChange="bedChange" v-model="params.bed" />
+                    </el-form-item>
+                    <el-form-item style="width: 200px;">
+                        <el-button type="primary" @click="search">查询</el-button>
+                        <el-button @click="resetSearch">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </template>
+            <template #operate="{ row }">
+                <el-button link type="primary" @click="HospitaliDetails(row)"><i
+                        class="iconfont icon-file"></i>详情</el-button>
+                <el-button link type="primary"><i class="iconfont icon-bianji"></i>编辑</el-button>
+                <el-button link type="danger" @click="HospitalizedDel(row.id)"><i
+                        class="iconfont icon-shanchu"></i>删除</el-button>
+            </template>
+        </Table>
+        <HospitalizedAdd v-if="dialogForm" v-model="dialogForm" @tableRefersh="tableRefersh"></HospitalizedAdd>
+    </div>
 </template>
 
 <script setup lang='ts'>
@@ -47,6 +49,7 @@ import { orderDelete, orderList } from "../../api/Hospitalized/Hospitalized";
 import { ElMessage, ElMessageBox } from "element-plus";
 import CascaderBeg from "../../components/form/CascaderBeg.vue";
 import HospitalizedAdd from "./HospitalizedAdd.vue";
+import router from "@/router";
 
 const tableRef = ref<any>(null)
 const isBatchDelDisabled = ref(true)
@@ -58,9 +61,6 @@ const params = ref<any>({
     elderlyIdCard: '',
     bed: ''
 })
-
-
-
 
 // 床位变更回调
 const bedChange = (idArr: number[]) => {
@@ -150,6 +150,16 @@ const columns: TableColumn[] = [
 const handleAdd = () => {
     dialogForm.value = true
 };
+
+//详情
+const HospitaliDetails = (row: any) => {
+    router.push({
+        path: "/HospitalizedDetails",
+        query: {
+            id: row.id,
+        },
+    })
+}
 
 // 单个删除
 const HospitalizedDel = (id: number) => {

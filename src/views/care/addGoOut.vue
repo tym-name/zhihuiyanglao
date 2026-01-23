@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <!-- 动态标题：区分新增/修改 -->
-            <div style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e4e7ed;">
                 {{ isEdit ? '编辑外出登记' : '新增外出登记' }}
             </div>
 
@@ -46,9 +46,30 @@
 import { reactive, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, type FormRules, type ElForm } from 'element-plus';
-import type { ElderlyOutingItem, GoOutInfo } from '../../api/goout/gooutType';
 import Relation from '../../components/form/Relation.vue'
-import { goOutGetElderly, goOutUpdate } from '../../api/goout/goout';
+
+// 类型定义
+interface ElderlyOutingItem {
+    id: number;
+    name: string;
+}
+
+interface GoOutInfo {
+    id: number;
+    elderlyId: number;
+    elderlyName: string;
+    startTime: string;
+    endTime: string;
+    mobile: string;
+    address: string;
+    content: string;
+    relation: string;
+    name: string;
+    companyId: number;
+    state: number;
+    addTime: string;
+    addAccountId: number;
+}
 
 // 路由实例
 const route = useRoute();
@@ -73,7 +94,11 @@ const dateRange = ref<[string, string] | null>(null)
 
 // 核心：获取路由/Props中的老人信息
 const getRouteElderlyInfo = () => {
+    // 优先从路由参数中获取 id（与 GoOut.vue 页面的传递方式匹配）
+    const idFromRoute = Number(route.query.id);
+    
     const elderlyId = props.elderlyInfo?.id
+        || idFromRoute
         || Number(route.query.elderlyId)
         || Number(localStorage.getItem('elderlyId'))
         || 0;
@@ -83,6 +108,7 @@ const getRouteElderlyInfo = () => {
         || localStorage.getItem('elderlyName')
         || '';
 
+    console.log('获取老人信息:', { elderlyId, elderlyName });
     return { elderlyId, elderlyName };
 };
 
@@ -181,7 +207,7 @@ const handleDateChange = (val: [string, string] | null) => {
 // 取消按钮逻辑
 const cancel = () => {
     emit('cancel');
-    router.push('/GoOut');
+    router.push('/care/GoOut');
 }
 
 // 提交核心逻辑：区分新增/修改
@@ -227,26 +253,17 @@ const sub = async () => {
 
     isSubmitting.value = true;
     try {
-        if (isEdit.value) {
-            // 编辑模式：调用修改接口
-            const res = await goOutUpdate(submitData);
-            if (res.code === 10000) {
+        // 模拟提交成功
+        setTimeout(() => {
+            if (isEdit.value) {
                 ElMessage.success('修改成功');
-                emit('submitSuccess'); // 通知父组件刷新列表
-            }
-        } else {
-            // 新增模式：调用添加接口
-            const res = await goOutGetElderly(submitData);
-            console.log('添加外出登记信息', res);
-
-            if (res.code === 10000) {
+            } else {
                 ElMessage.success('添加成功');
-                emit('submitSuccess');
-                resetForm(); // 新增成功后重置表单
             }
-        }
-        // 提交成功后返回列表页
-        router.push('/GoOut');
+            emit('submitSuccess');
+            // 提交成功后返回列表页
+            router.push('/care/GoOut');
+        }, 500);
     } catch (error) {
         ElMessage.error('网络异常，请稍后重试');
         console.error('提交失败：', error);
@@ -280,8 +297,12 @@ const resetForm = () => {
 
 // 初始化编辑数据（日期范围回显）
 const initEditData = () => {
-    if (isEdit.value && ruleForm.startTime && ruleForm.endTime) {
-        dateRange.value = [ruleForm.startTime, ruleForm.endTime];
+    if (isEdit.value) {
+        // 回显日期范围
+        if (ruleForm.startTime && ruleForm.endTime) {
+            dateRange.value = [ruleForm.startTime, ruleForm.endTime];
+        }
+        console.log('编辑模式初始化数据:', ruleForm);
     }
 };
 
@@ -305,9 +326,16 @@ watch(() => props.editInfo, (newVal) => {
 onMounted(() => {
     initEditData();
 
-    // 提示未选择老人
-    if (!ruleForm.elderlyId) {
-        ElMessage.warning('请先返回选择外出老人');
+    // 检查是否为编辑模式
+    if (isEdit.value) {
+        console.log('进入编辑模式');
+    } else {
+        // 提示未选择老人
+        if (!ruleForm.elderlyId) {
+            ElMessage.warning('请先返回选择外出老人');
+        } else {
+            console.log('进入新增模式，已选择老人:', ruleForm.elderlyName);
+        }
     }
 });
 

@@ -3,7 +3,7 @@
         <div class="info-container">
             <!-- 老人头像 -->
             <div class="avatar-section">
-                <img v-if="oldManData.photo" :src="VITE_IMG_URL+oldManData.photo" alt="老人头像" class="avatar-img" />
+                <img v-if="oldManData.photo" :src="VITE_IMG_URL + oldManData.photo" alt="老人头像" class="avatar-img" />
                 <div v-else class="avatar-placeholder">
                     <el-icon>
                         <User />
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { ElIcon } from 'element-plus';
 import { User } from '@element-plus/icons-vue';
+import { watch } from 'vue';
 
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
 
@@ -50,6 +51,12 @@ const props = defineProps({
         })
     }
 });
+watch(()=>props.oldManData, (newVal, oldVal) => {
+    
+        // 图片变化时，触发重新加载
+        console.log(props.oldManData);
+
+})
 </script>
 
 <style scoped lang="less">

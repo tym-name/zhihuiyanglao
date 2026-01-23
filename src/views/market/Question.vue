@@ -32,7 +32,7 @@
             <el-button link type="primary" @click="Particulars(row)"><i class="iconfont icon-file"></i>详情</el-button>
             <!-- 修复：移除无效的:oldhome绑定，仅保留点击事件 -->
             <el-button link type="primary" @click="updQuestion(row)"><i class="iconfont icon-bianji"></i>编辑</el-button>
-            <el-button link type="primary" @click="visit(row)"><i class="iconfont icon-xiangqing"></i>回访记录</el-button>
+            <el-button link type="primary" @click="visit(row)"><i class="iconfont icon-goout"></i>回访记录</el-button>
             <el-button link type="danger" @click="questionDel(row.id)"><i
                     class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
@@ -204,7 +204,7 @@ const visit = (row: any) => {
     router.push({
         path: '/payAReturnVisit',
         query: {
-            id: JSON.stringify(row),
+            id: row.id,
         },
     })
 }

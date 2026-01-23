@@ -18,12 +18,7 @@
                     <el-input placeholder="请输入身份证号" v-model="params.idCard" clearable />
                 </el-form-item>
                 <el-form-item label="床位:">
-<<<<<<< HEAD
-                    <el-cascader v-model="params.begId" :options="cascaderOptions" placeholder="请选择床位" clearable
-                        style="width: 200px" />
-=======
                     <CascaderBeg v-model="params.begId" @bedChange="bedChange" :type="'bed'" />
->>>>>>> faba1291873781602f2deee1773d1a79a1b5e5a7
                 </el-form-item>
                 <el-form-item label="入住状况:">
                     <el-select placeholder="请选择入住状况" v-model="params.state" style="width: 200px">

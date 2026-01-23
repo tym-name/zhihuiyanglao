@@ -40,7 +40,6 @@
     </div>
 </template>
 
-<<<<<<< HEAD
 <script setup lang="ts">
 import Table, { type TableColumn } from "../../components/table.vue";
 import { temperatureDelete, temperatureGet, temperatureList, } from "../../api/temperature/temperature";
@@ -204,9 +203,6 @@ const columns: TableColumn[] = [
         fixed: "right",
     }
 ];
-=======
-<script setup lang='ts'>
->>>>>>> faba1291873781602f2deee1773d1a79a1b5e5a7
 </script>
 
 <style scoped lang="less">

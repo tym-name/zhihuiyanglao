@@ -38,7 +38,7 @@
             <el-button link type="primary" @click="records(row)"><i class="iconfont icon-file"></i>详情</el-button>
             <el-button link type="primary" @click="edit(row)" :oldhome="oldhome"><i
                     class="iconfont icon-bianji"></i>编辑</el-button>
-            <el-button link type="primary" @click="goQuestion"><i class="iconfont icon-xiangqing"></i>咨询登记</el-button>
+            <el-button link type="primary" @click="goQuestion"><i class="iconfont icon-goout"></i>咨询登记</el-button>
             <el-button link type="danger" @click="deleteCustomer(row.id)"><i
                     class="iconfont icon-shanchu"></i>删除</el-button>
         </template>

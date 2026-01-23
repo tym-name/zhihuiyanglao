@@ -53,7 +53,7 @@ export const columns: TableColumn[] = [
     {
         label: "操作",
         slot: "operate",
-        // width: 180,
+        width: 180,
         fixed: "right",
     }
 ];
