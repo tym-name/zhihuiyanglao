@@ -1,7 +1,8 @@
 <template>
     <div>
-        <Table ref="tableRef" :columns="columns" :fetch-data="getDrugsList" :init-params="searchForm"
-            @selection-change="handleSelectionChange">
+        <Table :columns="columns" ref="tableRef" @selection-change="handleSelectionChange" :init-params="params"
+            :fetch-data="getMedicineLogs">
+            <!--查询列插槽 -->
             <template #search>
 
                 <el-form :inline="true" class="demo-form-inline">
@@ -32,9 +33,10 @@
 
 
             <template #operate="{ row }">
-                <el-button link type="primary">
-                    <i class="iconfont icon-xiangqing"></i>
-                    查看详情
+                <el-button type="primary" link @click="handleDetails(row)">
+                    <el-icon>
+                        <Tickets />
+                    </el-icon> 查看详情
                 </el-button>
                 <el-button type="primary" link @click="handlePlanset(row)">
                     <el-icon>
@@ -43,14 +45,15 @@
                 </el-button>
             </template>
         </Table>
+
+        <SelectOld v-model="dialogVisibleSelectOld" @selectOldId="selectOldId"></SelectOld>
     </div>
 </template>
+<script setup lang="ts">
 
-<script setup lang='ts'>
-import { ref, reactive } from 'vue';
-import Table, { type TableColumn } from '../../components/table.vue'
-import { delDrugsAllByIds, getDrugsList } from '../../api/medicalcare/medicineLogs/medicineLogs';
-import type { drugsListItem, drugsListParams } from '../../api/medicalcare/medicineLogs/medicineLogsType';
+import { computed, ref } from 'vue';
+import Table from '../../components/table.vue';
+import SelectOld from '../../components/selectOld/SelectOld.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import DateRangePicker from '../../components/from/DateRangePicker.vue'
 import { Refresh, Search } from '@element-plus/icons-vue';

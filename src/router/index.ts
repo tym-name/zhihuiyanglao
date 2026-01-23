@@ -10,7 +10,7 @@ import { useAuthStore } from "../stores/auth";
 
 const modules = import.meta.glob("../views/**/**.vue");
 
-const whiteUrl = ["/login","/wechat-login"];
+const whiteUrl = ["/login", "/wechat-login"];
 
 const keepAlivePages = ["company"];
 
@@ -31,7 +31,6 @@ const routes: Array<RouteRecordRaw> = [
       title: "高德地图",
     },
     component: () => import("../views/Amap/Amap.vue"),
-    
   },
   {
     path: "/worldmap",
@@ -238,6 +237,42 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/diet/PriceAnalysis.vue"),
       },
+      {
+        path: "/AddPurchase",
+        name: "AddPurchase",
+        props: true,
+        component: () => import("../components/logistics/AddPurchase.vue"),
+      },
+      {
+        path: "/details/:id",
+        name: "details",
+        props: true,
+        component: () => import("../views/logistics/details.vue"),
+      },
+      {
+        path: "/check/:id",
+        name: "check",
+        props: true,
+        component: () => import("../views/logistics/check.vue"),
+      },
+      {
+        path: "/medicalcareAdd",
+        name: "medicalcareAdd",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcareAddOld.vue"),
+      },
+      {
+        path: "/medicalcaredetails",
+        name: "medicalcaredetails",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcareDetails.vue"),
+      },
+      {
+        path: "/medicalcarePlanset",
+        name: "medicalcarePlanset",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcarePlanset.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面
@@ -248,7 +283,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory('/dist'),
+  history: createWebHashHistory("/dist"),
   routes,
 });
 

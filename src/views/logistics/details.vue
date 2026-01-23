@@ -42,7 +42,7 @@
             </div>
         </el-card>
         <div class="bts">
-            <el-button @click="() => { $router.push('/logistic/Purchase') }">返回</el-button>
+            <el-button @click="() => { $router.push('/logistics/Purchase') }">返回</el-button>
         </div>
     </div>
 </template>
@@ -104,5 +104,6 @@ const actualPurchaseCost = computed(() => {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-top: 20px;
 }
 </style>
