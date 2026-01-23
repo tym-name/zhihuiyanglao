@@ -6,7 +6,7 @@ export interface roleList {
     addAccountName: string;
     addTime: string;
     accountCounts: number;
-    menuIds?: number[];
+    menuIds: number[];
 };
 
 export interface roleData {

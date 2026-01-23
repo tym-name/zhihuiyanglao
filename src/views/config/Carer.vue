@@ -19,9 +19,9 @@
         </el-form>
     </el-card>
 
-    <Table ref="tableRef" :columns="columns" :fetch-data="staffListFun" @selection-change="handleSelectionChange">
+    <Table ref="tableRef" :columns="columns" :fetch-data="staffList" @selection-change="handleSelectionChange">
         <template #buttons>
-            <el-button type="success">添加护工</el-button>
+            <el-button type="success" @click="dialogFormVisible = true">添加护工</el-button>
             <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
         </template>
 
@@ -40,17 +40,20 @@
             </div>
         </template>
     </Table>
+    <CarerTanChang v-model="dialogFormVisible" @update:carers="handleUpdateCarers"></CarerTanChang>
 </template>
 
 <script setup lang='ts'>
+import CarerTanChang from './CarerTanChang.vue'
 import Table from '../../components/table.vue'
 import { type TableColumn } from '../../components/table.vue';
-import { staffDelete, staffDeleteAll, staffListFun } from '../../api/staff/staff';
-import type { staffList, } from '../../api/staff/staffType';
+import { staffDelete, staffDeleteAll, } from '../../api/staff/staff';
 import { reactive, ref } from 'vue';
 import { roleListFun } from '../../api/position/position';
 import type { roleList } from '../../api/position/positionType';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import type { roleListFunList } from '@/api/carer/carerType';
+import { staffList } from '@/api/carer/carer';
 const VITE_IMG_URL = 'http://123.57.237.81:8080/caresystem/'
 
 // 表单
@@ -104,11 +107,10 @@ const formss = reactive<roleList>({
     addAccountName: '',
     addTime: '',
     accountCounts: 0,
-    menuIds: undefined,
+    menuIds: [],
 })
 const getstaffListFun = async () => {
     const res = await roleListFun(formss)
-    console.log('所属岗位', res);
     roleItem.value = res.data.list
 }
 getstaffListFun()
@@ -141,7 +143,7 @@ const carerdel = async (id: number) => {
 // 批量删除
 const selectedIds = ref<number[]>([])
 //表格选择变化事件
-const handleSelectionChange = (selection: staffList[]) => {
+const handleSelectionChange = (selection: roleListFunList[]) => {
     selectedIds.value = selection.map(item => item.id)
 }
 const delAll = async () => {
@@ -156,16 +158,11 @@ const delAll = async () => {
             type: 'warning',
         }
     )
-    // 传递选中的ID数组给后端
     await staffDeleteAll(selectedIds.value)
-    // 清空选中的ID
     selectedIds.value = []
-    // 刷新表格数据
     tableRef.value?.refresh();
-
     ElMessage.success('删除成功')
 }
-
 // 查询
 const handleSearch = () => {
     // 处理查询参数，只传递有值的字段
@@ -178,18 +175,18 @@ const handleSearch = () => {
             delete params[key]
         }
     }
-    // 调用表格的refresh方法，传入查询参数
     tableRef.value?.refresh(params)
 }
-
 // 重置
 const handleReset = () => {
-    // 重置表单数据
     form.name = ''
     form.mobile = ''
     form.roles = ''
-    // 调用查询方法，刷新表格
     handleSearch()
 }
-
+const dialogFormVisible = ref(false)
+// 处理护工更新事件，刷新表格数据
+const handleUpdateCarers = () => {
+    tableRef.value?.refresh();
+}
 </script>

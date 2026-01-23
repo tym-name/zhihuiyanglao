@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { staffList, staffData, staffUpdateData } from './staffType';
+import type { staffList, staffData, staffUpdateData, staffAddResult } from './staffType';
 
 
 /**
@@ -18,5 +18,12 @@ export const staffDeleteAll = (ids: number[]) => http.post('/staff/deleteAll', i
  * 编辑
  */
 export const staffUpdate = (params: staffUpdateData) => http.put("/staff/update", params);
-// 详情
+/**
+ * 添加
+ */
+export const staffAdd = (params: staffUpdateData) => http.post("/staff/add", params);
+
+/**
+ * 详情
+ */
 export const staffGet = (id: number) => http.get<staffUpdateData>(`/staff/get/${id}`);

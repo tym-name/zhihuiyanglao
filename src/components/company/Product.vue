@@ -278,6 +278,9 @@ defineExpose({
 </script>
 
 <style scoped lang="less">
+    /deep/.avatar-uploader{
+    border: none;
+}
 .Nowiln {
     display: flex;
     align-items: center;
