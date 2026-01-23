@@ -1,0 +1,1 @@
+import{D as t}from"./index-DSXWNbz6.js";const o=e=>t.get("/housetype/list",e),p=e=>t.delete(`/housetype/delete/${e}`),h=e=>t.post("/housetype/deleteAll",e),u=e=>t.post("/housetype/add",e),a=e=>t.put("/housetype/update",e);export{p as a,h as b,a as c,u as d,o as h};

@@ -30,13 +30,13 @@
                     <el-option v-for="item in roleItem" :key="item" :label="item.name" :value="item.id" />
                 </el-select>
 
-                <el-select-v2 v-model="ruleForm.roleId" :options="roleItem" placeholder="请选择岗位" style="width: 308px"
+                <!-- <el-select-v2 v-model="ruleForm.roleId" :options="roleItem" placeholder="请选择岗位" style="width: 308px"
                     clearable multiple>
                     <template #label="{ label, value }">
                         <span>{{ label }}: </span>
                         <span style="font-weight: bold">{{ value }}</span>
                     </template>
-                </el-select-v2>
+                </el-select-v2> -->
 
             </el-form-item>
             <el-form-item label="账号" prop="adminUserName">

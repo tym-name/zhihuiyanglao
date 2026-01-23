@@ -69,9 +69,9 @@
 
             <template #buttons>
                     <div class="button">
-                        <el-button type="success" @click="dialogVisible = true">+新增外出</el-button>
+                        <el-button type="success" @click="dialogVisible = true"><i class="iconfont icon-jia"></i>新增外出</el-button>
                         <el-button type="danger" :disabled="multipleSelection.length === 0"
-                            @click="delAll">-批量删除</el-button>
+                            @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
                     </div>
             </template>
 
@@ -308,5 +308,8 @@ const getDel = async (id: number) => {
 <style scoped lang="less">
 .dialog-footer {
     text-align: right;
+}
+.iconfont{
+    margin-right: 5px;
 }
 </style>

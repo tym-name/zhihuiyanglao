@@ -1,0 +1,1 @@
+import{D as e}from"./index-DSXWNbz6.js";const d=t=>e.get("/department/list",t),s=t=>e.post("/department/add",t),p=t=>e.put("/department/update",t),n=t=>e.delete(`/department/delete/${t}`),o=t=>e.post("/staff/deleteAll",t),r=t=>e.get("/auth/publicKey",t);export{n as a,p as b,s as c,d,o as e,r as f};
