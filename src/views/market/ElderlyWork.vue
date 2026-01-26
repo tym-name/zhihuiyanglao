@@ -20,44 +20,21 @@
                 </div>
             </div>
         </el-card>
-        <div class="schedule-container">
-    <!-- 标题 -->
-    <h3 class="schedule-title">排班管理</h3>
-    <!-- 表格区域 -->
-    <div class="schedule-table">
-      <!-- 表头（星期） -->
-      <div class="schedule-header">
-        <div class="header-item"></div> <!-- 空列（对应“白班/夜班”行头） -->
-        <div class="header-item" v-for="day in weekDays" :key="day">{{ day }}</div>
-      </div>
-      <!-- 内容行：白班 -->
-      <div class="schedule-row">
-        <div class="row-label">白班</div>
-        <div class="row-content" v-for="day in weekDays" :key="`day-${day}`">
-            <div style="color: #4080FF; font-size: 14px;"><i class="iconfont icon-jia"></i>请选择</div>
-        </div>
-      </div>
-      <!-- 内容行：夜班 -->
-      <div class="schedule-row">
-        <div class="row-label">夜班</div>
-        <div class="row-content" v-for="day in weekDays" :key="`night-${day}`">
-            <div style="color: #4080FF; font-size: 14px;"><i class="iconfont icon-jia"></i>请选择</div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <!-- 排班管理 -->
+        <ElderlySchedule v-if="elderlyId" :id="elderlyId" :key="elderlyId"></ElderlySchedule>
     </div>
 </template>
 
 <script setup lang='ts'>
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { elderlyGet, } from '../../api/market/elderly';
+import { elderlyGet } from '../../api/market/elderly';
+import ElderlySchedule from '@/components/elderly/ElderlySchedule.vue'
 
 const elderlyInfo = ref<any>({});
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
-const elderlyId = ref<number>(0);
+const elderlyId = ref<number | null>(null);
 
 onMounted(async () => {
     const id = route.query.id || route.params.id;
@@ -66,11 +43,6 @@ onMounted(async () => {
     console.log('老人详情', res);
     elderlyInfo.value = res.data;
 });
-
-// 星期列表
-const weekDays = ref(['周一', '周二', '周三', '周四', '周五', '周六', '周日']);
-
-// 排班数据（可用于存储选择结果）
 </script>
 
 <style scoped lang="less">

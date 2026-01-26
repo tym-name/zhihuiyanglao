@@ -42,7 +42,7 @@
 
 <script setup lang='ts'>
 import { computed, reactive, ref, watch } from 'vue'
-import { ElMessage, type FormInstance, type FormRules, type UploadProps, type UploadUserFile } from 'element-plus'
+import { ElMessage, type FormInstance, type UploadProps, type UploadUserFile } from 'element-plus'
 import type { ClothesList } from '../../api/clothes/clothesType'
 import { clothesUpdate, clothesAdd } from '../../api/clothes/clothes'
 import ChoseOneElderly from '../choseelderly/ChoseOneElderly.vue'
@@ -198,7 +198,7 @@ const uploadHeaders = ref({})
 const fileList = ref<UploadUserFile[]>([])
 
 // 处理上传成功
-const handleUploadSuccess = (response: any, uploadFile: UploadUserFile) => {
+const handleUploadSuccess = (response: any) => {
     if (response.code === 200) {
         // 上传成功，将图片信息添加到表单中
         ruleForm.pictures.push({

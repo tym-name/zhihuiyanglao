@@ -1,5 +1,5 @@
 import http from '../../utils/request';
-import type { staffList, staffData, staffUpdateData, staffAddResult } from './staffType';
+import type { staffList, staffData, staffUpdateData } from './staffType';
 
 
 /**

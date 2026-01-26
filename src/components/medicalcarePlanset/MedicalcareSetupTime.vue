@@ -173,7 +173,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
 
 
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid) => {
         if (valid) {
             console.log('submit!')
             onSubmit()

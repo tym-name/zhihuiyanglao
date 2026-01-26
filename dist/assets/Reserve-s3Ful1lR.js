@@ -1,1 +1,0 @@
-import{D as t}from"./index-DSXWNbz6.js";const s=e=>t.get("/reservation/list",e),a=e=>t.get(`/reservation/get/${e}`),o=e=>t.delete(`/reservation/delete/${e}`),n=e=>t.post("/reservation/add",e),i=e=>t.put("/reservation/update",e);export{s as a,o as b,a as c,i as d,n as r};

@@ -1,1 +1,0 @@
-import{D as s}from"./index-DSXWNbz6.js";const f=t=>s.get("/staff/list",t),a=t=>s.delete(`/staff/delete/${t}`),l=t=>s.post("/staff/deleteAll",t),o=t=>s.put("/staff/update",t),p=t=>s.get(`/staff/get/${t}`);export{a,l as b,p as c,o as d,f as s};

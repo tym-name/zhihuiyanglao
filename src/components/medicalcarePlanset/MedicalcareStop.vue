@@ -88,7 +88,7 @@ const onSubmit = async () => {
 //点击确定  触发校验
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid) => {
         if (valid) {
             console.log('submit!')
             onSubmit()
@@ -97,10 +97,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-
-
-
-
 
 //点击取消
 const handleCancel = () => {

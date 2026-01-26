@@ -272,6 +272,12 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/medicalcare/MedicalcarePlanset.vue"),
       },
+      {
+        path: "/elderly-schedule",
+        name: "ElderlySchedule",
+        props: true,
+        component: () => import("../views/market/ElderlySchedule.vue"),
+      },
     ],
   },
   // 新增：匹配所有未定义的路由，防止刷新后匹配不到路由跳转404或异常页面

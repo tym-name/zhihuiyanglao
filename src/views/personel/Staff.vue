@@ -34,19 +34,19 @@
 
     <Table ref="tableRef" :columns="columns" :fetch-data="staffListFun" @selection-change="handleSelectionChange">
         <template #buttons>
-            <el-button type="success" @click="addStaff">添加员工</el-button>
-            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
+            <el-button type="success" @click="addStaff"><i class="iconfont icon-jia"></i>添加员工</el-button>
+            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
 
         <template #photo="{ row }">
             <img :src="VITE_IMG_URL + row.photo" style="width: 50px;height: 50px;">
         </template>
         <template #operate="{ row }">
-            <el-button link type="primary" @click="openResetPasswordDialog(row)">重置密码</el-button>
-            <el-button link type="primary" @click="bianji(row.id)">编辑</el-button>
-            <el-button link type="primary" @click="jinyong">禁用</el-button>
-            <el-button link type="primary" @click="toggleEnable">取消禁用</el-button>
-            <el-button link type="danger" @click="staffdel(row.id)">删除</el-button>
+            <el-button link type="primary" @click="openResetPasswordDialog(row)"><i class="iconfont icon-shuaxin"></i>重置密码</el-button>
+            <el-button link type="primary" @click="bianji(row.id)"><i class="iconfont icon-bianji"></i>编辑</el-button>
+            <el-button link type="primary" @click="jinyong"><i class="iconfont icon-jinyong"></i>禁用</el-button>
+            <el-button link type="primary" @click="toggleEnable"><i class="iconfont icon-shuaxin"></i>取消禁用</el-button>
+            <el-button link type="danger" @click="staffdel(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
         <template #enable="{ row }">
             {{ row.enable === 1 ? '否' : '是' }}
@@ -177,7 +177,7 @@ const columns: TableColumn[] = [
     {
         label: "操作",
         slot: "operate",
-        width: 300,
+        width: 400,
         fixed: "right",
     }
 ]
@@ -391,3 +391,9 @@ const handleReset = () => {
     handleSearch()
 }
 </script>
+
+<style lang="less" scoped>
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

@@ -21,8 +21,8 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success" @click="OpenOrClose">增加</el-button>
-                <el-button type="danger" @click="delAll">批量删除</el-button>
+                <el-button type="success" @click="OpenOrClose"><i class="iconfont icon-jia"></i>增加</el-button>
+                <el-button type="danger" :disabled="isBatchDeleteDisabled" @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import { delBloodById, deleteAllByIds, getBloodById, getBloodList, getBuildingList } from '../../api/medicalcare/blood/blood';
 import type { bloodItem, bloodListParams, buildingListItem, CascaderTreeNode } from '../../api/medicalcare/blood/bloodType';
@@ -50,7 +50,9 @@ import { convertFlatToCascaderTree } from '../../utils/checkBed';
 import AddOrUpdateBlood from '../../components/medicalcare/blood/addOrUpdateBlood.vue';
 
 const tableRef = ref<any>(null);
-
+const isBatchDeleteDisabled = computed(() => {
+    return selectionData.value.length === 0;
+})
 //刷新页面
 const Refresh = () => {
     tableRef.value.refresh()
@@ -269,4 +271,8 @@ buildingList()
 
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang='less'>
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

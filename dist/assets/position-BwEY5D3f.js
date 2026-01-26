@@ -1,1 +1,0 @@
-import{D as t}from"./index-DSXWNbz6.js";const s=e=>t.get("/role/list",e),l=e=>t.delete(`/role/delete/${e}`),r=e=>t.post("/role/deleteAll",e),a=e=>t.post("/role/add",e),n=e=>t.get("/menu/getListForUser",e);export{a,l as b,r as c,n as m,s as r};

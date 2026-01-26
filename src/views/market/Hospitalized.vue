@@ -2,7 +2,7 @@
     <Table ref="tableRef" @selection-change="handleSelectionChange" :init-params="params" :columns="columns"
         :fetch-data="orderList">
         <template #buttons>
-            <el-button type="success" @click="handleAdd">+ 新增</el-button>
+            <el-button type="success" @click="handleAdd"><i class="iconfont icon-jia"></i>新增</el-button>
             <el-button type="danger" :disabled="isBatchDelDisabled"><i
                     class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
@@ -13,7 +13,7 @@
             {{ row.state === 1 ? '已入院' : '未入院' }}
         </template>
         <template #search>
-            <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
+            <el-form :inline="true" class="demo-form-inline">
                 <el-form-item label="老人姓名:">
                     <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />
                 </el-form-item>
@@ -185,7 +185,7 @@ const handleSelectionChange = (rows: any[]) => {
 
 <style scoped lang='less'>
 .iconfont {
-    margin: 5px;
+    margin-right: 5px;
 }
 
 .demo-form-inline {

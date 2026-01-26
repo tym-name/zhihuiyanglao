@@ -1,1 +1,0 @@
-import{D as l}from"./index-DSXWNbz6.js";const a=t=>l.get("/play/list",t),s=()=>l.get("/playType/list"),p=t=>l.get(`/play/get/${t}`),y=t=>l.delete(`/play/delete/${t}`),d=t=>l.post("/play/deleteAll",t),o=t=>l.get("/elderly/list",t),g=t=>l.post("/play/add",t),c=t=>l.put("/play/update",t);export{g as a,a as b,s as c,y as d,d as e,o as g,p,c as u};

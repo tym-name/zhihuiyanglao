@@ -79,14 +79,14 @@
                 <el-button @click="goout(row)" type="primary" link size="small"
                     style="width: 20px; font-size: 13px !important;margin-right: 8px;">
                     <el-icon>
-                        <View />
+                        <i class="iconfont icon-meals"></i>
                     </el-icon>查看详情
                 </el-button>
 
                 <el-button @click="Update(row)" type="primary" link size="small"
                     style="width: 60px; font-size: 13px !important;margin-right: 8px;">
                     <el-icon>
-                        <EditPen />
+                       <i class="iconfont icon-bianji"></i>
                     </el-icon>编辑
                 </el-button>
 
@@ -108,7 +108,7 @@ import { columns } from './Outbound';
 import { getDel1, getElderlyList, getAllDel } from '../../api/OutboundRegistration/Outbound';
 import type { ElderlyOutRecordItem } from '../../api/OutboundRegistration/type';
 import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
-import { View, EditPen, Delete } from '@element-plus/icons-vue';
+import {Delete } from '@element-plus/icons-vue';
 import router from '../../router';
 import { oldman } from './OldManList';
 import type { ApifoxModel } from '../../api/OutboundRegistration/oldManList';
@@ -302,8 +302,6 @@ const getDel = async (id: number) => {
         })
 
 }
-
-
 </script>
 <style scoped lang="less">
 .dialog-footer {

@@ -28,13 +28,13 @@
                 </el-form>
             </template>
             <template #buttons>
-                <el-button type="success" @click="openDialog">添加</el-button>
-                <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled">批量删除</el-button>
+                <el-button type="success" @click="openDialog"><i class="iconfont icon-jia"></i>添加</el-button>
+                <el-button type="danger" @click="delAll" :disabled="isBatchDelDisabled"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
 
             <template #operate="{ row }">
                 <el-button link type="primary" @click="handleViewDetails(row.id)">
-                    <i class="iconfont icon-xiangqing"></i>
+                  <i class="iconfont icon-meals"></i>
                     详情
                 </el-button>
                 <el-button link type="primary" @click="updatePlay(row.id)">
@@ -266,15 +266,13 @@ const updatePlay = async (id: number) => {
     onePlayDate.value = res.data
     iddd.value = id
 }
-
-
-
-
-
 </script>
 
 <style scoped lang='less'>
 .el-card__body {
     padding: 18px 0 0 10px
+}
+.iconfont{
+    margin-right: 5px;
 }
 </style>

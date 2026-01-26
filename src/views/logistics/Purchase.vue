@@ -1,7 +1,7 @@
 <template>
         <Table ref="tableRef" :columns="columns" :fetch-data="getPurchaseList">
             <template #buttons>
-                <el-button type='success' @click="goToAdd()">创建采购申请</el-button>
+                <el-button type='success' @click="goToAdd()"><i class="iconfont icon-jia"></i>创建采购申请</el-button>
             </template>
 
             <template #operate="{ row }">
@@ -66,7 +66,7 @@ const columns: TableColumn[] = [
     },
     {
         label: "操作",
-        width: 160,
+        width: 200,
         slot: "operate",
         fixed: "right",
     }
@@ -107,5 +107,6 @@ const goToCheck = (id: number) => {
 <style scoped lang='less'>
 .iconfont {
     font-size: 14px;
+    margin-right: 5px;
 }
 </style>

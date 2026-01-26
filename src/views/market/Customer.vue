@@ -11,7 +11,7 @@
             {{ row.gender === 1 ? '男' : '女' }}
         </template>
         <template #search>
-            <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
+            <el-form :inline="true" class="demo-form-inline">
                 <el-form-item label="老人姓名:">
                     <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />
                 </el-form-item>
@@ -38,7 +38,7 @@
             <el-button link type="primary" @click="records(row)"><i class="iconfont icon-file"></i>详情</el-button>
             <el-button link type="primary" @click="edit(row)" :oldhome="oldhome"><i
                     class="iconfont icon-bianji"></i>编辑</el-button>
-            <el-button link type="primary" @click="goQuestion"><i class="iconfont icon-xiangqing"></i>咨询登记</el-button>
+            <el-button link type="primary" @click="goQuestion"><i class="iconfont icon-zxdj"></i>咨询登记</el-button>
             <el-button link type="danger" @click="deleteCustomer(row.id)"><i
                     class="iconfont icon-shanchu"></i>删除</el-button>
         </template>

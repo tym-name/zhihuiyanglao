@@ -1,5 +1,5 @@
 import http from "../../utils/request";
-import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse, PersonInfo, BuildingType, BuildingResponse, FormListResponse, FileItemDetail, nursingService, CompanyDataList, CycleTaskData, CycleTask } from "./elderlyType";
+import type { ElderlyInfos, ElderlyInfoAdd, ElderlyType, PersonListResponse, IllnessListResponse, PersonInfo, BuildingType, BuildingResponse, FormListResponse, FileItemDetail, nursingService, CompanyDataList, CycleTaskData, CycleTask, AddScheduleParams, ScheduleResponse, StaffParams, StaffListResponse, StaffItem } from "./elderlyType";
 
 
 /**
@@ -97,3 +97,28 @@ export const elderlyTaskDelete=(id:number)=>http.delete(`/elderlyTask/delete/${i
  */
 
 export const elderlyTaskGetTask=(id:number)=>http.get<any>(`/elderlyTask/getTask/${id}`);
+
+/**
+ * 排班添加
+ */
+export const addElderlySchedule = (data: AddScheduleParams) => http.post("/schedule/add",data);
+
+/**
+ * 排班删除
+ */
+export const deleteElderlySchedule = (id: number) => http.delete(`/schedule/delete/${id}`);
+
+/**
+ * 获取老人排班列表
+ */
+export const getElderlyScheduleList = (id:number) => http.get<ScheduleResponse>(`/schedule/list/${id}`);
+
+/**
+ * 获取单体员工信息
+ */
+export const getStaffInfo = (id: number) => http.get<StaffItem>(`/staff/get/${id}`)
+
+/**
+ * 获取员工列表
+ */
+export const getStaffList = (params: StaffParams) => http.get<StaffListResponse>('/staff/list', params)

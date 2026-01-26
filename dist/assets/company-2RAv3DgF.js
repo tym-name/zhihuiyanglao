@@ -1,1 +1,0 @@
-import{D as e}from"./index-DSXWNbz6.js";const s=t=>e.get("/company/list",t),a=t=>e.delete(`/company/delete/${t}`),c=t=>e.post("/company/deleteAll",t),n=t=>e.put("/account/resetPwd",t),p=t=>e.post("/company/add",t),d=t=>e.get(`/company/get/${t}`);export{c as a,d as b,s as c,a as d,p as e,n as r};
