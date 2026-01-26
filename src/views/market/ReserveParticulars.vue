@@ -87,9 +87,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import { ElMessage, ElMessageBox, type FormInstance } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import uploads from '../../components/upload/Uploads.vue';
-import { reservationGet, reservationUpdate, } from '../../api/Reserve/Reserve';
+import { reservationGet, } from '../../api/Reserve/Reserve';
 import { useRoute, useRouter } from 'vue-router';
 import type { ReserveRelationInfo } from '../../api/Reserve/ReserveType';
 
@@ -103,8 +103,6 @@ const image = ref<string>('');
 const route = useRoute();
 const router = useRouter();
 console.log('路由信息：', route);
-
-const emit = defineProps(['refreshTable']);
 
 // 表单验证规则
 const formRules = reactive({
@@ -146,9 +144,7 @@ const formData = reactive<ReserveRelationInfo>({
 });
 
 // 表单引用
-const formRef = ref<FormInstance>();
 const uploadRef = ref();
-const submitting = ref(false);
 
 // 图片预览相关
 const previewImages = computed(() => {
@@ -166,12 +162,6 @@ const currentPreviewImage = ref(''); // 当前预览的大图地址
 const previewImage = (imgUrl: string) => {
     currentPreviewImage.value = imgUrl;
     previewDialogVisible.value = true;
-};
-
-// 床位变更回调
-const bedChange = (idArr: string[]) => {
-    formData.bed = idArr[idArr.length - 1] || '';
-    console.log('床位更新：', formData.bed);
 };
 
 // 获取预定详情（用于回显）
@@ -245,58 +235,6 @@ onMounted(() => {
     getReservationInfo();
 });
 
-// 提交方法
-const handleSubmit = async () => {
-    if (!formRef.value) return;
-    try {
-        await formRef.value.validate();
-    } catch (error) {
-        ElMessage.warning('请完善必填项后提交');
-        return;
-    }
-
-    try {
-        await ElMessageBox.confirm(
-            '确认要保存修改的预定信息吗？',
-            '提交确认',
-            {
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }
-        );
-    } catch (error) {
-        ElMessage.info('已取消提交');
-        return;
-    }
-
-    submitting.value = true;
-    try {
-        const submitData = {
-            ...formData,
-            files: image.value
-                ? image.value.split(',').map(url => ({
-                    file: url.startsWith(VITE_IMG_URL) ? url.replace(VITE_IMG_URL, '') : url
-                }))
-                : []
-        };
-
-        let res = await reservationUpdate(submitData);
-        console.log('修改预定登记', res);
-
-        if (res.code === 200) {
-            ElMessage.success(formData.id ? '修改成功' : '新增成功');
-            router.push({ path: '/Reserve', query: { elderlyId: formData.elderlyId } });
-        } else {
-            ElMessage.error((res.msg || '操作失败') + '，请重试');
-        }
-    } catch (error) {
-        console.error('提交预定信息失败：', error);
-        ElMessage.error('提交失败，请检查网络或联系管理员');
-    } finally {
-        submitting.value = false;
-    }
-};
 
 // 取消/返回逻辑
 const handleCancel = () => {

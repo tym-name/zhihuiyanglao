@@ -1,6 +1,5 @@
 import http from '../../utils/request';
-import type { ElderlyOutingItem } from '../goout/gooutType';
-import type { ElderlyTemperatureRecord, ElderlyTemperatureRecordUpd, temperatureData } from './temperatureType';
+import type { ElderlyOutingItem, ElderlyTemperatureRecord, ElderlyTemperatureRecordUpd, temperatureData } from './temperatureType';
 
 /**
  * 体温记录分组列表

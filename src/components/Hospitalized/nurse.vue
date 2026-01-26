@@ -52,16 +52,6 @@ const formData = reactive({
   priceNurse:null
 });
 
-// 监听护理费变化，同步给父组件
-watch(
-  () => formData.priceNurse,
-  (newVal) => {
-    if (newVal) {
-      foodmonkeys();
-    }
-  }
-);
-
 // 表单验证规则
 const formRules = reactive({
   priceNurse: [{ required: true, message: '请输入护理费', },

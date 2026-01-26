@@ -6,7 +6,7 @@
             </el-form-item>
             <el-form-item label="权限配置" prop="menuIds">
                 <el-tree ref="treeRef" :data="treeData" node-key="id" :props="treeProps" show-checkbox highlight-current
-                    @check="handleTreeCheck" />
+                    @check-change="handleTreeCheck" />
             </el-form-item>
         </el-form>
         <el-button @click="resetForm(ruleFormRef)">取消</el-button>
@@ -41,8 +41,7 @@ const rules = reactive<FormRules>({
     },
     menuIds: {
         required: true,
-        // 修正：恢复 rule 第一个参数，与 Element Plus 官方格式一致
-        validator: (value: any, callback: any) => {
+        validator: (_rule: any, value: any, callback: any) => {
             if (!value || value.length === 0) {
                 callback(new Error('请至少选择一个权限'))
             } else {
@@ -170,14 +169,12 @@ const buildTree = (list: getListForUserList[]): any[] => {
 }
 
 // 处理树节点选中
-const handleTreeCheck = (checkedInfo: any) => {
-    // 现在能正确获取选中状态信息
-    const { checkedKeys, halfCheckedKeys } = checkedInfo
-    // 合并选中的和半选的节点（保持你原有的业务逻辑）
-    const allCheckedKeys = [...checkedKeys, ...halfCheckedKeys]
+const handleTreeCheck = () => {
+    // 直接从树形控件获取所有完全选中的节点
+    const checkedKeys = treeRef.value?.getCheckedKeys() || []
 
-    // 更新表单数据
-    forms.menuIds = allCheckedKeys
+    // 将TreeKey[]转换为number[]
+    forms.menuIds = checkedKeys.map(key => Number(key))
 
     // 触发验证
     ruleFormRef.value?.validateField('menuIds')

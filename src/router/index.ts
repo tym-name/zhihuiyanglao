@@ -1,6 +1,7 @@
 import {
   createRouter,
-  createWebHashHistory,
+  // createWebHashHistory,
+  createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
 
@@ -8,9 +9,9 @@ import { useAuthStore } from "../stores/auth";
 
 const modules = import.meta.glob("../views/**/**.vue");
 
-const whiteUrl = ["/login"];
+const whiteUrl = ["/login", "/wechat-login"];
 
-const keepAlivePages = ["company"]
+const keepAlivePages = ["company"];
 
 const routes: Array<RouteRecordRaw> = [
   // base:'./',
@@ -29,7 +30,6 @@ const routes: Array<RouteRecordRaw> = [
       title: "高德地图",
     },
     component: () => import("../views/Amap/Amap.vue"),
-
   },
   {
     path: "/worldmap",
@@ -42,6 +42,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../components/form/BaiduMap.vue"),
   },
   {
+    path: "/wechat-login",
+    name: "WechatLogin",
+    component: () => import("../views/login/WechatLogin.vue"),
+  },
+  {
     path: "/",
     name: "Home",
     component: () => import("../views/home/Home.vue"),
@@ -49,6 +54,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/home",
         name: "home",
+        meta: {
+          title: "首页",
+        },
+        component: () => import("../views/home/HomeView.vue"),
+      },
+      {
+        path: "/",
+        name: "HomeView",
         meta: {
           title: "首页",
         },
@@ -79,20 +92,20 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/Elderly.vue"),
       },
       {
-        path: '/Role-edit',
-        name: 'RoleEdit',
+        path: "/Role-edit",
+        name: "RoleEdit",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/RoleEdit.vue')
+        component: () => import("../views/system/RoleEdit.vue"),
       },
       {
-        path: '/Role',
-        name: 'Role',
+        path: "/Role",
+        name: "Role",
         meta: {
           title: "新增角色",
         },
-        component: () => import('../views/system/Role.vue')
+        component: () => import("../views/system/Role.vue"),
       },
       {
         path: "/accountList",
@@ -152,7 +165,7 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         component: () => import("../views/market/Discharge.vue"),
       },
-      // 
+      //
       {
         path: "position-edit/:id",
         name: "position-edit/:id",
@@ -218,10 +231,82 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/care/addGoOut.vue"),
       },
       {
+        path: "AddOutings",
+        name: "AddOutings",
+        meta: {
+          title: "新增外出登记",
+        },
+        props: true,
+        component: () => import("../views/care/AddOutings.vue"),
+      },
+      {
+        path: "details",
+        name: "details",
+        meta: {
+          title: "外出登记详情",
+        },
+        props: true,
+        component: () => import("../views/care/details.vue"),
+      },
+      {
         path: "/priceanalysis",
         name: "PriceAnalysis",
         props: true,
         component: () => import("../views/diet/PriceAnalysis.vue"),
+      },
+      {
+        path: "/AddPurchase",
+        name: "AddPurchase",
+        props: true,
+        component: () => import("../components/logistics/AddPurchase.vue"),
+      },
+      {
+        path: "/details/:id",
+        name: "details",
+        props: true,
+        component: () => import("../views/logistics/details.vue"),
+      },
+      {
+        path: "/check/:id",
+        name: "check",
+        props: true,
+        component: () => import("../views/logistics/check.vue"),
+      },
+      {
+        path: "/medicalcareAdd",
+        name: "medicalcareAdd",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcareAddOld.vue"),
+      },
+      {
+        path: "/medicalcaredetails",
+        name: "medicalcaredetails",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcareDetails.vue"),
+      },
+      {
+        path: "/medicalcarePlanset",
+        name: "medicalcarePlanset",
+        props: true,
+        component: () => import("../views/medicalcare/MedicalcarePlanset.vue"),
+      },
+      {
+        path: "/HospitalizedDetails",
+        name: "HospitalizedDetails",
+        props: true,
+        component: () => import("../views/market/HospitalizedDetails.vue"),
+      },
+      {
+        path: "/Hospitalized",
+        name: "Hospitalized",
+        props: true,
+        component: () => import("../views/market/Hospitalized.vue"),
+      },
+      {
+        path: "/addHospitalized",
+        name: "addHospitalized",
+        props: true,
+        component: () => import("../views/market/addHospitalized.vue"),
       },
       {
         path: "/Customer-add",
@@ -236,10 +321,22 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/CustomerUpd.vue"),
       },
       {
+        path: "/CustomerParticulars",
+        name: "CustomerParticulars",
+        props: true,
+        component: () => import("../views/market/CustomerParticulars.vue"),
+      },
+      {
         path: "/Customer",
         name: "Customer",
         props: true,
         component: () => import("../views/market/Customer.vue"),
+      },
+      {
+        path: "/payAReturnVisit",
+        name: "payAReturnVisit",
+        props: true,
+        component: () => import("../views/market/payAReturnVisit.vue"),
       },
       {
         path: "/Reserve",
@@ -260,70 +357,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/market/AddReserve.vue"),
       },
       {
-        path: "/ReserveUpd",
-        name: "ReserveUpd",
-        props: true,
-        component: () => import("../views/market/ReserveUpd.vue"),
-      },
-      {
-        path: "/Question",
-        name: "Question",
-        props: true,
-        component: () => import("../views/market/Question.vue"),
-      },
-      {
-        path: "/Hospitalized",
-        name: "Hospitalized",
-        props: true,
-        component: () => import("../views/market/Hospitalized.vue"),
-      },
-      {
-        path: "/CustomerParticulars",
-        name: "CustomerParticulars",
-        props: true,
-        component: () => import("../views/market/CustomerParticulars.vue"),
-      },
-      {
         path: "/ReserveParticulars",
         name: "ReserveParticulars",
         props: true,
         component: () => import("../views/market/ReserveParticulars.vue"),
       },
       {
-        path: "/addHospitalized",
-        name: "addHospitalized",
+        path: "/ReserveUpd",
+        name: "ReserveUpd",
         props: true,
-        component: () => import("../views/market/addHospitalized.vue"),
-      },
-      {
-        path: "/AddOutings",
-        name: "AddOutings",
-        props: true,
-        component: () => import("../views/care/AddOutings.vue"),
-      },
-      {
-        path: "/details",
-        name: "Details",
-        props: true,
-        component: () => import("../views/care/details.vue"),
-      },
-      {
-        path: "/details",
-        name: "details",
-        props: true,
-        component: () => import("../views/care/details.vue"),
-      },
-      {
-        path: "/payAReturnVisit",
-        name: "payAReturnVisit",
-        props: true,
-        component: () => import("../views/market/payAReturnVisit.vue"),
-      },
-      {
-        path: "/HospitalizedDetails",
-        name: "HospitalizedDetails",
-        props: true,
-        component: () => import("../views/market/HospitalizedDetails.vue"),
+        component: () => import("../views/market/ReserveUpd.vue"),
       },
     ],
   },
@@ -335,7 +378,8 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory('/dist'),
+  history: createWebHistory("/dist"),
+  // history: createWebHashHistory('/dist'),
   routes,
 });
 
@@ -375,7 +419,7 @@ router.beforeEach(async (to, from) => {
             if (!component) return; // 避免组件不存在导致报错
             console.log(
               `${child.name}../views/${item.url}/${child.pathName}.vue`,
-              `${item.url}/${child.url}`
+              `${item.url}/${child.url}`,
             );
             router.addRoute("Home", {
               path: `/${item.url}/${child.url}`,
@@ -390,18 +434,6 @@ router.beforeEach(async (to, from) => {
                 keepAlive: keepAlivePages.includes(item.url),
                 parent: {
                   name: item.name,
-                  childrenName: child.name,
-                  pathBtn: child.url,
-                  menusFath: item.url,
-                  keepAlive: keepAlivePages.includes(item.url),
-                  parent: {
-                    name: item.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  }, // 修复parent.url中parent未定义的问题
-                  current: {
-                    name: child.name,
-                    url: "/care/" + `${item.url}/${child.url}`,
-                  },
                   url: "/care/" + `${item.url}/${child.url}`,
                 }, // 修复parent.url中parent未定义的问题
                 current: {
@@ -414,6 +446,7 @@ router.beforeEach(async (to, from) => {
           }
         });
       });
+
       // 标记动态路由已添加，防止重复执行
       hasAddedDynamicRoutes = true;
       console.log("路由列表", router.getRoutes());

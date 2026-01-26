@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import { getElderlyList } from '../../api/care/activity/activity';
 import type { ElderlyListItem, ElderlyListParams } from '../../api/care/activity/activityType';
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;

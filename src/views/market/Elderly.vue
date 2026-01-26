@@ -34,8 +34,8 @@
         <template #operate="{ row }">
             <el-button link type="primary" @click="edit(row)"><i class="iconfont icon-bianji"></i>编辑</el-button>
             <el-button link type="primary" @click="records(row)"><i class="iconfont icon-file"></i>档案管理</el-button>
-            <el-button link type="primary" @click="work(row)"><i class="iconfont icon-zixun"></i>排班管理</el-button>
-            <el-button link type="primary"><i class="iconfont icon-xiangqing"></i>计划任务</el-button>
+            <el-button link type="primary" @click="work(row)"><i class="iconfont icon-zxdj"></i>排班管理</el-button>
+            <el-button link type="primary" @click="schedule(row)"><i class="iconfont icon-wenben"></i>计划任务</el-button>
             <el-button link type="danger" @click="deleteCompany(row.id)"><i
                     class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
@@ -62,106 +62,9 @@ const params = ref<ElderlyType>({
     state: null
 })
 
-<<<<<<< HEAD
-// 床位列表
-const elderlyList = ref<BuildingItem[]>([])
-
-const page = ref<BuildingType>({
-    page: 1,
-    pageSize: 10
-})
-const getbuildingList = async () => {
-    try {
-        let res = await buildingList(page.value);
-        console.log('床位列表', res);
-        // 1. 赋值原始扁平数据（响应式）
-        elderlyList.value = res.data.list || [];
-        // 2. 格式化数据为级联树形结构，更新 cascaderOptions（响应式）
-        cascaderOptions.value = formatCascaderData(elderlyList.value);
-    } catch (error) {
-        console.error('获取床位列表失败：', error);
-        ElMessage.error('获取床位数据失败，请稍后重试');
-    }
-};
-
-// 页面加载时获取床位数据
-getbuildingList();
-
-// 新增：格式化后的级联树形数据（el-cascader 所需格式，响应式）
-const cascaderOptions = ref<Array<{
-    value: number;
-    label: string;
-    children?: Array<{
-        value: number;
-        label: string;
-        children?: Array<{
-            value: number;
-            label: string;
-        }>;
-    }>;
-}>>([]);
-// 核心：扁平数组转 el-cascader 支持的树形结构
-const formatCascaderData = (flatList: BuildingItem[]) => {
-    // 1. 先构建 id 到 数据项的映射表，提高查询效率
-    const itemMap = new Map<number, BuildingItem>();
-    flatList.forEach(item => {
-        itemMap.set(item.id, item);
-    });
-
-    // 2. 构建树形结构（三级：楼栋→单元→楼层）
-    const treeData: typeof cascaderOptions.value = [];
-
-    // 3. 先筛选顶级节点（楼栋，pid=0）
-    const topLevelItems = flatList.filter(item => item.pid === 0);
-
-    // 4. 递归/循环构建子节点（单元→楼层）
-    topLevelItems.forEach(building => {
-        // 构建一级节点（楼栋）
-        const buildingNode = {
-            value: building.id,
-            label: building.name,
-            children: [] as any[]
-        };
-
-        // 筛选二级节点（单元，pid=楼栋id）
-        const unitItems = flatList.filter(item => item.pid === building.id);
-        unitItems.forEach(unit => {
-            // 构建二级节点（单元）
-            const unitNode = {
-                value: unit.id,
-                label: unit.name,
-                children: [] as any[]
-            };
-
-            // 筛选三级节点（楼层，pid=单元id）
-            const floorItems = flatList.filter(item => item.pid === unit.id);
-            floorItems.forEach(floor => {
-                // 构建三级节点（楼层）
-                unitNode.children.push({
-                    value: floor.id,
-                    label: floor.name
-                });
-            });
-
-            // 给楼栋节点添加单元子节点（仅当有楼层时添加，可选优化）
-            if (unitNode.children.length > 0 || floorItems.length > 0) {
-                buildingNode.children.push(unitNode);
-            }
-        });
-
-        // 给树形数据添加楼栋节点（仅当有单元时添加，可选优化）
-        if (buildingNode.children.length > 0 || unitItems.length > 0) {
-            treeData.push(buildingNode);
-        }
-    });
-
-    return treeData;
-};
-=======
 let bedChange = (idArr: number[]) => {
     params.value.begId = idArr[idArr.length - 1]
 }
->>>>>>> faba1291873781602f2deee1773d1a79a1b5e5a7
 
 // 搜索
 const search = () => {
@@ -244,6 +147,10 @@ const records = (row: PersonInfo) => {
 
 const work = (row: PersonInfo) => {
     router.push(`/elderly-work?id=${row.id}`)
+};
+
+const schedule = (row: PersonInfo) => {
+    router.push(`/elderly-schedule?id=${row.id}`)
 };
 
 // 单个删除

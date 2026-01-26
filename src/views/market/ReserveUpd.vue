@@ -105,9 +105,6 @@ const route = useRoute();
 const router = useRouter();
 console.log('路由信息：', route);
 
-const emit = defineProps(['refreshTable']);
-
-
 // 表单验证规则
 const formRules = reactive({
     name: [

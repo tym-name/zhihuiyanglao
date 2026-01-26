@@ -102,7 +102,6 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import { getOldManDetail } from '../../api/OutboundRegistration/Outbound';
 
 const route = useRoute();
 const router = useRouter();

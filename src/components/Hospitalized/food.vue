@@ -84,10 +84,6 @@ watch(
   () => formData.priceFood,
   (newVal) => {
     emit('update:modelValue', newVal);
-    // 计算并发送合计费用
-    if (newVal) {
-      foodmonkeys();
-    }
   }
 );
 watch(props.beg, (newVal) => {

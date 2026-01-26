@@ -208,9 +208,6 @@ const rules = reactive({
 // 表单引用
 const goOutFormRef = ref<InstanceType<typeof ElForm>>();
 
-// 定义tableRef
-const tableRef = ref();
-
 // 保存按钮
 const Submit = async () => {
     if (!goOutFormRef.value) return;

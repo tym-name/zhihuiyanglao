@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import Table, { type TableColumn } from '../../components/table.vue'
 import type { ElderlyListItem, ElderlyListParams } from '../../api/care/activity/activityType';
 import { getElderlyList } from '../../api/care/activity/activity';

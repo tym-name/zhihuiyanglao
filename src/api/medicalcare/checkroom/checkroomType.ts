@@ -2,8 +2,6 @@
  * 查房记录列表
  */
 
-import type { s } from "vue-router/dist/router-CWoNjPRp.mjs";
-
 export interface checkRoomListParams {
   /** 当前页 */
   page?: string;

@@ -22,9 +22,6 @@ const props = defineProps({
     default: () => ({})
   }
 });
-
-// 定义事件
-const emit = defineEmits(['update:modelValue']);
 // 表单数据
 interface KernelSettingForm {
     cycle: number | null;
@@ -49,20 +46,10 @@ const formRules = reactive({
 defineExpose({
     formRef
 });
-
-// 监听周期变化，同步到父组件
-watch(
-    () => formData.cycle,
-    (newVal) => {
-        emit('update:modelValue', newVal);
-    }
-);
-
 watch(props.beg, (newVal) => {
     if (newVal) {
         formData.cycle = newVal.payDays;
-        // 数据回显后同步到父组件
-        emit('update:modelValue', newVal.payDays);
+        
     }
 });
 

@@ -12,7 +12,7 @@
 </template>
 <script setup lang='ts'> 
  import {reactive} from 'vue';
- import wxlogin from 'vue-wxlogin';
+ import wxlogin from 'vue-wxlogin'
  
  // 生成安全的state参数
 const generateState = () => {

@@ -74,15 +74,15 @@ import Relation from '../form/Relation.vue'
 
 let porp = defineProps({
     familylist: {
-        type: Object,
-        default: () => { }
+        type: Array,
+        default: () => []
     }
 })
 
 watch(() => porp.familylist, (newval) => {
    if (!newval) return
-   data.value=newval
-   console.log(fromData.value);
+   data.value=newval as FamilyMember[]
+   console.log(data.value);
 })
 // 1. 初始化数据，兜底空数组避免undefined
 const data = ref<FamilyMember[]>(inject<FamilyMember[]>('familyData') || []);

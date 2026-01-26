@@ -233,24 +233,6 @@ const sub = async () => {
         return;
     }
 
-    // 构建符合类型定义的数据对象
-    const submitData = {
-        id: ruleForm.id,
-        elderlyId: ruleForm.elderlyId,
-        elderlyName: ruleForm.elderlyName,
-        startTime: ruleForm.startTime,
-        endTime: ruleForm.endTime,
-        mobile: ruleForm.mobile || '',
-        address: ruleForm.address || '',
-        content: ruleForm.content || '',
-        relation: ruleForm.relation || '',
-        name: ruleForm.name || '',
-        companyId: ruleForm.companyId || Number(localStorage.getItem('companyId')) || 0,
-        state: ruleForm.state || 0,
-        addTime: ruleForm.addTime || new Date().toISOString(),
-        addAccountId: ruleForm.addAccountId || Number(localStorage.getItem('userId')) || 0,
-    };
-
     isSubmitting.value = true;
     try {
         // 模拟提交成功

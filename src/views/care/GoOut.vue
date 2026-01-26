@@ -64,17 +64,16 @@
                         <el-button @click="reset">重置</el-button>
                     </el-form-item>
 
-                    <div class="button">
-                        <el-button type="success" @click="dialogVisible = true">+新增外出</el-button>
-                        <el-button type="danger" :disabled="multipleSelection.length === 0"
-                            @click="delAll">-批量删除</el-button>
-                    </div>
-
-
                 </el-form>
             </template>
 
-
+            <template #buttons>
+                    <div class="button">
+                        <el-button type="success" @click="dialogVisible = true"><i class="iconfont icon-jia"></i>新增外出</el-button>
+                        <el-button type="danger" :disabled="multipleSelection.length === 0"
+                            @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
+                    </div>
+            </template>
 
             <template #operate="{ row }">
                 <el-button @click="goout(row)" type="primary" link size="small"
@@ -106,7 +105,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import Table from '../../components/table.vue';
 import { columns } from './Outbound';
-import { getDel1, getElderlyList, getAllDel, getOldManList } from '../../api/OutboundRegistration/Outbound';
+import { getDel1, getElderlyList, getAllDel } from '../../api/OutboundRegistration/Outbound';
 import type { ElderlyOutRecordItem } from '../../api/OutboundRegistration/type';
 import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 import { View, EditPen, Delete } from '@element-plus/icons-vue';
@@ -309,5 +308,8 @@ const getDel = async (id: number) => {
 <style scoped lang="less">
 .dialog-footer {
     text-align: right;
+}
+.iconfont{
+    margin-right: 5px;
 }
 </style>

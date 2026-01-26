@@ -83,3 +83,25 @@ export interface    ElderlyDetail {
   // 家属信息列表（当前为空数组，预留数组类型）
   family?: unknown[];
 }
+
+export interface ElderlyOutingItem {
+ id: number;
+ name: string;
+}
+
+export interface GoOutInfo {
+id: number;
+elderlyId: number;
+elderlyName: string;
+startTime: string;
+endTime: string;
+mobile: string;
+address: string;
+content: string;
+relation: string;
+name: string;
+companyId: number;
+state: number;
+addTime: string;
+addAccountId: number;
+}

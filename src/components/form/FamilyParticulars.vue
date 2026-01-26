@@ -21,19 +21,18 @@
 <script setup lang='ts'>
 import { inject, reactive, ref, nextTick, watch } from 'vue';
 import type { FamilyMember } from '../../api/market/elderlyType';
-import type { FormInstance, FormRules } from 'element-plus';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import type { FormInstance } from 'element-plus';
 
 let porp = defineProps({
     familylist: {
-        type: Object,
-        default: () => { }
+        type: Array,
+        default: () => []
     }
 })
 
 watch(() => porp.familylist, (newval) => {
     if (!newval) return
-    data.value = newval
+    data.value = newval as FamilyMember[]
     console.log(fromData.value);
 })
 // 1. 初始化数据，兜底空数组避免undefined

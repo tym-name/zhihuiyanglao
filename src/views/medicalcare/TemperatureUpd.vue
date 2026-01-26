@@ -124,7 +124,7 @@ const rules = reactive<FormRules<typeof ruleForm>>({
             trigger: 'blur'
         },
         {
-            validator: (rule, value, callback) => {
+            validator: (_rule, value, callback) => {
                 // 体温范围校验（35-42℃，符合医学常识）
                 const numVal = Number(value);
                 if (numVal < 35 || numVal > 42) {

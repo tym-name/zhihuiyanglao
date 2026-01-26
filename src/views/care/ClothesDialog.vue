@@ -23,7 +23,11 @@
                 {{ form.content }}
             </el-form-item>
             <el-form-item label="图片：" v-model="form.pictures">
-
+                <div class="image-preview-list">
+                    <el-image v-for="(item, index) in form.pictures" :key="index" :src="item.file"
+                        :preview-src-list="previewSrcList" fit="cover" class="image-preview-item">
+                    </el-image>
+                </div>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -72,6 +76,11 @@ const dialogFormVisible = computed({
     set: (value) => emit('update:modelValue', value)
 })
 
+// 生成图片预览列表
+const previewSrcList = computed(() => {
+    return form.pictures.map(item => item.file)
+})
+
 // 监听详情数据变化
 watch(() => props.detailData, (newData) => {
     if (newData) {
@@ -79,3 +88,20 @@ watch(() => props.detailData, (newData) => {
     }
 }, { immediate: true })
 </script>
+
+<style scoped>
+.image-preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.image-preview-item {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+</style>

@@ -31,8 +31,7 @@
             <el-button link type="danger" @click="dischargdele(row.id)">删除</el-button>
         </template>
     </Table>
-    <DischargeDialog v-model="dialogFormVisible" :editRow="currentEditRow" @refresh="handleRefresh">
-    </DischargeDialog>
+    <DischargeDialog v-model="dialogFormVisible" :editRow="currentEditRow" @refresh="handleRefresh" />
 </template>
 
 <script setup lang='ts'>
@@ -202,5 +201,4 @@ const handleSearch = () => {
         })
     }
 }
-
 </script>

@@ -50,11 +50,6 @@ let porp = defineProps({
     }
 })
 
-/* 焦点失去 */
-const handleInputBlur = () => {
-    // e.target 是触发事件的元素（输入框）
-    emit('form', elderlyForm)
-};
 // 2. 定义组件事件
 const emit = defineEmits(['update:elderlyForm', 'validate', 'form'])
 

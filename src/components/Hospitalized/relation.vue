@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 
 // 家属关系数据
 interface Relation {
