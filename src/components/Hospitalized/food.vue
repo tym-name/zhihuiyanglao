@@ -7,42 +7,49 @@
         餐饮膳食
       </div>
       <div class="total-fee">
-        伙食费合计：<span class="fee-amount">{{props.daysfoodRef * Number(formData.priceFood)}}</span>
+        伙食费合计：<span class="fee-amount">{{ props.daysfoodRef * Number(formData.priceFood) }}</span>
       </div>
     </div>
 
     <!-- 套餐单价选择 -->
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
-      <el-form-item label="套餐单价" prop="price">
-        <el-input-number v-model="formData.priceFood" @change="foodmonkeys" :min="0" :max="100" :step="1" style="width: 200px" :precision="0"
-          placeholder="25/天" />
+      <el-form-item label="套餐单价" prop="priceFood">
+        <el-input-number v-model="formData.priceFood" @change="foodmonkeys" :min="0" :max="100" :step="1"
+          style="width: 200px" :precision="0" placeholder="25/天" />
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import type { FormInstance } from 'element-plus';
+
+// 定义组件属性
 const props = defineProps({
   daysfoodRef: {
     type: Number,
     default: 0
+  },
+  beg: {
+    type: Object,
+    default: () => ({})
   }
-})
+});
 
 // 定义事件
-const emit = defineEmits(['update:modelValue','foodmonkey']);
+const emit = defineEmits(['update:modelValue', 'foodmonkey']);
 
 // 表单引用
 const formRef = ref<FormInstance>();
 
 // 表单数据
 const formData = reactive({
-  priceFood:null
+  priceFood: null
 });
-function foodmonkeys(){
-  emit('foodmonkey', props.daysfoodRef * Number(formData.priceFood))
+
+function foodmonkeys() {
+  emit('foodmonkey', props.daysfoodRef * Number(formData.priceFood));
 }
 
 // 表单验证规则
@@ -51,27 +58,44 @@ const formRules = reactive({
     {
       required: true,
       message: '请输入套餐单价',
+      trigger: 'blur'
     },
     {
       type: 'number',
       min: 1,
       message: '套餐单价必须大于0',
+      trigger: 'blur'
+    },
+    {
+      validator: (_rule: any, value: any, callback: any) => {
+        if (value && !/^\d+$/.test(value.toString())) {
+          callback(new Error('套餐单价必须是整数'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur'
     }
   ]
 });
-
-
 
 // 监听价格变化，同步给父组件
 watch(
   () => formData.priceFood,
   (newVal) => {
     emit('update:modelValue', newVal);
+    // 计算并发送合计费用
+    if (newVal) {
+      foodmonkeys();
+    }
   }
 );
-
-
-
+watch(props.beg, (newVal) => {
+    if (newVal) {
+        formData.priceFood = newVal.foodPrice;
+        
+    }
+});
 // 暴露表单引用给父组件
 defineExpose({
   formRef

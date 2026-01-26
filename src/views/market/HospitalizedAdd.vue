@@ -42,7 +42,6 @@ const tableRef = ref<any>(null)
 const params = ref<ElderlyType>({
     name: '',
     idCard: '',
-    begId: 0,
     state: null
 })
 // 监听表格选中数据变化
@@ -57,10 +56,11 @@ const dialogVisible = defineModel<boolean>({ default: false });
 
 const selectReserve = (row: any) => {
     // router.push(`/addHospitalized?id=${row.id}`)
+    console.log(row);
     router.push({
         path: '/addHospitalized',
         query: {
-            id: row.id,
+            ids: row.id,
             name: row.name,
             idCard: row.idCard,
             photo: row.photo

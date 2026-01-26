@@ -13,7 +13,7 @@
 
     <!-- 护理费单价选择 -->
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
-      <el-form-item label="护理费" prop="price">
+      <el-form-item label="护理费" prop="priceNurse">
         <el-input-number v-model="formData.priceNurse" @change="foodmonkeys" :min="0" :max="500" :step="1" style="width: 200px" :precision="0"
           placeholder="100/天" />
       </el-form-item>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive} from 'vue';
+import { ref, reactive,watch} from 'vue';
 import type { FormInstance } from 'element-plus';
 
 
@@ -32,6 +32,10 @@ const props = defineProps({
   daysfoodRef: {
     type: Number,
     default: 0
+  },
+    beg: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -48,6 +52,16 @@ const formData = reactive({
   priceNurse:null
 });
 
+// 监听护理费变化，同步给父组件
+watch(
+  () => formData.priceNurse,
+  (newVal) => {
+    if (newVal) {
+      foodmonkeys();
+    }
+  }
+);
+
 // 表单验证规则
 const formRules = reactive({
   priceNurse: [{ required: true, message: '请输入护理费', },
@@ -55,7 +69,12 @@ const formRules = reactive({
   ]
 });
 
-
+watch(props.beg, (newVal) => {
+    if (newVal) {
+        formData.priceNurse = newVal.servicePrice;
+        
+    }
+});
 
 // 暴露表单引用给父组件
 defineExpose({

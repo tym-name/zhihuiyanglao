@@ -19,13 +19,13 @@
                 <tr v-for="(item, index) in costItems" :key="index">
                     <td>{{ item.order }}</td>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.amount }}</td>
+                    <td>{{ item.amount.toFixed(2) }}</td>
                 </tr>
                 <!-- 合计行 -->
                 <tr class="total-row">
                     <td></td>
                     <td>合计</td>
-                    <td>{{ totalAmount }}</td>
+                    <td>{{ totalAmount.toFixed(2) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -35,18 +35,54 @@
 <script setup>
 import { computed, ref } from 'vue'
 
-// 模拟费用数据
-const costItems = ref([
-    { order: 1, name: '床位费', amount: 20 },
-    { order: 2, name: '护理费', amount: 25 },
-    { order: 3, name: '膳食费', amount: 20 },
-    { order: 4, name: '押金', amount: 20 },
-    { order: 5, name: '一次性生活费', amount: 20 }
-])
+// 定义组件属性
+const props = defineProps({
+    // 床位费
+    bedFee: {
+        type: Number,
+        default: 0
+    },
+    // 膳食费
+    foodFee: {
+        type: Number,
+        default: 0
+    },
+    // 护理费
+    nurseFee: {
+        type: Number,
+        default: 0
+    },
+    // 押金
+    deposit: {
+        type: Number,
+        default: 0
+    },
+    // 一次性生活费
+    livingExpense: {
+        type: Number,
+        default: 0
+    },
+    // 入住天数
+    daysfoodRef: {
+        type: Number,
+        default: 0
+    }
+})
+
+// 费用数据
+const costItems = computed(() => {
+    return [
+        { order: 1, name: '床位费', amount: props.bedFee },
+        { order: 2, name: '护理费', amount: props.nurseFee },
+        { order: 3, name: '膳食费', amount: props.foodFee },
+        { order: 4, name: '押金', amount: props.deposit * props.daysfoodRef },
+        { order: 5, name: '一次性生活费', amount: props.livingExpense * props.daysfoodRef }
+    ]
+})
 
 // 计算合计金额
 const totalAmount = computed(() => {
-    return costItems.value.reduce((sum, item) => sum + item.amount, 0)
+    return props.bedFee + props.foodFee + props.nurseFee + (props.deposit * props.daysfoodRef) + (props.livingExpense * props.daysfoodRef)
 })
 </script>
 

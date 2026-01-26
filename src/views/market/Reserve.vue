@@ -191,15 +191,11 @@ const handleAdd = () => {
 const updReserve = (row: any) => {
     router.push({
         path: '/ReserveUpd',
-      
-    })
-    /* router.push({
-        path: '/ReserveUpd',
         query: {
             elderlyId: row.elderlyId,
             id: row.id
         }
-    }) */
+    })
 }
 
 const particulars = async (row: any) => {

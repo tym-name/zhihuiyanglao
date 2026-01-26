@@ -9,22 +9,28 @@
                     <relation ref="relationRef"></relation>
                 </div>
                 <!-- 选择床位 -->
-                <bed ref="bedRef" @dayslink="dayslink" @daysres="daysres"></bed>
+                <bed ref="bedRef" :beg = beg @dayslink="dayslink" @daysres="daysres" @update:modelValue="(data) => {
+                    formData.begId = data.begId;
+                    formData.price = data.price;
+                    formData.days = data.days;
+                    formData.checkInDate = data.checkInDate;
+                }"></bed>
                 <!-- 餐饮膳食 -->
-                <food ref="foodRef" :daysfoodRef="daysfoodRef" @foodmonkey="foodmonkey"></food>
+                <food ref="foodRef" :beg = beg :daysfoodRef="daysfoodRef" @foodmonkey="foodmonkey"></food>
                 <!-- 护理服务 -->
-                <nurse ref="nurseRef" :daysfoodRef="daysfoodRef" @nursemonkey="nursemon"></nurse>
+                <nurse ref="nurseRef" :beg = beg :daysfoodRef="daysfoodRef" @nursemonkey="nursemonkey"></nurse>
                 <!-- 服务项目 -->
-                <serve ref="serveRef" v-model="formData.services"></serve>
+                <serve ref="serveRef" :beg = beg @addSer="handleAddSer"></serve>
                 <!-- 其他收费 -->
-                <elses ref="elsesRef" @depositmonkey="depositmonkey" @livingExpensemonkey="livingExpensemonkey"></elses>
+                <elses ref="elsesRef" :beg = beg @depositmonkey="depositmonkey" @livingExpensemonkey="livingExpensemonkey"></elses>
                 <!-- 入院费用核定周期设置 -->
-                <kernel ref="kernelRef"></kernel>
+                <kernel ref="kernelRef" :beg = beg></kernel>
                 <!-- 按钮区域 -->
                 <div>
                     <el-button @click="goBack">返回</el-button>
                     <el-button type="primary" @click="nextStep">下一步</el-button>
                 </div>
+
             </div>
             <div v-else>
                 <!-- 步骤条 -->
@@ -34,23 +40,20 @@
                     <relation ref="relationRef"></relation>
                 </div>
                 <!-- 订单总费用 -->
-                <allCost 
-                  :bedFee="costData.bedFee" 
-                  :foodFee="costData.foodFee" 
-                  :nurseFee="costData.nurseFee" 
-                  :deposit="costData.deposit" 
-                  :livingExpense="costData.livingExpense"
-                ></allCost>
+                <allCost :bedFee="costData.bedFee" :foodFee="costData.foodFee" :nurseFee="costData.nurseFee"
+                    :deposit="costData.deposit" :livingExpense="costData.livingExpense"></allCost>
                 <!-- 入院费用核定 -->
-                <hospitalCost></hospitalCost>
+                <hospitalCost :bedFee="costData.bedFee" :foodFee="costData.foodFee" :nurseFee="costData.nurseFee"
+                    :deposit="costData.deposit" :livingExpense="costData.livingExpense" :daysfoodRef="daysfoodRef">
+                </hospitalCost>
                 <!-- 上传合同组件 -->
-                <photo v-model="image" @upload-success="handleUploadSuccess" @upload-error="handleUploadError"></photo>
+                <photo v-model="image" @suploads="upload_success" @upload-success="handleUploadSuccess" @upload-error="handleUploadError"></photo>
                 <!-- 按钮区域 -->
                 <div class="button-area">
                     <el-button type="primary" @click="upStep">上一步</el-button>
                     <el-button type="primary" @click="saveTemp">保存暂不提交</el-button>
                     <el-button type="primary" @click="savaSub">保存并提交</el-button>
-                    <el-button>返回</el-button>
+                    <el-button @click="goBack">返回</el-button>
                 </div>
             </div>
         </el-form>
@@ -58,9 +61,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import { ElMessage, type FormInstance } from 'element-plus';
-import { reservationAdd } from '../../api/Reserve/Reserve';
 import { useRoute } from 'vue-router';
 
 import step from '../../components/Hospitalized/step.vue';
@@ -77,6 +79,7 @@ import photo from '../../components/Hospitalized/photo.vue';
 import allCost from '../../components/Hospitalized/allCost.vue';
 import hospitalCost from '../../components/Hospitalized/hospitalCost.vue';
 import router from '../../router';
+import { orderAdd, orderGet, orderUpdate } from '@/api/Hospitalized/Hospitalized';
 
 
 // 接收HospitalizedAdd组件传来的数据
@@ -84,41 +87,99 @@ const route = useRoute();
 
 // 老人信息
 const elderlyInfo = reactive({
-    id:'',
+    ids: '',
     name: '',
     idCard: '',
     photo: ''
 });
-/* 子串父 */
+console.log();
+
+if(route.query.ids){
+    elderlyInfo.ids = route.query.id as string;
+    elderlyInfo.name = route.query.name as string;
+    elderlyInfo.idCard = route.query.idCard as string;
+    elderlyInfo.photo = route.query.photo as string;
+}
+// 表单引用
+const formRef = ref<FormInstance>();
+
+// 子组件引用
+const relationRef = ref();
+const bedRef = ref();
+const foodRef = ref();
+const nurseRef = ref();
+const serveRef = ref();
+const elsesRef = ref();
+const kernelRef = ref();
+
+// 当前步骤
+const currentStep = ref(0);
+
+// 图片上传
+const image = ref<string>('');
+
+// 显示状态
+const isshow = ref(false);
+
+// 子传父
 const daysfoodRef = ref(0)
 const dayslink = (days: number) => {
     daysfoodRef.value = days;
 }
 
 const daysres = (sum: number) => {
-   costData.bedFee=sum
+    costData.bedFee = sum
 }
 const foodmonkey = (sum: number) => {
-    costData.foodFee=sum
+    costData.foodFee = sum
 }
-const nursemon = (sum: number) => {
-    costData.nurseFee=sum
+const nursemonkey = (sum: number) => {
+
+    costData.nurseFee = sum
 }
 const depositmonkey = (sum: number) => {
-    costData.deposit=sum
+    costData.deposit = sum
 }
 const livingExpensemonkey = (sum: number) => {
-    costData.livingExpense=sum
+    costData.livingExpense = sum
 }
-const isshow = ref(false);
+const upload_success = (sum: any) => {
+    // 处理上传成功的文件
+    if (sum) {
+        // 清空现有文件列表
+        formData.files = [];
+        
+        // 处理数组或单个文件路径
+        const filesToProcess = Array.isArray(sum) ? sum : [sum];
+        
+        filesToProcess.forEach(filePath => {
+            if (filePath) {
+                // 提取文件名
+                const fileName = filePath.split('/').pop() || 'unknown';
+                
+                // 添加到文件列表
+                formData.files.push({
+                    file: filePath,
+                    fileName: fileName
+                });
+            }
+        });
+        
+        console.log('文件已添加到表单:', formData.files);
+    }
+}
+// 处理添加服务
+const handleAddSer = (services: any) => {
+    formData.services = services.value.map((service: any) => ({
+        id: service.id, // 保留服务ID
+        name: service.serviceName,
+        description: service.serviceContent,
+        amount: 0 // 默认金额为0
+    }));
+    console.log('添加的服务:', formData.services);
+}
 
-onMounted(() => {
-    console.log('路由参数111:', route.query);
-    // 从路由参数获取老人信息
-    Object.assign(elderlyInfo, route.query);
-});
-
-// 完善表单类型定义（修正files类型为数组）
+// 表单类型定义
 interface ReservationForm {
     begId: number;
     elderlyId: any;
@@ -130,40 +191,94 @@ interface ReservationForm {
     day: number | null;
     amount: number | null;
     dietPrice: number;
+    price: number | null;
+    days: number | null;
+    checkInDate: string;
+    priceFood: number | null;
+    cycle: number | null;
     services: Array<{
         name: string;
         description: string;
         amount: number;
     }>;
-    files: Array<{ // 修正为Array类型，兼容更多场景
+    files: Array<{
         file: string;
         fileName: string;
     }>;
 }
 
-// 声明环境变量/上传地址
-const VITE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
-const imageUrl = VITE_BASE_URL + '/upload/add';
-const image = ref<string>('');
-// 计算属性：将逗号分隔的图片地址转为数组，处理完整URL
-const imageList = computed(() => {
-    if (!image.value) return [];
-    // 分割图片地址并过滤空值
-    return image.value.split(',').filter(url => url.trim()).map(url => {
-        // 确保图片地址是完整的URL（处理相对路径/绝对路径）
-        return url.startsWith('http') ? url : VITE_IMG_URL + url;
-    });
+// 表单初始数据
+const formData = reactive<ReservationForm>({
+    begId: 0,
+    name: '',
+    mobile: '',
+    relation: '',
+    bed: '',
+    startDate: '2007-08-09',
+    day: null,
+    amount: null,
+    dietPrice: 25, // 默认餐饮单价25元/天
+    price: null,
+    days: null,
+    checkInDate: '',
+    priceFood: null,
+    cycle: null,
+    services: [], // 初始化为空数组
+    files: [], // 初始化为空数组
+    elderlyId: 0 // 初始值设为0
 });
 
-//返回按钮
+// 费用相关数据
+const costData = reactive({
+    bedFee: 0, // 床位费
+    foodFee: 0, // 伙食费
+    nurseFee: 0, // 护理费
+    deposit: 0, // 押金
+    deposit2: 0, // 押金
+    livingExpense: 0 // 一次性生活费
+});
+
+// 编辑数据，传递给子组件
+let beg = reactive({});
+
+// 组件挂载时获取路由参数并判断是添加还是编辑
+async function init() { 
+    try {
+        const id = route.query.id;
+        if (id) {
+            const red = await orderGet(Number(id));
+            console.log('编辑数据:', red);
+            if (red?.code === 10000 && red.data) {
+                Object.assign(beg, red.data);
+                // 填充数据到 formData，确保编辑模式下表单正确显示
+                formData.elderlyId = (red.data as any).elderlyId || '';
+                formData.begId = (red.data as any).begId || 0;
+                formData.price = (red.data as any).begPrice || null;
+                formData.days = (red.data as any).days || null;
+                formData.startDate = (red.data as any).startDate || '';
+                formData.priceFood = (red.data as any).foodPrice || null;
+                formData.cycle = (red.data as any).payDays || null;
+                
+                // 填充数据到 costData，确保编辑模式下费用正确显示
+                costData.bedFee = (red.data as any).livingPrice ?? 0;
+                costData.foodFee = (red.data as any).foodPrice ?? 0;
+                costData.nurseFee = (red.data as any).servicePrice ?? 0;
+                costData.deposit = (red.data as any).cashPledge ?? 0;
+                costData.livingExpense = (red.data as any).livingPrice ?? 0;
+            }
+        }
+    } catch (error) {
+        console.error('获取编辑数据失败:', error);
+    }
+}
+
+if(route.query.id){
+   init();
+}
+// 返回按钮
 const goBack = () => {
     router.push({ path: '/Hospitalized' });
 }
-
-// 获取路由实例
-// const route = useRoute();
-console.log('路由信息：', route);
 
 // 表单验证规则
 const formRules = reactive({
@@ -210,7 +325,11 @@ const formRules = reactive({
     livingExpense: [
         { required: true, message: '请输入一次性生活费' },
         { type: 'number', min: 0, message: '一次性生活费不能为负数' },
-    ]
+    ],
+    foodmonkey: [
+        { required: true, message: '请输入套餐单价', },
+        { type: 'number', min: 1, message: '套餐单价必须大于0', }
+    ],
 
 });
 
@@ -222,7 +341,6 @@ const nextStep = async () => {
         ElMessage.error('表单初始化失败，请刷新页面重试');
         return;
     }
-
     try {
         // 2. 触发表单验证
         await formRef.value.validate();
@@ -282,166 +400,71 @@ const nextStep = async () => {
     }
 }
 
-//上一步按钮
+// 上一步按钮
 const upStep = () => {
     isshow.value = false;
 }
 
-//保存暂不提交
+// 保存暂不提交
 const saveTemp = () => {
-
-}
-//保存并提交
-const savaSub = () => {
-
+    router.push({ path: '/Hospitalized' });
 }
 
-// 表单初始数据
-const formData = reactive<ReservationForm>({
-    begId: 0,
-    name: '',
-    mobile: '',
-    relation: '',
-    bed: '',
-    startDate: '',
-    day: null,
-    amount: null,
-    dietPrice: 25, // 默认餐饮单价25元/天
-    services: [], // 初始化为空数组
-    files: [], // 初始化为空数组（更符合实际场景）
-    elderlyId: '' // 初始值设为0
-});
-
-// 费用相关数据
-const costData = reactive({
-  bedFee: 0, // 床位费
-  foodFee: 0, // 伙食费
-  nurseFee: 0, // 护理费
-  deposit: 0, // 押金
-  livingExpense: 0 // 一次性生活费
-});
-
-// 组件挂载时获取路由参数并赋值给elderlyId
-onMounted(() => {
-    // 方式1：获取路由params中的id（如路由配置为 /reservation/:id）
-    const routeId = route.query.id;
-    console.log(111, routeId);
-    formData.elderlyId = routeId;
-});
-
-// 床位变更回调
-let bedChange = (idArr: number[]) => {
-    formData.begId = idArr[idArr.length - 1]
-}
-
-// 表单引用
-const formRef = ref<FormInstance>();
-const uploadRef = ref();
-
-// 子组件引用
-const relationRef = ref();
-const bedRef = ref();
-const foodRef = ref();
-const nurseRef = ref();
-const serveRef = ref();
-const elsesRef = ref();
-const kernelRef = ref();
-const submitting = ref(false);
-
-// 当前步骤
-const currentStep = ref(0);
-
-// 核心：保存并提交方法（带详细调试和错误处理）
-const handleSubmit = async () => {
-    // 1. 校验表单引用是否存在
-    if (!formRef.value) {
-        ElMessage.error('表单初始化失败，请刷新页面重试');
-        return;
-    }
-
+// 保存并提交
+const savaSub = async () => {
     try {
-        // 2. 触发表单验证
-        await formRef.value.validate();
+        // 获取路由参数中的id，判断是添加还是编辑
+        const id = route.query.id;
+       
+        // 组装提交参数
+        const submitData: any = {
+            elderlyId: Number(formData.elderlyId) || 0,
+            begId: formData.begId || 0,
+            begPrice: formData.price || 0,
+            days: formData.days || 0,
+            startDate: formData.startDate || '',
+            foodPrice: formData.priceFood || 0,
+            servicePrice: costData.nurseFee || 0,
+            cashPledge: costData.deposit || 0,
+            livingPrice: costData.bedFee || 0,
+            payDays: formData.cycle || 0,
+            state: 1,
+            services: formData.services && formData.services.length > 0 ? formData.services.map((service: any) => ({ serviceId: service.id || service.serviceId })) : [],
+            files: formData.files && formData.files.length > 0 ? formData.files.map((file: any) => ({ file: file.file || file })) : []
+        };
 
-        submitting.value = true;
+        console.log('提交数据:', submitData);
 
-        console.log('开始表单验证，当前表单数据：', JSON.parse(JSON.stringify(formData)));
+        try {
+            let res;
+            // 根据是否存在id参数判断调用哪个API
+            if (id) {
+                res = await orderUpdate({ ...submitData, id: Number(id) });
+                console.log('编辑结果:', res);
+            } else {
+                // 添加模式，调用orderAdd
+                res = await orderAdd(submitData as any);
+                console.log('添加结果:', res);
+            }
 
-        // 3. 校验图片是否上传
-        if (!image.value || image.value.trim() === '') {
-            ElMessage.warning('请先上传预定协议图片！');
-            submitting.value = false;
-            return;
+            if (res && res.code === 10000) {
+                ElMessage.success('保存成功');
+                // 跳转到列表页面，并添加refresh标志以确保数据刷新
+                router.push({ path: '/Hospitalized', query: { refresh: 'true' } });
+            } else {
+                ElMessage.error('保存失败：' + (res.msg || '未知错误'));
+            }
+        } catch (error: any) {
+            console.error('接口调用失败:', error);
+            console.error('错误消息:', error.message);
+            console.error('错误堆栈:', error.stack);
+            ElMessage.error('保存失败：' + (error.message || '网络错误'));
         }
-
-        // 4. 核心逻辑：将image的值赋值到formData.files的file字段中
-        formData.files = imageList.value.map(imgUrl => {
-            const fileName = imgUrl.split('/').pop() || '预定协议图片';
-            // 移除域名，只保留相对路径（适配接口要求）
-            const fileUrl = imgUrl.startsWith(VITE_IMG_URL) ? imgUrl.replace(VITE_IMG_URL, '') : imgUrl;
-            return {
-                file: fileUrl,
-                fileName: fileName
-            };
-        });
-
-        // 5. 调试最终提交的数据
-        const submitData = JSON.parse(JSON.stringify(formData));
-        console.log('最终提交到接口的数据：', submitData);
-
-        // 6. 调用接口提交数据（增加超时处理）
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('接口请求超时')), 10000); // 10秒超时
-        });
-
-        // 接口请求+超时控制
-        const res = await Promise.race([reservationAdd(submitData), timeoutPromise]);
-        console.log('接口返回结果：', res);
-        router.push('/reservation');
-
-    } catch (error: any) {
-        // 详细的异常处理
-        console.error('提交异常详情：', error);
-        // 区分不同类型的错误
-        if (error.message.includes('Validation failed')) {
-            ElMessage.warning('表单填写不完整，请检查必填项');
-        } else if (error.message === '接口请求超时') {
-            ElMessage.error('提交失败：请求服务器超时，请检查网络或稍后重试');
-        } else {
-            ElMessage.error(`提交失败：${error.message || '未知错误'}`);
-        }
-    } finally {
-        submitting.value = false; // 无论成功失败，都关闭加载状态
+    } catch (error) {
+        console.error('保存失败:', error);
+        ElMessage.error('保存失败：网络错误');
     }
-};
-
-// 取消/重置逻辑（完善重置）
-const handleCancel = () => {
-    if (formRef.value) {
-        formRef.value.resetFields();
-    }
-
-    // 重置表单数据（保留elderlyId，因为是路由传递的固定值）
-    formData.begId = 0;
-    formData.name = '';
-    formData.mobile = '';
-    formData.relation = '';
-    formData.bed = '';
-    formData.startDate = '';
-    formData.day = null;
-    formData.amount = null;
-    formData.dietPrice = 25; // 重置为默认值
-    formData.services = []; // 重置服务列表
-    formData.files = []; // 重置files数组
-    image.value = ''; // 重置图片变量
-
-    // 重置上传组件
-    if (uploadRef.value && typeof uploadRef.value.clearFiles === 'function') {
-        uploadRef.value.clearFiles();
-    }
-
-    ElMessage.info('已取消当前操作，表单已重置');
-};
+}
 
 // 上传成功处理
 const handleUploadSuccess = (imgUrl: string) => {

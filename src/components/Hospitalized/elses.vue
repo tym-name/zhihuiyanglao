@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive,watch} from 'vue';
 import type { FormInstance } from 'element-plus';
 // 定义事件
 const emit = defineEmits(['depositmonkey','livingExpensemonkey']);
@@ -26,7 +26,12 @@ interface OtherChargesForm {
   deposit: number | null;
   livingExpense: number | null;
 }
-
+const props = defineProps({
+    beg: {
+    type: Object,
+    default: () => ({})
+  }
+});
 // 表单引用
 const formRef = ref<FormInstance>();
 
@@ -56,6 +61,13 @@ defineExpose({
   formRef,
   formData
 });
+watch(props.beg, (newVal) => {
+    if (newVal) {
+        formData.deposit =newVal.cashPledge;
+        formData.livingExpense = newVal.livingPrice;
+    }
+});
+
 </script>
 
 <style scoped lang="less">

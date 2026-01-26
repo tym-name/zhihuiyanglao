@@ -45,10 +45,12 @@
             <div class="image-list">
                 <div v-for="(file, index) in fileList" :key="index" class="image-item">
                     <!-- 图片预览 -->
+
                     <div v-if="file.type && file.type.startsWith('image/')" class="file-preview">
                         <el-image :src="file.url.startsWith('http') ? file.url : VITE_IMG_URL + file.url"
                             :preview-src-list="fileList.filter(f => f.type && f.type.startsWith('image/')).map(f => f.url.startsWith('http') ? f.url : VITE_IMG_URL + f.url)"
                             fit="cover" class="preview-image"></el-image>
+                            
                     </div>
 
                     <!-- PDF预览 -->
@@ -94,7 +96,7 @@ const props = defineProps({
 });
 
 // 定义事件
-const emit = defineEmits(['update:modelValue', 'upload-success', 'upload-error']);
+const emit = defineEmits(['update:modelValue', 'upload-success', 'upload-error','suploads']);
 
 // 上传相关变量
 const uploadRef = ref();
@@ -123,13 +125,14 @@ const retryUpload = () => {
 
 // 声明环境变量/上传地址
 const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
-const uploadUrl = ' http://123.57.237.81:8080/caresystem + '+ '/upload/add';
+const uploadUrl = '/api/upload/add';
 
 // 上传 headers
 const uploadHeaders = computed(() => {
-    // 这里可以添加认证信息等
+    // 获取token
+    const token = localStorage.getItem('token') || '';
     return {
-        'Content-Type': 'multipart/form-data'
+        'Authorization': `Bearer ${token}`
     };
 });
 
@@ -142,6 +145,32 @@ const imageList = computed(() => {
         return url.startsWith('http') ? url : VITE_IMG_URL + url;
     });
 });
+
+// 初始化文件列表
+const initFileList = () => {
+    if (image.value) {
+        const urls = image.value.split(',').filter(url => url.trim());
+        fileList.value = urls.map((url, index) => {
+            // 从URL中提取文件名
+            const urlParts = url.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            // 推断文件类型
+            let fileType = '';
+            if (url.toLowerCase().endsWith('.pdf')) {
+                fileType = 'application/pdf';
+            } else if (url.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+                fileType = 'image/jpeg';
+            }
+
+            return {
+                name: fileName,
+                url: url,
+                type: fileType
+            };
+        });
+    }
+};
 
 // 上传前的校验
 const beforeUpload = (file: File) => {
@@ -158,7 +187,7 @@ const beforeUpload = (file: File) => {
         ElMessage.error('文件大小不能超过 2MB！');
         return false;
     }
-    if (imageList.value.length >= maxFiles) {
+    if (fileList.value.length >= maxFiles) {
         ElMessage.error(`最多只能上传 ${maxFiles} 个文件！`);
         return false;
     }
@@ -174,10 +203,68 @@ const handleUploadSuccess = (response: any, uploadFile: any) => {
     uploadProgressStatus.value = '';
     failedFile.value = null;
 
-    if (response && response.code === 200 && response.data) {
-        // 拼接图片地址
-        const imgUrl = response.data;
+    console.log('服务器返回的完整响应:', response);
+    emit('suploads', response.data);
+    console.log('响应类型:', typeof response);
+    console.log('响应结构:', JSON.stringify(response, null, 2));
 
+    // 处理不同格式的响应
+    let imgUrl = '';
+    try {
+        if (response && response.code === 200 && response.data) {
+            imgUrl = response.data;
+            console.log('使用response.data:', imgUrl);
+        } else if (response && response.url) {
+            imgUrl = response.url;
+            console.log('使用response.url:', imgUrl);
+        } else if (response && typeof response === 'string') {
+            imgUrl = response;
+            console.log('使用字符串响应:', imgUrl);
+        } else if (response && response.data && typeof response.data === 'string') {
+            imgUrl = response.data;
+            console.log('使用response.data字符串:', imgUrl);
+        } else if (response && typeof response === 'object') {
+            // 尝试从响应对象中提取URL
+            console.log('尝试从对象响应中提取URL');
+            // 检查常见的URL字段
+            if (response.fileUrl) {
+                imgUrl = response.fileUrl;
+                console.log('使用response.fileUrl:', imgUrl);
+            } else if (response.path) {
+                imgUrl = response.path;
+                console.log('使用response.path:', imgUrl);
+            } else if (response.location) {
+                imgUrl = response.location;
+                console.log('使用response.location:', imgUrl);
+            } else if (response.data && typeof response.data === 'object' && response.data.url) {
+                imgUrl = response.data.url;
+                console.log('使用response.data.url:', imgUrl);
+            } else if (response.data && typeof response.data === 'object' && response.data.path) {
+                imgUrl = response.data.path;
+                console.log('使用response.data.path:', imgUrl);
+            }
+        }
+
+        // 如果仍然没有获取到URL，尝试使用整个响应作为URL
+        if (!imgUrl && response) {
+            console.log('尝试使用整个响应作为URL');
+            if (typeof response === 'string') {
+                imgUrl = response;
+            } else {
+                // 尝试将响应转换为字符串
+                try {
+                    imgUrl = JSON.stringify(response);
+                } catch (e) {
+                    console.error('转换响应为字符串失败:', e);
+                }
+            }
+            console.log('使用整个响应作为URL:', imgUrl);
+        }
+    } catch (e) {
+        console.error('处理响应失败:', e);
+    }
+
+    if (imgUrl) {
         // 更新图片列表
         if (image.value) {
             image.value += ',' + imgUrl;
@@ -197,8 +284,8 @@ const handleUploadSuccess = (response: any, uploadFile: any) => {
         emit('upload-success', imgUrl);
         ElMessage.success('文件上传成功');
     } else {
-        ElMessage.error('文件上传失败，请重试');
-        emit('upload-error', '上传失败：服务器返回错误');
+        ElMessage.error('文件上传失败：服务器返回格式错误');
+        emit('upload-error', '上传失败：服务器返回格式错误');
     }
 };
 
@@ -211,7 +298,17 @@ const handleUploadError = (error: any, uploadFile: any) => {
     // 保存失败的文件信息
     failedFile.value = uploadFile;
 
-    ElMessage.error('文件上传失败，请检查网络连接');
+    // 分析错误原因
+    let errorMessage = '文件上传失败';
+    if (error && error.message) {
+        errorMessage += '：' + error.message;
+    } else if (error && error.status) {
+        errorMessage += `：HTTP ${error.status}`;
+    } else {
+        errorMessage += '，请检查网络连接';
+    }
+
+    ElMessage.error(errorMessage);
     emit('upload-error', error);
 };
 
@@ -259,6 +356,8 @@ const clearFiles = () => {
 // 监听 modelValue 变化
 onMounted(() => {
     image.value = props.modelValue;
+    // 初始化文件列表
+    initFileList();
 });
 
 // 暴露方法给父组件

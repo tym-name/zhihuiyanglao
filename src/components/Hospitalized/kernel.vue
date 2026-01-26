@@ -14,9 +14,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive ,watch} from 'vue';
 import type { FormInstance } from 'element-plus';
+const props = defineProps({
+    beg: {
+    type: Object,
+    default: () => ({})
+  }
+});
 
+// 定义事件
+const emit = defineEmits(['update:modelValue']);
 // 表单数据
 interface KernelSettingForm {
     cycle: number | null;
@@ -40,6 +48,22 @@ const formRules = reactive({
 // 暴露表单引用给父组件
 defineExpose({
     formRef
+});
+
+// 监听周期变化，同步到父组件
+watch(
+    () => formData.cycle,
+    (newVal) => {
+        emit('update:modelValue', newVal);
+    }
+);
+
+watch(props.beg, (newVal) => {
+    if (newVal) {
+        formData.cycle = newVal.payDays;
+        // 数据回显后同步到父组件
+        emit('update:modelValue', newVal.payDays);
+    }
 });
 
 </script>

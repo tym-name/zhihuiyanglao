@@ -8,15 +8,13 @@
       <div class="table-header">
         <div class="header-item">服务名称</div>
         <div class="header-item">服务描述</div>
-        <div class="header-item">合计</div>
       </div>
 
       <div class="table-body">
         <template v-if="services.length > 0">
           <div v-for="(service, index) in services" :key="index" class="table-row">
-            <div class="row-item">{{ service.name }}</div>
-            <div class="row-item">{{ service.description }}</div>
-            <div class="row-item">{{ service.total }}</div>
+            <div class="row-item">{{ service.serviceName }}</div>
+            <div class="row-item">{{ service.serviceContent }}</div>
           </div>
         </template>
         <template v-else>
@@ -29,22 +27,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref ,watch} from 'vue';
 import { ElButton } from 'element-plus';
 import ServeAdd from './ServeAdd.vue';
 
 interface Service {
-  name: string;
-  description: string;
-  total: number;
+  id: number; // 新增服务ID字段
+  serviceName: string;
+  serviceContent: string;
 }
+const emit = defineEmits(['addSer']);
 
+// 定义组件属性
+const props = defineProps({
+    beg: {
+    type: Object,
+    default: () => ({})
+  }
+});
 const dialogForm = ref(false)
 
 const services = ref<Service[]>([]);
 
 const handleAddService = () => {
-
   dialogForm.value = !dialogForm.value;
 };
 
@@ -53,17 +58,28 @@ const handleAddServices = (selectedServices: any[]) => {
   // 将选中的服务数据添加到服务列表中
   selectedServices.forEach(service => {
     services.value.push({
-      name: service.name,
-      description: service.content,
-      total: 0 // 默认合计为0，可根据实际情况调整
+      id: service.id, // 保留服务ID
+      serviceName: service.name,
+      serviceContent: service.content,
     });
   });
+  
+  // 所有服务添加完成后，统一向父组件发送
+  emit('addSer', services);
 
   // 关闭对话框
   dialogForm.value = false;
 
   console.log('添加的服务:', selectedServices);
+  
 };
+watch(props.beg, (newVal) => {
+   if (newVal) {
+      services.value=newVal.services;
+
+   }
+   
+});
 </script>
 
 <style scoped lang="less">

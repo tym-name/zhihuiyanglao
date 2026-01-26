@@ -8,14 +8,14 @@
             <el-form-item label="房间需求:" prop="roomRequire">
                 <!-- <el-input style="width: 250px;" v-model="formData.roomRequire" type="textarea" placeholder="请输入房间要求"
                     :rows="2" clearable /> -->
-                {{ formData.roomRequire }}
+                {{ formData.roomRequire ? formData.roomRequire : '无' }}
             </el-form-item>
 
             <!-- 意向描述 -->
             <el-form-item label="意向描述:" prop="content">
                 <!-- <el-input style="width: 250px;" v-model="formData.content" type="textarea" placeholder="请输入意向描述"
                     :rows="2" clearable /> -->
-                <div>{{ formData.content }}</div>
+                <div>{{ formData.content ? formData.content : '无' }}</div>
             </el-form-item>
         </el-form>
     </div>
@@ -95,7 +95,6 @@ defineExpose({
     padding: 20px;
     background: #fff;
     border-radius: 4px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     margin-top: 20px;
 
     .form-title {

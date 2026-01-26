@@ -33,11 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import type { FormInstance } from 'element-plus';
 import CascaderBeg from '../../components/form/CascaderBeg.vue';
 
 
+// 定义组件属性
+const props = defineProps({
+  beg: {
+    type: Object,
+    default: () => ({})
+  }
+});
 // 定义事件
 const emit = defineEmits(['update:modelValue','dayslink','daysres']);
 
@@ -52,12 +59,36 @@ const formData = reactive({
     checkInDate: ''
 });
 const sum =ref(0)
-function dayslink(){
+
+// 计算床位费合计
+function calculateSum(){
     emit('dayslink', formData.days);
-    sum.value = Number(formData.price) * Number(formData.days)
-    emit('daysres', sum.value)
+    sum.value = Number(formData.price) * Number(formData.days) || 0;
+    emit('daysres', sum.value);
 }
 
+// 监听价格和天数变化，自动计算合计
+watch(
+    () => [formData.price, formData.days],
+    () => {
+        calculateSum();
+        // 同步数据到父组件
+        emit('update:modelValue', formData);
+    },
+    { immediate: true }
+);
+
+// 监听床位和入住日期变化，同步到父组件
+watch(
+    () => [formData.begId, formData.checkInDate],
+    () => {
+        emit('update:modelValue', formData);
+    }
+);
+
+function dayslink(){
+    calculateSum();
+}
 
 let bedChange = (idArr: number[]) => {
     formData.begId = idArr[idArr.length - 1]
@@ -71,6 +102,16 @@ const formRules = reactive({
     checkInDate: [{ required: true, message: '请选择入住日期'}]
 });
 
+watch(props.beg, (newVal) => {
+    if (newVal) {
+        formData.begId = newVal.begId;
+        formData.price = newVal.begPrice;
+        formData.days = newVal.days;
+        formData.checkInDate = newVal.addTime;
+        // 数据回显后计算合计
+        calculateSum();
+    }
+});
 /* // 计算床位费合计
 const totalFee = computed(() => {
     if (!formData.price || !formData.days) return 0;

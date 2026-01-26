@@ -33,7 +33,8 @@
             <template #operate="{ row }">
                 <el-button link type="primary" @click="HospitaliDetails(row)"><i
                         class="iconfont icon-file"></i>详情</el-button>
-                <el-button link type="primary"><i class="iconfont icon-bianji"></i>编辑</el-button>
+                <el-button link type="primary" @click="handleEdit(row)"><i
+                        class="iconfont icon-bianji"></i>编辑</el-button>
                 <el-button link type="danger" @click="HospitalizedDel(row.id)"><i
                         class="iconfont icon-shanchu"></i>删除</el-button>
             </template>
@@ -44,7 +45,7 @@
 
 <script setup lang='ts'>
 import Table, { type TableColumn } from "../../components/table.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { orderDelete, orderList } from "../../api/Hospitalized/Hospitalized";
 import { ElMessage, ElMessageBox } from "element-plus";
 import CascaderBeg from "../../components/form/CascaderBeg.vue";
@@ -160,6 +161,14 @@ const HospitaliDetails = (row: any) => {
         },
     })
 }
+const handleEdit = (row: any) => {
+    router.push({
+        path: "/addHospitalized",
+        query: {
+            id: row.id,
+        },
+    })
+}
 
 // 单个删除
 const HospitalizedDel = (id: number) => {
@@ -191,6 +200,20 @@ const handleSelectionChange = (rows: any[]) => {
     console.log("选中的数据：", rows);
     isBatchDelDisabled.value = rows.length === 0;
 }
+
+// 组件挂载时检测URL中的refresh参数，当它存在时，自动刷新表格数据
+onMounted(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('refresh') === 'true') {
+        // 移除URL中的refresh参数，避免页面刷新后再次触发
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('refresh');
+        window.history.replaceState({}, '', newUrl.toString());
+
+        // 刷新表格数据
+        tableRef.value?.refresh();
+    }
+});
 </script>
 
 <style scoped lang='less'>
