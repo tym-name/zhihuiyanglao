@@ -55,7 +55,7 @@
 <script setup lang='ts'>
 
 import { ref, reactive } from 'vue';
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, type FormRules } from 'element-plus'
 import { getCaptcha } from '../../api/index';
 import type { RuleForm } from '../../api/index/indexType';
 import { useAuthStore } from '../../stores/auth';
@@ -95,7 +95,6 @@ const loading = ref(false)
 
 const captchaImage = ref()
 
-const loginFormRef = ref<FormInstance | undefined>(undefined)
 const ruleForm = reactive<RuleForm>({
     username: props.defaultUsername,
     pwd: props.defaultPassword,
@@ -126,27 +125,16 @@ const getCaptchaImage = async () => {
 getCaptchaImage()
 
 const handleLogin = async () => {
-    if (!loginFormRef.value) return
-
-    loginFormRef.value.validate(async (valid) => {
-        if (valid) {
-            loading.value = true
-            try {
-                let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
-                const res = await useAuthStore().userLogin(data)
-                console.log('登录成功', res);
-                if (res) {
-                    router.push('/')
-                    ElMessage.success('登录成功')
-                }
-            } catch (error) {
-                ElMessage.error('登录失败，请检查账号密码')
-                getCaptchaImage()
-            } finally {
-                loading.value = false
-            }
-        }
-    })
+    let data = JSON.parse(JSON.stringify(ruleForm)) //深拷贝
+    const res = await useAuthStore().userLogin(data)
+    console.log('登录成功', res);
+    if (res) {
+        router.push('/')
+        ElMessage.success('登录成功')
+    }else {
+        ElMessage.error('登录失败')
+        getCaptchaImage()
+    }   
 }
 </script>
 

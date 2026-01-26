@@ -10,7 +10,7 @@
             {{ row.gender === 1 ? '男' : '女' }}
         </template>
         <template #search>
-            <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
+            <el-form :inline="true" class="demo-form-inline">
                 <el-form-item label="咨询人姓名:">
                     <el-input placeholder="请输入咨询人姓名" v-model="params.name" clearable />
                 </el-form-item>
@@ -296,7 +296,6 @@ const handleSelectionChange = (rows: any[]) => {
 }
 
 .demo-form-inline {
-    height: 35px;
     display: flex;
     align-items: center;
 }

@@ -6,14 +6,12 @@
 
         <div class="echarts">
             <el-card class="left">
-                <Institution v-if="model.username==='cpglyzh'"></Institution>
-                <Institution v-if="model.username==='cstext'"></Institution>
                 <getCompanyCount v-if="model.username==='admin'"></getCompanyCount>
+                <Institution v-else></Institution>
             </el-card>
             <el-card class="right">
-                <initPieChart v-if="model.username==='cpglyzh'"></initPieChart>
-                <initPieChart v-if="model.username==='cstext'"></initPieChart>
                 <getElderlyCount v-if="model.username==='admin'"></getElderlyCount>
+                <initPieChart v-else></initPieChart>
             </el-card>
         </div>
     </div>

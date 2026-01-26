@@ -1,6 +1,6 @@
 <template>
     <el-card>
-        <el-button type="success" @click="handleAdd">添加部门</el-button>
+        <el-button type="success" @click="handleAdd"><i class="iconfont icon-jia"></i>添加部门</el-button>
         <el-tree show-checkbox :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
             style="max-width: 400px;" class="department-tree">
             <template #default="{ node, data }">
@@ -234,7 +234,9 @@ const resetForm = () => {
 .el-button {
     margin-bottom: 20px;
 }
-
+.iconfont{
+    margin-right: 5px;
+}
 :deep(.el-tree-node__content) {
     height: 42px;
     align-items: center;

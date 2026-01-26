@@ -10,7 +10,8 @@
                 <el-input v-model="ruleForm.reason" placeholder="请输入出院原因" />
             </el-form-item>
             <el-form-item label="预计时间" prop="expectDate">
-                <el-date-picker v-model="ruleForm.expectDate" type="datetime" placeholder="请选择" />
+                <el-date-picker v-model="ruleForm.expectDate" type="datetime" placeholder="请选择预计出院时间" clearable
+                    format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" :disabled-date="disabledPastDate" />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -73,12 +74,6 @@ const ruleForm = reactive<dischargeList>({
     buildingName: '',
 })
 
-const rules = reactive<FormRules<dischargeList>>({
-    elderlyName: { required: true, message: '请选择老人', trigger: 'blur' },
-    reason: { required: true, message: '出院原因不能为空', trigger: 'blur' },
-    expectDate: { required: true, message: '预计时间不能为空', trigger: 'blur' },
-})
-
 const choseElderlyVisible = ref(false)
 const openElderlyDialog = () => {
     choseElderlyVisible.value = true
@@ -116,11 +111,27 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             // 确保必填字段都有值
             ruleForm.state = ruleForm.state || 0
+            // 设置当前时间为添加时间
+            ruleForm.addTime = ruleForm.addTime || new Date().toISOString()
 
             // 添加调试信息
             console.log('ruleForm after fill:', ruleForm)
 
             try {
+                // 检查必填字段
+                if (!ruleForm.elderlyId) {
+                    ElMessage.error('请选择老人')
+                    return
+                }
+                if (!ruleForm.companyId) {
+                    ElMessage.error('公司ID不能为空')
+                    return
+                }
+                if (!ruleForm.addAccountId) {
+                    ElMessage.error('账户ID不能为空')
+                    return
+                }
+
                 if (ruleForm.id) {
                     await dischargeUpdate(ruleForm)
                     ElMessage.success('编辑成功')
@@ -140,6 +151,23 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 const handleClose = () => {
     dialogFormVisible.value = false
 }
+
+// 1. 修改 rules 中 expectDate 的验证触发方式
+const rules = reactive<FormRules<dischargeList>>({
+    elderlyName: { required: true, message: '请选择老人', trigger: 'blur' },
+    reason: { required: true, message: '出院原因不能为空', trigger: 'blur' },
+    // 修改 trigger 为 change，更贴合日期选择器
+    expectDate: { required: true, message: '预计时间不能为空', trigger: 'change' },
+})
+
+// 2. 补充：禁用过去的日期和时间（如果启用了 disabled-date）
+// 注意：datetime 类型的禁用，该函数只控制「日期」部分，时间部分会自动禁用过去的时段
+const disabledPastDate = (time: Date) => {
+    // 返回 true 表示禁用该日期，返回 false 表示可用
+    // 禁用今天之前的日期（今天及未来日期可用）
+    return time.getTime() < new Date(new Date().toDateString()).getTime()
+}
+
 const resetForm = () => {
     if (ruleFormRef.value) {
         ruleFormRef.value.resetFields()

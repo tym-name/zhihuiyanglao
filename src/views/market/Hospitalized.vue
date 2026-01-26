@@ -218,7 +218,7 @@ onMounted(() => {
 
 <style scoped lang='less'>
 .iconfont {
-    margin: 5px;
+    margin-right: 5px;
 }
 
 .demo-form-inline {

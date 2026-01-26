@@ -326,3 +326,86 @@ export interface CycleTask {
     startTime: string;
     time: string[];
 }
+
+export interface AddScheduleParams {
+  elderlyId?: number;      // 老人ID
+  day?: string;   // 班次
+  week?:string;  // 星期
+  staffId?: number;        // 员工ID
+}
+
+export interface StaffSchedule {
+  id: number;
+  elderlyId: number;
+  day: string;
+  week: string;
+  staffId: number;
+  staffName: string;
+  staffPhoto: string;
+}
+
+export interface ScheduleResponse {
+  list: StaffSchedule[];
+}
+
+export interface StaffParams {
+  /** 当前页码 */
+  page?: number
+  /** 每页显示条数 */
+  pageSize?: number
+  /** 员工姓名（模糊查询） */
+  name?: string
+  /** 联系方式 */
+  mobile?: string
+  /** 身份证号 */
+  idCard?: string
+  /** 部门ID */
+  departmentId?: string | number
+  /** 岗位/角色ID */
+  roleId?: string | number
+  /** 状态：1启用，0禁用 */
+  enable?: string | number | boolean
+  /** 是否护工 */
+  carer?: string | number | boolean
+}
+
+export interface StaffItem {
+  id: number
+  companyId: number
+  photo: string
+  name: string
+  mobile: string
+  isCarer: number
+  departmentId: number | null
+  addAccountId: number
+  addAccountName: string
+  addTime: string
+  departmentName: string
+  roles: StaffRole[]
+  adminId: number
+  adminUserName: string
+  adminPwd: string
+  enable: number
+  idCard: string
+  adminPwdAgain:string  // 密码确认后加入的
+}
+
+/**
+ * 员工列表响应接口
+ */
+export interface StaffListResponse {
+  counts: number
+  pageSize: number
+  list: StaffItem[]
+}
+
+export interface StaffRole {
+  id: number
+  name: string
+  companyId: number
+  addAccountId: number
+  addAccountName: string | null
+  addTime: string
+  accountCounts: number
+  menuIds: string | null
+}

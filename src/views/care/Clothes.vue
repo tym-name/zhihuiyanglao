@@ -28,8 +28,8 @@
     <Table ref="tableRef" :columns="columns" :fetch-data="fetchData" :init-params="form"
         @selection-change="handleSelectionChange">
         <template #buttons>
-            <el-button type="success" @click="showDialog">添加</el-button>
-            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
+            <el-button type="success" @click="showDialog"><i class="iconfont icon-jia"></i>添加</el-button>
+            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
         <template #title="{ row }">
             <el-button link type="primary" @click="showDialog(row)">
@@ -42,9 +42,9 @@
             </el-text>
         </template>
         <template #operate="{ row }">
-            <el-button link type="primary" @click="showDetail(row)">详情</el-button>
-            <el-button link type="primary" @click="showDialog(row)">编辑</el-button>
-            <el-button link type="danger" @click="clothesdel(row.id)">删除</el-button>
+            <el-button link type="primary" @click="showDetail(row)"><i class="iconfont icon-meals"></i>详情</el-button>
+            <el-button link type="primary" @click="showDialog(row)"><i class="iconfont icon-bianji"></i>编辑</el-button>
+            <el-button link type="danger" @click="clothesdel(row.id)"> <i class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
     </Table>
     <ClothesDialog v-model="dialogFormVisible" :detail-data="currentDetail" />
@@ -125,7 +125,7 @@ const columns: TableColumn[] = [
     {
         label: "操作",
         slot: "operate",
-        width: 180,
+        width: 240,
         fixed: "right",
     }
 ];
@@ -220,3 +220,9 @@ const query = () => {
     ElMessage.success('查询成功');
 }
 </script>
+
+<style scoped lang="less">
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

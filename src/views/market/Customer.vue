@@ -10,7 +10,7 @@
         <template #gender="{ row }">
             {{ row.gender === 1 ? '男' : '女' }}
         </template>
-        <template #search>
+        <template #search >
             <el-form :inline="true" class="demo-form-inline" style="height: 80px;">
                 <el-form-item label="老人姓名:">
                     <el-input placeholder="请输入老人姓名" v-model="params.name" clearable />

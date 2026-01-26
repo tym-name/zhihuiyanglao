@@ -199,7 +199,7 @@ const onSubmit = async () => {
 // 点击确定  触发校验
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
-    await formEl.validate(async (valid, fields) => {
+    await formEl.validate(async (valid) => {
         if (valid) {
             // console.log('submit!');
             await onSubmit();

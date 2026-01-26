@@ -27,20 +27,20 @@
             </template>
 
             <template #buttons>
-                <el-button type="success" @click="add">+ 用药登记</el-button>
-                <el-button type="danger" :disabled="isBatchDeleteDisabled" @click="delAll">批量删除</el-button>
+                <el-button type="success" @click="add"><i class="iconfont icon-jia"></i>用药登记</el-button>
+                <el-button type="danger" :disabled="isBatchDeleteDisabled" @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
             </template>
 
 
             <template #operate="{ row }">
                 <el-button type="primary" link @click="handleDetails(row)">
                     <el-icon>
-                        <Tickets />
+                        <i class="iconfont icon-wenben"></i>
                     </el-icon> 查看详情
                 </el-button>
                 <el-button type="primary" link @click="handlePlanset(row)">
                     <el-icon>
-                        <Tickets />
+                        <i class="iconfont icon-wenben"></i>
                     </el-icon> 用药计划
                 </el-button>
             </template>
@@ -213,11 +213,10 @@ const reset = () => {
     tableRef.value.refresh()
 }
 
-
-
-
-
 </script>
 
 <style scoped lang='less'>
+    .iconfont{
+        margin-right: 5px;
+    }
 </style>

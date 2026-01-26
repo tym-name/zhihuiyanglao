@@ -17,8 +17,8 @@
     <Table ref="tableRef" :columns="columns" :fetch-data="dischargeListFunc" @selection-change="handleSelectionChange"
         :show-selection-column="true">
         <template #buttons>
-            <el-button type="success" @click="dischargeeAdd">新增</el-button>
-            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
+            <el-button type="success" @click="dischargeeAdd"><i class="iconfont icon-jia"></i>新增</el-button>
+            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
         <template #elderlyGender="{ row }">
             {{ row.elderlyGender == 0 ? '女' : '男' }}
@@ -27,8 +27,8 @@
             {{ row.state == 1 ? '未出院' : '已出院' }}
         </template>
         <template #operate="{ row }">
-            <el-button link type="primary" @click="dischargeEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="dischargdele(row.id)">删除</el-button>
+            <el-button link type="primary" @click="dischargeEdit(row)"><i class="iconfont icon-bianji"></i>编辑</el-button>
+            <el-button link type="danger" @click="dischargdele(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
     </Table>
     <DischargeDialog v-model="dialogFormVisible" :editRow="currentEditRow" @refresh="handleRefresh" />
@@ -202,3 +202,9 @@ const handleSearch = () => {
     }
 }
 </script>
+
+<style scoped lang="less">
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

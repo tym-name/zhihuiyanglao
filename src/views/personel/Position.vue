@@ -1,13 +1,13 @@
 <template>
     <Table ref="tableRef" :columns="columns" :fetch-data="roleListFun" @selection-change="handleSelectionChange">
         <template #buttons>
-            <el-button type="success" @click="Addposition">添加岗位</el-button>
-            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
+            <el-button type="success" @click="Addposition"><i class="iconfont icon-jia"></i>添加岗位</el-button>
+            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
 
         <template #operate="{ row }">
-            <el-button link type="primary" @click="modify(row)">修改</el-button>
-            <el-button link type="danger" @click="roledel(row.id)">删除</el-button>
+            <el-button link type="primary" @click="modify(row)"><i class="iconfont icon-bianji"></i>修改</el-button>
+            <el-button link type="danger" @click="roledel(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
     </Table>
 </template>
@@ -118,4 +118,8 @@ const modify = (row: roleList) => {
 
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang='less'>
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

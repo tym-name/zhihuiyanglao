@@ -21,15 +21,15 @@
 
     <Table ref="tableRef" :columns="columns" :fetch-data="staffList" @selection-change="handleSelectionChange">
         <template #buttons>
-            <el-button type="success" @click="dialogFormVisible = true">添加护工</el-button>
-            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0">批量删除</el-button>
+            <el-button type="success" @click="dialogFormVisible = true"><i class="iconfont icon-jia"></i>添加护工</el-button>
+            <el-button type="danger" @click="delAll" :disabled="selectedIds.length === 0"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
         </template>
 
         <template #photo="{ row }">
             <img :src="VITE_IMG_URL + row.photo" style="width: 50px;height: 50px;">
         </template>
         <template #operate="{ row }">
-            <el-button link type="danger" @click="carerdel(row.id)">删除</el-button>
+            <el-button link type="danger" @click="carerdel(row.id)"><i class="iconfont icon-shanchu"></i>删除</el-button>
         </template>
         <template #enable="{ row }">
             {{ row.enable === 1 ? '否' : '是' }}
@@ -186,7 +186,14 @@ const handleReset = () => {
 }
 const dialogFormVisible = ref(false)
 // 处理护工更新事件，刷新表格数据
+
 const handleUpdateCarers = () => {
     tableRef.value?.refresh();
 }
 </script>
+
+<style scoped lang="less">
+    .iconfont{
+        margin-right: 5px;
+    }
+</style>

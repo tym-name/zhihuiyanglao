@@ -240,13 +240,22 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/care/AddOutings.vue"),
       },
       {
-        path: "details",
-        name: "details",
+        path: "GoOutdetails",
+        name: "GoOutdetails",
         meta: {
-          title: "外出登记详情",
+          title: "新增外出登记",
         },
         props: true,
-        component: () => import("../views/care/details.vue"),
+        component: () => import("../views/care/GoOutdetails.vue"),
+      },
+      {
+        path: "Question",
+        name: "Question",
+        meta: {
+          title: "新增外出登记",
+        },
+        props: true,
+        component: () => import("../views/market/Question.vue"),
       },
       {
         path: "/priceanalysis",

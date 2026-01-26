@@ -16,8 +16,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ElMessageBox } from 'element-plus';
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import Table, { type TableColumn } from '../table.vue'
 import { foodList } from '@/api/diet/food/food';
 import type { FoodItem } from '@/api/diet/food/foodType';
@@ -31,13 +30,6 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'confirm', data: FoodItem[]): void
 }>()
-
-
-const dialogVisible = ref(false)
-
-
-
-const tableRef = ref<any>(null);
 
 const columns: TableColumn[] = [
     {
